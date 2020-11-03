@@ -115,8 +115,8 @@ spec:
   # To control where various services will be scheduled by kubernetes, use the placement configuration sections below.
   # The example under 'all' would have all services scheduled on kubernetes nodes labeled with 'role=storage-node' and
   # tolerate taints with a key of 'storage-node'.
-#  placement:
-#    all:
+  placement:
+    all:
 #      nodeAffinity:
 #        requiredDuringSchedulingIgnoredDuringExecution:
 #          nodeSelectorTerms:
@@ -128,9 +128,9 @@ spec:
 #      podAffinity:
 #      podAntiAffinity:
 #      topologySpreadConstraints:
-#      tolerations:
-#      - key: storage-node
-#        operator: Exists
+      tolerations:
+      - key: node-role.kubernetes.io/master
+        operator: Exists
 # The above placement information can also be specified for mon, osd, and mgr components
 #    mon:
 # Monitor deployments may contain an anti-affinity rule for avoiding monitor
