@@ -1,0 +1,29 @@
+controllerService:
+  annotations:
+    metallb.universe.tf/allow-shared-ip: unifi
+  loadBalancerIP: 192.168.10.0
+  type: LoadBalancer
+discoveryService:
+  annotations:
+    metallb.universe.tf/allow-shared-ip: unifi
+  loadBalancerIP: 192.168.10.0
+  type: LoadBalancer
+guiService:
+  annotations:
+    metallb.universe.tf/allow-shared-ip: unifi
+  loadBalancerIP: 192.168.10.0
+  type: LoadBalancer
+image:
+  tag: latest-5
+persistence:
+  enabled: true
+  existingClaim: unifi-pvc
+astunService:
+  annotations:
+    metallb.universe.tf/allow-shared-ip: unifi
+  loadBalancerIP: 192.168.10.0
+  type: LoadBalancer
+timezone: America/Los Angeles
+unifiedService:
+  enable: false
+  enabled: false
