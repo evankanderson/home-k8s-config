@@ -19,3 +19,25 @@ spec:
         dnsNames:
         - 'off-by-one.dev'
         - '*.off-by-one.dev'
+---
+apiVersion: cert-manager.io/v1
+kind: ClusterIssuer
+metadata:
+  name: letsencrypt-prod
+spec:
+  acme:
+    email: evan.k.anderson@gmail.com
+    server: https://acme-v02.api.letsencrypt.org/directory
+    privateKeySecretRef:
+      name: prod-issuer-account-key
+    solvers:
+    - dns01:
+        cloudDNS:
+          project: eandersons-net
+          serviceAccountSecretRef:
+            name: clouddns-dns01-solver-svc-account
+            key: key.json
+      selector:
+        dnsNames:
+        - 'off-by-one.dev'
+        - '*.off-by-one.dev'
