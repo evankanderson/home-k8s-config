@@ -53,6 +53,24 @@ data:
 apiVersion: v1
 kind: ConfigMap
 metadata:
+  name: log-logrotate-config
+  namespace: metrics
+  labels:
+    k8s-app: log-collector
+data:
+  logs.conf: |
+    /logs/*.log {
+      daily
+      notifempty
+      rotate 5
+      dateext
+      dateformat -%m-%d
+      nocompress
+    }
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
   name: log-nginx-config
   namespace: metrics
   labels:
@@ -136,6 +154,14 @@ spec:
         env:
         - name: FLUENT_PORT
           value: "24224"
+      - name: logrotate
+        image: ekanderson/logrotate
+        args: [crond, "-n"]
+        volumeMounts:
+        - name: logs
+          mountPath: /logs
+        - name: logrotate-config
+          mountPath: /etc/logrotate.d
       - name: nginx
         image: k8s.gcr.io/nginx-slim:0.8
         ports:
@@ -153,6 +179,9 @@ spec:
         - name: nginx-config
           configMap:
             name: log-nginx-config
+        - name: logrotate-config
+          configMap:
+            name: log-logrotate-config
   volumeClaimTemplates:
   - metadata:
       name: logs
