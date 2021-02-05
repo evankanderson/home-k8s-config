@@ -1,0 +1,27 @@
+apiVersion: serving.knative.dev/v1
+kind: Service
+metadata:
+  name: wordpress
+  namespace: wordpress
+spec:
+  template:
+    spec:
+      containers:
+      - image: ekanderson/evan-nanospace
+        env:
+        - name: WORDPRESS_DB_HOST
+          value: mysql-db-mysql
+        - name: WORDPRESS_DB_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: mysql-root
+              key: PASSWORD
+        - name: WORDPRESS_DB_USER
+          value: wordpress
+        - name: WORDPRESS_DB_NAME
+          value: wordpress_db
+        - name: HTTP_X_FORWARDED_PROTO
+          value: https
+        ports:
+        - containerPort: 80
+
