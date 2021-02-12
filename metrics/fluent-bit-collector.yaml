@@ -60,6 +60,7 @@ metadata:
 data:
   logs.conf: |
     /logs/*.log {
+      su root root
       daily
       notifempty
       rotate 5
