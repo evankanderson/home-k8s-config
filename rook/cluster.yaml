@@ -157,16 +157,21 @@ spec:
 #    prepareosd:
   resources:
 # The requests and limits set here, allow the mgr pod to use half of one CPU core and 1 gigabyte of memory
-#    mgr:
+    mgr:
 #      limits:
 #        cpu: "500m"
 #        memory: "1024Mi"
-#      requests:
+      requests:
 #        cpu: "500m"
-#        memory: "1024Mi"
+        memory: "400M"
 # The above example requests/limits can also be added to the mon and osd components
-#    mon:
-#    osd:
+    mon:
+      requests:
+        memory: "1200M"
+    osd:
+      requests:
+        cpu: 100m
+        memory: "850M"
 #    prepareosd:
 #    crashcollector:
 #    cleanup:
@@ -233,7 +238,11 @@ spec:
     livenessProbe:
       mon:
         disabled: false
+        probe:
+          timeoutSeconds: 3
       mgr:
         disabled: false
       osd:
         disabled: false
+        probe:
+          timeoutSeconds: 5
