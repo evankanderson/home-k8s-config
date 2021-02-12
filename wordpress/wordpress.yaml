@@ -7,7 +7,7 @@ spec:
   template:
     spec:
       containers:
-      - image: ekanderson/evan-nanospace
+      - image: ekanderson/evan-nanospace:latest
         env:
         - name: WORDPRESS_DB_HOST
           value: mysql-db-mysql
@@ -22,6 +22,50 @@ spec:
           value: wordpress_db
         - name: HTTP_X_FORWARDED_PROTO
           value: https
+        - name: WORDPRESS_AUTH_KEY
+          valueFrom:
+            secretKeyRef:
+              name: wordpress-config
+              key: auth_key
+        - name: WORDPRESS_SECURE_AUTH_KEY
+          valueFrom:
+            secretKeyRef:
+              name: wordpress-config
+              key: secure_auth_key
+        - name: WORDPRESS_LOGGED_IN_KEY
+          valueFrom:
+            secretKeyRef:
+              name: wordpress-config
+              key: logged_in_key
+        - name: WORDPRESS_NONCE_KEY
+          valueFrom:
+            secretKeyRef:
+              name: wordpress-config
+              key: nonce_key
+        - name: WORDPRESS_AUTH_SALT
+          valueFrom:
+            secretKeyRef:
+              name: wordpress-config
+              key: auth_salt
+        - name: WORDPRESS_SECURE_AUTH_SALT
+          valueFrom:
+            secretKeyRef:
+              name: wordpress-config
+              key: secure_auth_salt
+        - name: WORDPRESS_LOGGED_IN_SALT
+          valueFrom:
+            secretKeyRef:
+              name: wordpress-config
+              key: logged_in_salt
+        - name: WORDPRESS_NONCE_SALT
+          valueFrom:
+            secretKeyRef:
+              name: wordpress-config
+              key: nonce_salt
+        - name: WORDPRESS_CONFIG_EXTRA
+          value: |
+            define( 'S3_UPLOADS_KEY', getenv('AWS_ACCESS_KEY_ID') );
+            define( 'S3_UPLOADS_SECRET', getenv('AWS_SECRET_ACCESS_KEY') );
         ports:
         - containerPort: 80
 
