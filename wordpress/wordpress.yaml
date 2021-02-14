@@ -62,10 +62,119 @@ spec:
             secretKeyRef:
               name: wordpress-config
               key: nonce_salt
+        - name: AWS_ACCESS_KEY_ID
+          valueFrom:
+            secretKeyRef:
+              name: wp-bucket
+              key: AWS_ACCESS_KEY_ID
+        - name: AWS_SECRET_ACCESS_KEY
+          valueFrom:
+            secretKeyRef:
+              name: wp-bucket
+              key: AWS_SECRET_ACCESS_KEY
+        - name: BUCKET_NAME
+          valueFrom:
+            configMapKeyRef:
+              name: wp-bucket
+              key: BUCKET_NAME
+        - name: BUCKET_REGION
+          valueFrom:
+            configMapKeyRef:
+              name: wp-bucket
+              key: BUCKET_REGION
+        - name: AWS_HOST
+          valueFrom:
+            configMapKeyRef:
+              name: wp-bucket
+              key: BUCKET_HOST
+        - name: AWS_PORT
+          valueFrom:
+            configMapKeyRef:
+              name: wp-bucket
+              key: BUCKET_PORT
         - name: WORDPRESS_CONFIG_EXTRA
           value: |
+            // Configure S3-Uploads with AWS settings from environment
             define( 'S3_UPLOADS_KEY', getenv('AWS_ACCESS_KEY_ID') );
             define( 'S3_UPLOADS_SECRET', getenv('AWS_SECRET_ACCESS_KEY') );
+            define( 'S3_UPLOADS_BUCKET', getenv('BUCKET_NAME') );
+            define( 'S3_UPLOADS_REGION', getenv('BUCKET_REGION') );
+            // Make WordPress serve all the media, rather than redirecting to S3/Ceph
+            define( 'S3_UPLOADS_DISABLE_REPLACE_UPLOAD_URL', true );
         ports:
         - containerPort: 80
-
+---
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: off-by-one
+  namespace: wordpress
+spec:
+  dnsNames:
+  - off-by-one.dev
+  issuerRef:
+    kind: ClusterIssuer
+    name: letsencrypt-prod
+  secretName: off-by-one
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: s3
+  namespace: wordpress
+spec:
+  type: ExternalName
+  externalName: rook-ceph-rgw-objects.rook-ceph.svc
+  ports:
+  - name: http
+    port: 80
+    protocol: TCP
+    targetPort: 80
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: knative-external
+  namespace: wordpress
+spec:
+  type: ExternalName
+  externalName: envoy.contour-external.svc.cluster.local
+  ports:
+  - name: https
+    port: 443
+---
+apiVersion: projectcontour.io/v1
+kind: HTTPProxy
+metadata:
+  name: wordpress-site
+  namespace: wordpress
+  annotations:
+    projectcontour.io/ingress.class: contour-external
+  labels:
+    projectcontour.io/ingress.class: contour-external
+spec:
+  virtualhost:
+    fqdn: off-by-one.dev
+    tls:
+      secretName: off-by-one
+  routes:
+  - services:
+    - name: knative-external
+      port: 443
+      protocol: tls
+    requestHeadersPolicy:
+      set:
+      - name: Host
+        value: wordpress.wordpress.microkn.off-by-one.dev
+  - services:
+    - name: s3
+      port: 80
+    conditions:
+    - prefix: /wp-content/uploads/
+    - header:
+        name: Content-Type
+        present: false
+    pathRewritePolicy:
+      replacePrefix:
+      - replacement: /wordpress-store/uploads/
+      
