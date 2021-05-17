@@ -16,9 +16,8 @@ spec:
             name: clouddns-dns01-solver-svc-account
             key: key.json
       selector:
-        dnsNames:
+        dnsZones:
         - 'off-by-one.dev'
-        - '*.off-by-one.dev'
 ---
 apiVersion: cert-manager.io/v1
 kind: ClusterIssuer
@@ -38,6 +37,5 @@ spec:
             name: clouddns-dns01-solver-svc-account
             key: key.json
       selector:
-        dnsNames:
+        dnsZones:
         - 'off-by-one.dev'
-        - '*.off-by-one.dev'
