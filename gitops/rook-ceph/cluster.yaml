@@ -66,7 +66,8 @@ spec:
     # serve the dashboard at the given port.
     # port: 8443
     # serve the dashboard using SSL
-    ssl: true
+    # TODO(evankanderson): figure out how to set projectcontour.io/upstream-protocol.tls: "8443" on the service
+    ssl: false
   # enable prometheus alerting for cluster
   monitoring:
     # requires Prometheus to be pre-installed
