@@ -21,6 +21,7 @@ spec:
     # versions running within the cluster. See tags available at https://hub.docker.com/r/ceph/ceph/tags/.
     # If you want to be more precise, you can always use a timestamp tag such ceph/ceph:v15.2.8-20201217
     # This tag might not contain a new Ceph version, just security fixes from the underlying operating system, which will reduce vulnerabilities
+    # TODO(evankanderson): Change to v15.2.11 after gitopsification
     image: ceph/ceph:v15.2.8
     # Whether to allow unsupported versions of Ceph. Currently `nautilus` and `octopus` are supported.
     # Future versions such as `pacific` would require this to be set to `true`.
@@ -50,6 +51,8 @@ spec:
     # Mons should only be allowed on the same node for test environments where data loss is acceptable.
     allowMultiplePerNode: false
   mgr:
+    # TODO(evankanderson): Set after gitopsification
+    # count: 1
     modules:
     # Several modules should not need to be included in this list. The "dashboard" and "monitoring" modules
     # are already enabled by other settings in the cluster CR.
@@ -126,7 +129,7 @@ spec:
   # The example under 'all' would have all services scheduled on kubernetes nodes labeled with 'role=storage-node' and
   # tolerate taints with a key of 'storage-node'.
   placement:
-#    all:
+    all:
 #      nodeAffinity:
 #        requiredDuringSchedulingIgnoredDuringExecution:
 #          nodeSelectorTerms:
@@ -177,11 +180,11 @@ spec:
 # The above example requests/limits can also be added to the mon and osd components
     mon:
       requests:
-        memory: "1200M"
+        memory: "1000M"
     osd:
       requests:
         cpu: 100m
-        memory: "850M"
+        memory: "900M"
 #    prepareosd:
 #    crashcollector:
 #    logcollector:
@@ -223,6 +226,7 @@ spec:
     # If true, the operator will create and manage PodDisruptionBudgets for OSD, Mon, RGW, and MDS daemons. OSD PDBs are managed dynamically
     # via the strategy outlined in the [design](https://github.com/rook/rook/blob/master/design/ceph/ceph-managed-disruptionbudgets.md). The operator will
     # block eviction of OSDs by default and unblock them safely when drains are detected.
+    # TODO(evankanderson): enable after gitopsing
     managePodBudgets: false
     # A duration in minutes that determines how long an entire failureDomain like `region/zone/host` will be held in `noout` (in addition to the
     # default DOWN/OUT interval) when it is draining. This is only relevant when  `managePodBudgets` is `true`. The default value is `30` minutes.
@@ -254,11 +258,13 @@ spec:
     livenessProbe:
       mon:
         disabled: false
-        probe:
-          timeoutSeconds: 3
+        # TODO(evankanderson): try enabling these with fix for https://github.com/rook/rook/issues/6980
+        # probe:
+        #   timeoutSeconds: 3
       mgr:
         disabled: false
       osd:
         disabled: false
-        probe:
-          timeoutSeconds: 5
+        # TODO(evankanderson): try enabling these with fix for https://github.com/rook/rook/issues/6980
+        # probe:
+        #   timeoutSeconds: 5
