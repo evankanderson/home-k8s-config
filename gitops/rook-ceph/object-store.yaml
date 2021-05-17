@@ -22,5 +22,4 @@ spec:
     instances: 1
   healthCheck:
     bucket:
-      disabled: false
       interval: 60s
