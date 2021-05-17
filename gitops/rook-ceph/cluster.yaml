@@ -64,7 +64,7 @@ spec:
     # serve the dashboard under a subpath (useful when you are accessing the dashboard via a reverse proxy)
     # urlPrefix: /ceph-dashboard
     # serve the dashboard at the given port.
-    # port: 8443
+    port: 8443
     # serve the dashboard using SSL
     # TODO(evankanderson): figure out how to set projectcontour.io/upstream-protocol.tls: "8443" on the service
     ssl: false
