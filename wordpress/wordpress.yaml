@@ -5,9 +5,20 @@ metadata:
   namespace: wordpress
 spec:
   template:
+    metadata:
+      annotations:
+        autoscaling.knative.dev/maxScale: "12"
     spec:
+      containerConcurrency: 100
       containers:
       - image: ekanderson/evan-nanospace:latest
+        resources:
+          requests:
+            cpu: 100m
+            memory: 250M
+          limits:
+            cpu: 1
+            memory: 450M
         env:
         - name: WORDPRESS_DB_HOST
           value: mysql-db-mysql
