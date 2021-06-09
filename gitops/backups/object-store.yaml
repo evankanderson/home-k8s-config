@@ -1,8 +1,8 @@
 apiVersion: objectbucket.io/v1alpha1
 kind: ObjectBucketClaim
 metadata:
-  namespace: backup
-  name: backups
+  namespace: backups
+  name: backup
 spec:
   bucketName: hostbackup
   storageClassName: rook-object-store
