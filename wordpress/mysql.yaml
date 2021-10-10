@@ -6,9 +6,15 @@ metadata:
 spec:
   replicas: 1
   secretName: mysql-root
+  podSpec:
+    metricsExporterResources: {}
+    mysqlOperatorSidecarResources: {}
+    resources:
+      requests:
+        memory: 400M
   volumeSpec:
     persistentVolumeClaim:
       accessModes: ["ReadWriteOnce"]
       resources:
         requests:
-          storage: "20Gi"
+          storage: "100Gi"
