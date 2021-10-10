@@ -6,7 +6,7 @@ metadata:
   name: mysql-operator
   labels:
     app: mysql-operator
-    chart: mysql-operator-0.4.0
+    chart: mysql-operator-0.5.0
     release: mysql-operator
     heritage: Helm
 ---
@@ -17,11 +17,11 @@ metadata:
   name: mysql-operator-orc
   labels:
     app: mysql-operator
-    chart: mysql-operator-0.4.0
+    chart: mysql-operator-0.5.0
     release: mysql-operator
     heritage: Helm
 data:
-  orchestrator.conf.json: "{\n  \"ApplyMySQLPromotionAfterMasterFailover\": false,\n  \"BackendDB\": \"sqlite\",\n  \"Debug\": false,\n  \"DetachLostReplicasAfterMasterFailover\": true,\n  \"DetectClusterAliasQuery\": \"SELECT CONCAT(SUBSTRING(@@hostname, 1, LENGTH(@@hostname) - 1 - LENGTH(SUBSTRING_INDEX(@@hostname,'-',-2))),'.',SUBSTRING_INDEX(@@report_host,'.',-1))\",\n  \"DetectInstanceAliasQuery\": \"SELECT @@hostname\",\n  \"DiscoverByShowSlaveHosts\": false,\n  \"FailMasterPromotionIfSQLThreadNotUpToDate\": true,\n  \"HTTPAdvertise\": \"http://{{ .Env.HOSTNAME }}-svc:80\",\n  \"HostnameResolveMethod\": \"none\",\n  \"InstancePollSeconds\": 5,\n  \"ListenAddress\": \":3000\",\n  \"MasterFailoverDetachReplicaMasterHost\": true,\n  \"MySQLHostnameResolveMethod\": \"@@report_host\",\n  \"MySQLTopologyCredentialsConfigFile\": \"/etc/orchestrator/orc-topology.cnf\",\n  \"OnFailureDetectionProcesses\": [\n    \"/usr/local/bin/orc-helper event -w '{failureClusterAlias}' 'OrcFailureDetection' 'Failure: {failureType}, failed host: {failedHost}, lost replcas: {lostReplicas}' || true\",\n    \"/usr/local/bin/orc-helper failover-in-progress '{failureClusterAlias}' '{failureDescription}' || true\"\n  ],\n  \"PostIntermediateMasterFailoverProcesses\": [\n    \"/usr/local/bin/orc-helper event '{failureClusterAlias}' 'OrcPostIntermediateMasterFailover' 'Failure type: {failureType}, failed hosts: {failedHost}, slaves: {countSlaves}' || true\"\n  ],\n  \"PostMasterFailoverProcesses\": [\n    \"/usr/local/bin/orc-helper event '{failureClusterAlias}' 'OrcPostMasterFailover' 'Failure type: {failureType}, new master: {successorHost}, slaves: {slaveHosts}' || true\"\n  ],\n  \"PostUnsuccessfulFailoverProcesses\": [\n    \"/usr/local/bin/orc-helper event -w '{failureClusterAlias}' 'OrcPostUnsuccessfulFailover' 'Failure: {failureType}, failed host: {failedHost} with {countSlaves} slaves' || true\"\n  ],\n  \"PreFailoverProcesses\": [\n    \"/usr/local/bin/orc-helper failover-in-progress '{failureClusterAlias}' '{failureDescription}' || true\"\n  ],\n  \"ProcessesShellCommand\": \"sh\",\n  \"RaftAdvertise\": \"{{ .Env.HOSTNAME }}-svc\",\n  \"RaftBind\": \"{{ .Env.HOSTNAME }}\",\n  \"RaftDataDir\": \"/var/lib/orchestrator\",\n  \"RaftEnabled\": true,\n  \"RaftNodes\": [],\n  \"RecoverIntermediateMasterClusterFilters\": [\n    \".*\"\n  ],\n  \"RecoverMasterClusterFilters\": [\n    \".*\"\n  ],\n  \"RecoveryIgnoreHostnameFilters\": [],\n  \"RecoveryPeriodBlockSeconds\": 300,\n  \"RemoveTextFromHostnameDisplay\": \":3306\",\n  \"SQLite3DataFile\": \"/var/lib/orchestrator/orc.db\",\n  \"SlaveLagQuery\": \"SELECT TIMESTAMPDIFF(SECOND,ts,NOW()) as drift FROM sys_operator.heartbeat ORDER BY drift ASC LIMIT 1\",\n  \"UnseenInstanceForgetHours\": 1\n}"
+  orchestrator.conf.json: "{\n  \"ApplyMySQLPromotionAfterMasterFailover\": true,\n  \"BackendDB\": \"sqlite\",\n  \"Debug\": false,\n  \"DetachLostReplicasAfterMasterFailover\": true,\n  \"DetectClusterAliasQuery\": \"SELECT CONCAT(SUBSTRING(@@hostname, 1, LENGTH(@@hostname) - 1 - LENGTH(SUBSTRING_INDEX(@@hostname,'-',-2))),'.',SUBSTRING_INDEX(@@report_host,'.',-1))\",\n  \"DetectInstanceAliasQuery\": \"SELECT @@hostname\",\n  \"DiscoverByShowSlaveHosts\": false,\n  \"FailMasterPromotionIfSQLThreadNotUpToDate\": true,\n  \"HTTPAdvertise\": \"http://{{ .Env.HOSTNAME }}-svc:80\",\n  \"HostnameResolveMethod\": \"none\",\n  \"InstancePollSeconds\": 5,\n  \"ListenAddress\": \":3000\",\n  \"MasterFailoverLostInstancesDowntimeMinutes\": 10,\n  \"MySQLHostnameResolveMethod\": \"@@report_host\",\n  \"MySQLTopologyCredentialsConfigFile\": \"/etc/orchestrator/orc-topology.cnf\",\n  \"OnFailureDetectionProcesses\": [\n    \"/usr/local/bin/orc-helper event -w '{failureClusterAlias}' 'OrcFailureDetection' 'Failure: {failureType}, failed host: {failedHost}, lost replcas: {lostReplicas}' || true\",\n    \"/usr/local/bin/orc-helper failover-in-progress '{failureClusterAlias}' '{failureDescription}' || true\"\n  ],\n  \"PostIntermediateMasterFailoverProcesses\": [\n    \"/usr/local/bin/orc-helper event '{failureClusterAlias}' 'OrcPostIntermediateMasterFailover' 'Failure type: {failureType}, failed hosts: {failedHost}, slaves: {countSlaves}' || true\"\n  ],\n  \"PostMasterFailoverProcesses\": [\n    \"/usr/local/bin/orc-helper event '{failureClusterAlias}' 'OrcPostMasterFailover' 'Failure type: {failureType}, new master: {successorHost}, slaves: {slaveHosts}' || true\"\n  ],\n  \"PostUnsuccessfulFailoverProcesses\": [\n    \"/usr/local/bin/orc-helper event -w '{failureClusterAlias}' 'OrcPostUnsuccessfulFailover' 'Failure: {failureType}, failed host: {failedHost} with {countSlaves} slaves' || true\"\n  ],\n  \"PreFailoverProcesses\": [\n    \"/usr/local/bin/orc-helper failover-in-progress '{failureClusterAlias}' '{failureDescription}' || true\"\n  ],\n  \"ProcessesShellCommand\": \"sh\",\n  \"RaftAdvertise\": \"{{ .Env.HOSTNAME }}-svc\",\n  \"RaftBind\": \"{{ .Env.HOSTNAME }}\",\n  \"RaftDataDir\": \"/var/lib/orchestrator\",\n  \"RaftEnabled\": true,\n  \"RaftNodes\": [],\n  \"RecoverIntermediateMasterClusterFilters\": [\n    \".*\"\n  ],\n  \"RecoverMasterClusterFilters\": [\n    \".*\"\n  ],\n  \"RecoveryIgnoreHostnameFilters\": [],\n  \"RecoveryPeriodBlockSeconds\": 300,\n  \"RemoveTextFromHostnameDisplay\": \":3306\",\n  \"SQLite3DataFile\": \"/var/lib/orchestrator/orc.db\",\n  \"SlaveLagQuery\": \"SELECT TIMESTAMPDIFF(SECOND,ts,UTC_TIMESTAMP()) as drift FROM sys_operator.heartbeat ORDER BY drift ASC LIMIT 1\",\n  \"UnseenInstanceForgetHours\": 1\n}"
   orc-topology.cnf: |
     [client]
     user = {{ .Env.ORC_TOPOLOGY_USER }}
@@ -31,113 +31,151 @@ data:
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRole
 metadata:
+  name: 'mysql-operator'
   labels:
     app: 'mysql-operator'
-    chart: 'mysql-operator-0.4.0'
-    heritage: 'Helm'
+    chart: 'mysql-operator-0.5.0'
     release: 'mysql-operator'
-  name: 'mysql-operator'
+    heritage: 'Helm'
 rules:
-- apiGroups:
-  - batch
-  resources:
-  - jobs
-  verbs:
-  - get
-  - list
-  - watch
-  - create
-  - update
-  - patch
-  - delete
-- apiGroups:
-  - mysql.presslabs.org
-  resources:
-  - mysqlbackups
-  verbs:
-  - get
-  - list
-  - watch
-  - create
-  - update
-  - patch
-  - delete
-- apiGroups:
-  - apps
-  resources:
-  - statefulsets
-  verbs:
-  - get
-  - list
-  - watch
-  - create
-  - update
-  - patch
-  - delete
-- apiGroups:
-  - ""
-  resources:
-  - configmaps
-  - secrets
-  - services
-  - events
-  - jobs
-  - pods
-  - persistentvolumeclaims
-  verbs:
-  - get
-  - list
-  - watch
-  - create
-  - update
-  - patch
-  - delete
-- apiGroups:
-  - mysql.presslabs.org
-  resources:
-  - mysqlclusters
-  - mysqlclusters/status
-  verbs:
-  - get
-  - list
-  - watch
-  - create
-  - update
-  - patch
-  - delete
-- apiGroups:
-  - policy
-  resources:
-  - poddisruptionbudgets
-  verbs:
-  - get
-  - list
-  - watch
-  - create
-  - update
-  - patch
-  - delete
-- apiGroups:
-  - ""
-  resources:
-  - pods/status
-  verbs:
-  - get
-  - list
-  - watch
-  - create
-  - update
-  - patch
-  - delete
+  - apiGroups:
+      - apps
+    resources:
+      - statefulsets
+    verbs:
+      - create
+      - delete
+      - get
+      - list
+      - patch
+      - update
+      - watch
+  - apiGroups:
+      - batch
+    resources:
+      - jobs
+    verbs:
+      - create
+      - delete
+      - get
+      - list
+      - patch
+      - update
+      - watch
+  - apiGroups:
+      - coordination.k8s.io
+    resources:
+      - leases
+    verbs:
+      - create
+      - delete
+      - get
+      - list
+      - patch
+      - update
+      - watch
+  - apiGroups:
+      - ""
+    resources:
+      - configmaps
+      - events
+      - jobs
+      - persistentvolumeclaims
+      - pods
+      - secrets
+      - services
+    verbs:
+      - create
+      - delete
+      - get
+      - list
+      - patch
+      - update
+      - watch
+  - apiGroups:
+      - ""
+    resources:
+      - pods/status
+    verbs:
+      - create
+      - delete
+      - get
+      - list
+      - patch
+      - update
+      - watch
+  - apiGroups:
+      - mysql.presslabs.org
+    resources:
+      - mysqlbackups
+    verbs:
+      - create
+      - delete
+      - get
+      - list
+      - patch
+      - update
+      - watch
+  - apiGroups:
+      - mysql.presslabs.org
+    resources:
+      - mysqlclusters
+      - mysqlclusters/status
+    verbs:
+      - create
+      - delete
+      - get
+      - list
+      - patch
+      - update
+      - watch
+  - apiGroups:
+      - mysql.presslabs.org
+    resources:
+      - mysqldatabases
+      - mysqldatabases/status
+    verbs:
+      - create
+      - delete
+      - get
+      - list
+      - patch
+      - update
+      - watch
+  - apiGroups:
+      - mysql.presslabs.org
+    resources:
+      - mysqlusers
+      - mysqlusers/status
+    verbs:
+      - create
+      - delete
+      - get
+      - list
+      - patch
+      - update
+      - watch
+  - apiGroups:
+      - policy
+    resources:
+      - poddisruptionbudgets
+    verbs:
+      - create
+      - delete
+      - get
+      - list
+      - patch
+      - update
+      - watch
 ---
 # Source: mysql-operator/templates/clusterrolebinding.yaml
-apiVersion: rbac.authorization.k8s.io/v1beta1
+apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRoleBinding
 metadata:
   name: mysql-operator
   labels:
     app: mysql-operator
-    chart: mysql-operator-0.4.0
+    chart: mysql-operator-0.5.0
     release: mysql-operator
     heritage: Helm
 roleRef:
@@ -156,7 +194,7 @@ metadata:
   name: mysql-operator-0-svc
   labels:
     app: mysql-operator
-    chart: mysql-operator-0.4.0
+    chart: mysql-operator-0.5.0
     release: mysql-operator
     heritage: Helm
   annotations:
@@ -180,7 +218,7 @@ metadata:
   name: mysql-operator
   labels:
     app: mysql-operator
-    chart: mysql-operator-0.4.0
+    chart: mysql-operator-0.5.0
     release: mysql-operator
     heritage: Helm
 spec:
@@ -200,7 +238,7 @@ metadata:
   name: mysql-operator
   labels:
     app: mysql-operator
-    chart: mysql-operator-0.4.0
+    chart: mysql-operator-0.5.0
     release: mysql-operator
     heritage: Helm
 spec:
@@ -217,14 +255,16 @@ spec:
         app: mysql-operator
         release: mysql-operator
       annotations:
-        checksum/config: 0728c31a378a32b09e3a0e72611f4a3bb3ee5720c1ff9bdd2fc719ae28234ed9
-        checksum/secret: a47035834d549c6aa84a67650c4ab1d57cf840e768369ea269d40b6a8105dbd2
+        checksum/config: b3d49a7b808c52366dd7c7e4cbea5633abc4306d53bbfe4e5ea239b8ede86207
+        checksum/secret: 01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b
     spec:
       serviceAccountName: mysql-operator
       containers:
         - name: operator
-          image: "quay.io/presslabs/mysql-operator:0.4.0"
+          image: "docker.io/bitpoke/mysql-operator:v0.5.0"
           imagePullPolicy: IfNotPresent
+          securityContext:
+            runAsUser: 888
           env:
             - name: ORC_TOPOLOGY_USER
               valueFrom:
@@ -239,17 +279,18 @@ spec:
           args:
             - --leader-election-namespace=mysql-operator
             # connect to orchestrator on localhost
-            - --orchestrator-uri=http://127.0.0.1:3000/api
-            - --sidecar-image=quay.io/presslabs/mysql-operator-sidecar:0.4.0
+            - --orchestrator-uri=http://mysql-operator.mysql-operator/api
+            - --sidecar-image=docker.io/bitpoke/mysql-operator-sidecar-5.7:v0.5.0
+            - --sidecar-mysql8-image=docker.io/bitpoke/mysql-operator-sidecar-8.0:v0.5.0
+            - --failover-before-shutdown=false
           resources:
             {}
-          # TODO: add livenessProbe to controller
-          # livenessProbe:
-          #   httpGet:
-          #     path: /health
-          #     port: 80
+          livenessProbe:
+            httpGet:
+              path: /healthz
+              port: 8081
         - name: orchestrator
-          image: quay.io/presslabs/mysql-operator-orchestrator:0.4.0
+          image: docker.io/bitpoke/mysql-operator-orchestrator:v0.5.0
           imagePullPolicy: IfNotPresent
           ports:
             - containerPort: 3000
@@ -271,7 +312,7 @@ spec:
             - name: data
               mountPath: /var/lib/orchestrator/
             - name: config
-              mountPath: /templates/
+              mountPath: /usr/local/share/orchestrator/templates/
           livenessProbe:
             timeoutSeconds: 10
             initialDelaySeconds: 200
