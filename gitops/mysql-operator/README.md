@@ -4,4 +4,8 @@
 helm template mysql-operator --create-namespace --set orchestrator.secretName=mysql-operator-orc mysql-operator bitpoke/mysql-operator
 ```
 
+**ONCE YOU'VE DONE THIS, YOU NEED TO MANUALLY ADD `namespace: mysql-operator` TO ALL THE NAMESPACED OBJECTS**
+
+(TODO: use ytt/kustomize to do this)
+
 Note that if you don't set `orchestrator.secretName`, the helm chart will generate a (new) secret and then you'll check it in to your repo and leak it.

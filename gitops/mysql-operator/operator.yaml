@@ -4,6 +4,7 @@ apiVersion: v1
 kind: ServiceAccount
 metadata:
   name: mysql-operator
+  namespace: mysql-operator
   labels:
     app: mysql-operator
     chart: mysql-operator-0.5.0
@@ -15,6 +16,7 @@ apiVersion: v1
 kind: ConfigMap
 metadata:
   name: mysql-operator-orc
+  namespace: mysql-operator
   labels:
     app: mysql-operator
     chart: mysql-operator-0.5.0
@@ -192,6 +194,7 @@ apiVersion: v1
 kind: Service
 metadata:
   name: mysql-operator-0-svc
+  namespace: mysql-operator
   labels:
     app: mysql-operator
     chart: mysql-operator-0.5.0
@@ -216,6 +219,7 @@ apiVersion: v1
 kind: Service
 metadata:
   name: mysql-operator
+  namespace: mysql-operator
   labels:
     app: mysql-operator
     chart: mysql-operator-0.5.0
@@ -236,6 +240,7 @@ apiVersion: apps/v1
 kind: StatefulSet
 metadata:
   name: mysql-operator
+  namespace: mysql-operator
   labels:
     app: mysql-operator
     chart: mysql-operator-0.5.0
