@@ -289,7 +289,12 @@ spec:
             - --sidecar-mysql8-image=docker.io/bitpoke/mysql-operator-sidecar-8.0:v0.5.0
             - --failover-before-shutdown=false
           resources:
-            {}
+            requests:
+              cpu: 100
+              memory: "100Mi"
+            limits:
+              cpu: 300
+              memory: "250Mi"
           livenessProbe:
             periodSeconds: 10
             timeoutSeconds: 2
@@ -333,7 +338,12 @@ spec:
               path: /api/raft-health
               port: 3000
           resources:
-            null
+            requests:
+              cpu: 100
+              memory: "100Mi"
+            limits:
+              cpu: 300
+              memory: "250Mi"
 
       volumes:
         - name: config
