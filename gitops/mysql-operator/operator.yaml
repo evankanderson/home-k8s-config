@@ -291,6 +291,8 @@ spec:
           resources:
             {}
           livenessProbe:
+            periodSeconds: 10
+            timeoutSeconds: 2
             httpGet:
               path: /healthz
               port: 8081
