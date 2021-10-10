@@ -5442,7 +5442,7 @@ metadata:
     app.kubernetes.io/version: "0.26.0"
     app.kubernetes.io/part-of: knative-serving
 spec:
-  minReplicas: 1
+  minReplicas: 2
   maxReplicas: 5
   scaleTargetRef:
     apiVersion: apps/v1
@@ -5534,7 +5534,7 @@ spec:
           image: gcr.io/knative-releases/knative.dev/serving/cmd/webhook@sha256:d512342e1a1ec454ceade96923e21c24ec0f2cb780e86ced8e66eb62033c74b5
           resources:
             requests:
-              cpu: 100m
+              cpu: 50m
               memory: 100Mi
             limits:
               cpu: 500m
@@ -5574,7 +5574,8 @@ spec:
             - name: https-webhook
               containerPort: 8443
           readinessProbe:
-            periodSeconds: 1
+            periodSeconds: 5
+            timeoutSeconds: 2
             httpGet:
               scheme: HTTPS
               port: 8443
@@ -5582,7 +5583,8 @@ spec:
                 - name: k-kubelet-probe
                   value: "webhook"
           livenessProbe:
-            periodSeconds: 1
+            periodSeconds: 5
+            timeoutSeconds: 2
             httpGet:
               scheme: HTTPS
               port: 8443
