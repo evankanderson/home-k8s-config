@@ -290,10 +290,10 @@ spec:
             - --failover-before-shutdown=false
           resources:
             requests:
-              cpu: 100
+              cpu: 100m
               memory: "100Mi"
             limits:
-              cpu: 300
+              cpu: 300m
               memory: "250Mi"
           livenessProbe:
             periodSeconds: 10
@@ -339,10 +339,10 @@ spec:
               port: 3000
           resources:
             requests:
-              cpu: 100
+              cpu: 100m
               memory: "100Mi"
             limits:
-              cpu: 300
+              cpu: 300m
               memory: "250Mi"
 
       volumes:
