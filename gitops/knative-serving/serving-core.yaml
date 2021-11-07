@@ -4824,7 +4824,7 @@ metadata:
     app.kubernetes.io/version: "1.0.0"
     app.kubernetes.io/part-of: knative-serving
 spec:
-  minAvailable: 80%
+  minAvailable: 50%  # Two replicas, allow one to be unavailable
   selector:
     matchLabels:
       app: activator
@@ -5518,7 +5518,7 @@ metadata:
     app.kubernetes.io/version: "1.0.0"
     app.kubernetes.io/part-of: knative-serving
 spec:
-  minAvailable: 80%
+  minAvailable: 50%  # Two replicas, allow one to be unavailable
   selector:
     matchLabels:
       app: webhook
