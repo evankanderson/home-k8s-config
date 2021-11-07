@@ -10,6 +10,7 @@ spec:
         autoscaling.knative.dev/maxScale: "12"
     spec:
       containerConcurrency: 100
+      timeoutSeconds: 25
       containers:
       - image: ekanderson/evan-nanospace:latest
         resources:
