@@ -20,6 +20,13 @@ spec:
           limits:
             cpu: 1
             memory: 450M
+        livenessProbe:
+          httpGet:
+            port: http
+            path: /
+          periodSeconds: 1
+          failureThreshold: 5
+          initialDelaySeconds: 3
         env:
         - name: WORDPRESS_DB_HOST
           value: mysql-db-mysql
@@ -115,6 +122,7 @@ spec:
             define( 'S3_UPLOADS_DISABLE_REPLACE_UPLOAD_URL', true );
         ports:
         - containerPort: 80
+          name: http
 ---
 apiVersion: cert-manager.io/v1
 kind: Certificate
