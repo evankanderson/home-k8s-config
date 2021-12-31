@@ -31,5 +31,5 @@ data:
       "PodLifeTime":
         enabled: true
         params:
-          PodLifeTime:
+          podLifeTime:
             maxPodLifeTimeSeconds: 8640000
