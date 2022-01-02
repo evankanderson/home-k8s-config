@@ -1,0 +1,179 @@
+# Based on this tutorial:
+# https://www.studytonight.com/post/efk-stack-setup-elasticsearch-fluentbit-and-kibana-for-kubernetes-log-management
+kind: Service
+apiVersion: v1
+metadata:
+  name: elasticsearch
+  namespace: metrics
+  labels:
+    app: elasticsearch
+spec:
+  selector:
+    app: elasticsearch
+  ports:
+    - port: 9200
+      name: rest
+    - port: 9300
+      name: inter-node
+---
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: elasticsearch
+  namespace: metrics
+spec:
+  serviceName: elasticsearch
+  replicas: 1
+  selector:
+    matchLabels:
+      app: elasticsearch
+  template:	
+    metadata:
+      labels:
+        app: elasticsearch
+    spec:
+      securityContext:
+        fsGroupChangePolicy: "OnRootMismatch"
+        runAsUser: 1000
+        runAsGroup: 1000
+        fsGroup: 1000
+#        sysctls:
+#        - name: vm.max_map_count
+#          value: "262144"
+      containers:
+      - name: elasticsearch
+        image: docker.elastic.co/elasticsearch/elasticsearch:7.10.0
+        resources:
+            limits:
+              cpu: 1000m
+              memory: 2Gi
+            requests:
+              cpu: 200m
+              memory: 600Mi
+        ports:
+        - containerPort: 9200
+          name: rest
+          protocol: TCP
+        - containerPort: 9300
+          name: inter-node
+          protocol: TCP
+        volumeMounts:
+        - name: data
+          mountPath: /usr/share/elasticsearch/data
+        env:
+          - name: cluster.name
+            value: elasticsearch
+          - name: node.name
+            valueFrom:
+              fieldRef:
+                fieldPath: metadata.name
+          - name: discovery.seed_hosts
+            value: "elasticsearch-0.elasticsearch"
+          # This avoids bootstrap checks on vm.max_map_count
+          - name: discovery.type
+            value: single-node
+          - name: ES_JAVA_OPTS
+            value: "-Xms256m -Xmx256m"
+          - name: MAX_MAP_COUNT
+            value: "65529"
+# None of these are needed with the above securityContext, and running these as privileged pods seems kinda icky.
+#      initContainers:
+#      - name: fix-permissions
+#        image: busybox
+#        command: ["sh", "-c", "chown -R 1000:1000 /usr/share/elasticsearch/data"]
+#        securityContext:
+#          privileged: true
+#        volumeMounts:
+#        - name: data
+#          mountPath: /usr/share/elasticsearch/data
+#      - name: increase-vm-max-map
+#        image: busybox
+#        command: ["sysctl", "-w", "vm.max_map_count=262144"]
+#        securityContext:
+#          privileged: true
+#      - name: increase-fd-ulimit
+#        image: busybox
+#        command: ["sh", "-c", "ulimit -n 65536"]
+#        securityContext:
+#          privileged: true
+  volumeClaimTemplates:
+  - metadata:
+      name: data
+      labels:
+        app: elasticsearch
+    spec:
+      accessModes: [ "ReadWriteOnce" ]
+      storageClassName: rook-default-replicated
+      resources:
+        requests:
+          storage: 140Gi
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: kibana
+  namespace: metrics
+  labels:
+    app: kibana
+spec:
+  ports:
+  - port: 5601
+    name: kibana
+  selector:
+    app: kibana
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: kibana
+  namespace: metrics
+  labels:
+    app: kibana
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: kibana
+  template:
+    metadata:
+      labels:
+        app: kibana
+    spec:
+      containers:
+      - name: kibana
+        image: docker.elastic.co/kibana/kibana:7.10.0
+        resources:
+          limits:
+            cpu: 1000m
+            memory: 1Gi
+          requests:
+            cpu: 200m
+            memory: 400Mi
+        env:
+          - name: ELASTICSEARCH_URL
+            value: http://elasticsearch:9200
+        ports:
+        - containerPort: 5601
+---
+apiVersion: networking.k8s.io/v1beta1
+kind: Ingress
+metadata:
+  name: kibana
+  namespace: metrics
+  annotations:
+    cert-manager.io/cluster-issuer: letsencrypt-prod
+    ingress.kubernetes.io/force-ssl-redirect: "true"
+    kubernetes.io/ingress.class: contour-external
+    kubernetes.io/tls-acme: "true"
+spec:
+  tls:
+  - secretName: kibana-tls-cert
+    hosts:
+    - kibana.off-by-one.dev
+  rules:
+  - host: kibana.off-by-one.dev
+    http:
+      paths:
+      - backend:
+          serviceName: kibana
+          servicePort: kibana
