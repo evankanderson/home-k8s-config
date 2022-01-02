@@ -12,6 +12,8 @@ spec:
       template:
         metadata:
           name: descheduler-pod
+	  labels:
+	    app: descheduler
         spec:
           priorityClassName: system-cluster-critical
           containers:

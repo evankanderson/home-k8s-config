@@ -25,7 +25,6 @@ data:
                "cpu" : 50
                "memory": 50
                "pods": 50
-
       "RemovePodsViolatingTopologySpreadConstraint":
         enabled: true
       "PodLifeTime":
@@ -33,3 +32,6 @@ data:
         params:
           podLifeTime:
             maxPodLifeTimeSeconds: 8640000
+            podStatusPhases:
+            - "Running"
+            - "Pending"
