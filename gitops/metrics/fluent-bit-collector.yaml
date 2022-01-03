@@ -51,7 +51,7 @@ data:
         Format          plain
         Match           *
 
-output-elasticsearch.conf: |
+  output-elasticsearch.conf: |
     [OUTPUT]
         Name            es
         Match           *
