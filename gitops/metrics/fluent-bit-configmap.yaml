@@ -21,7 +21,6 @@ data:
     @INCLUDE input-kubernetes.conf
     @INCLUDE filter-kubernetes.conf
     @INCLUDE output-forward.conf
-    @INCLUDE output-elasticsearch.conf
 
   input-kubernetes.conf: |
     [INPUT]
@@ -59,16 +58,6 @@ data:
         Port            24224
         Require_ack_response  True
 
-  output-elasticsearch.conf: |
-    [OUTPUT]
-        Name            es
-        Match           *
-        Host            elasticsearch.metrics.svc
-        Port            9200
-        Logstash_Format On
-        Replace_Dots    On
-        Retry_Limit     False
-        
   parsers.conf: |
     [PARSER]
         Name   apache

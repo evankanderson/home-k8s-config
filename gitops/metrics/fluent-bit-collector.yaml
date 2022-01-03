@@ -20,6 +20,7 @@ data:
     @INCLUDE input-forward.conf
     @INCLUDE filter-simplify.conf
     @INCLUDE output-files.conf
+    @INCLUDE output-elasticsearch.conf
 
   input-forward.conf: |
     [INPUT]
@@ -49,6 +50,17 @@ data:
         Path            /logs
         Format          plain
         Match           *
+
+output-elasticsearch.conf: |
+    [OUTPUT]
+        Name            es
+        Match           *
+        Host            elasticsearch.metrics.svc
+        Port            9200
+        Logstash_Format On
+        Replace_Dots    On
+        Retry_Limit     False
+        
 ---
 apiVersion: v1
 kind: ConfigMap
