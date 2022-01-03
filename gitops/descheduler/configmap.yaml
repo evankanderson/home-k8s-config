@@ -31,7 +31,7 @@ data:
         enabled: true
         params:
           podLifeTime:
-            maxPodLifeTimeSeconds: 8640000
+            maxPodLifeTimeSeconds: 4320000
             podStatusPhases:
             - "Running"
             - "Pending"
