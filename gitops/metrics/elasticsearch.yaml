@@ -72,8 +72,6 @@ spec:
           # This avoids bootstrap checks on vm.max_map_count
           - name: discovery.type
             value: single-node
-          - xpack.security.enabled
-            value: "true"
           - name: ES_JAVA_OPTS
             value: "-Xms256m -Xmx256m"
           - name: MAX_MAP_COUNT
