@@ -15,3 +15,10 @@ ingress:
   - hosts:
     - registry.lab.eandersons.net
     secretName: registry-cert
+
+# To use this with Docker:
+#   kubectl view secret -n cert-manager ca-secret ca.crt > ~/.docker/certs.d/$HOSTNAME/ca.crt
+#   (also works on Windows)
+#
+# To use this with `ko` (only works on Linux):
+#   export SSL_CERT_FILE=~/.docker/certs.d/$HOSTNAME/ca.crt
