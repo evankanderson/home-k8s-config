@@ -1,0 +1,17 @@
+# using https://github.com/twuni/docker-registry.helm
+persistence:
+  enabled: true
+  size: 200G
+  storageClass: rook-default-replicated
+namespace: registry
+ingress:
+  enabled: true
+  className: contour-external
+  annotations:
+    cert-manager.io/cluster-issuer: selfsigned-ca
+  hosts:
+  - registry.lab.eandersons.net
+  tls:
+  - hosts:
+    - registry.lab.eandersons.net
+    secretName: registry-cert
