@@ -1,0 +1,98 @@
+# NOTE:
+#
+# * This assumes a ConfigMap named `ca-cert` with a key named `ca.crt` containing the PUBLIC CERTIFICATE for the registry CA.
+#   * If you use cert-manager to generate a selfsigned cert, it will produce a secret with a `ca.crt` field along with the other cert/key fields. You could use this instead of a ConfigMap if you're in the same namespace as the CA secret.
+# * This assumes your registry is named "registry.lab.eandersons.net". It's probably not, so you'll need to search-and-replace all of these.
+#
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  name: populate-registry-ca
+  namespace: registry
+spec:
+  selector:
+    matchLabels:
+      app: populate-registry-ca
+  template:
+    metadata:
+      labels:
+        app: populate-registry-ca
+    spec:
+      initContainers:
+      - name: copy-docker-cert
+        image: debian
+        args:
+          - bash
+          - "-c"
+          - |
+            cp -f /cert/ca.crt /docker-cert/ca.crt
+            if ! [ -f /etc/containerd/config.toml ]; then
+              exit 0;  # No containerd
+            fi
+            if grep config_path /etc/containerd/config.toml >/dev/null; then
+              exit 0;  # Already have config_path
+            fi
+            
+            # If we already have registry settings, we can't use config_path
+            if grep '\[.*\.registry.*\]' /etc/containerd/config.toml; then
+              if ! fgrep '"registry.lab.eandersons.net".tls' /etc/containerd/config.toml; then
+                cat <<EOF >> /etc/containerd/config.toml
+            [plugins."io.containerd.grpc.v1.cri".registry.configs."registry.lab.eandersons.net".tls]
+            ca_file   = "/etc/docker/certs.d/registry.lab.eandersons.net/ca.crt"
+            EOF
+              else
+                exit 0  # Don't need to update config
+              fi
+            # We'd like to do this, but we'd need to find containerd on the host...
+            # TODO: we can use `crictl version` and extract the "Runtime Version" field for this.
+            # # `config_path` was introduced in containerd 1.5
+            # else if containerd --version | fgrep v1.5; then
+            #    cat <<EOF >> /etc/containerd/config.toml
+            #[plugins."io.containerd.grpc.v1.cri".registry]
+            #config_path = "/etc/containerd/certs.d:/etc/docker/certs.d"
+            #EOF
+            # Fall back to the registry method
+              else
+                cat <<EOF >> /etc/containerd/config.toml
+            [plugins."io.containerd.grpc.v1.cri".registry.configs."registry.lab.eandersons.net".tls]
+            ca_file   = "/etc/docker/certs.d/registry.lab.eandersons.net/ca.crt"
+            EOF
+            #  fi
+            fi
+            # We need to restart containerd after changing config.toml
+            nsenter --mount=/proc/1/ns/mnt -- systemctl restart containerd
+            nsenter --mount=/proc/1/ns/mnt -- systemctl status containerd
+        securityContext:
+          privileged: true
+        volumeMounts:
+        - mountPath: /cert
+          name: ca-cert
+        - mountPath: /docker-cert
+          name: docker-certs
+        - mountPath: /etc/containerd
+          name: containerd-config
+      containers:
+      - image: bash:4.4
+        name: sleep  # Avoid rescheduling often, but restart periodically to allow new certs to be picked up.
+        args:
+          - sleep
+          - "14400"  # 4 hours
+      nodeSelector:
+        kubernetes.io/os: linux
+      restartPolicy: Always
+      securityContext:
+        runAsUser: 0  # Need to be able to write to base OS root filesystem
+      hostPID: true
+      hostNetwork: true
+      volumes:
+      - name: ca-cert
+        configMap:
+          name: ca-cert
+      - name: docker-certs
+        hostPath:
+          path: /etc/docker/certs.d/registry.lab.eandersons.net
+          type: DirectoryOrCreate
+      - name: containerd-config
+        hostPath:
+          path: /etc/containerd/
+          type: DirectoryOrCreate
