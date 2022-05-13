@@ -17,7 +17,7 @@ spec:
         spec:
           initContainers:
           - name: get-external-ip
-            image: nicolaka/netshoot
+            image: nicolaka/netshoot@sha256:2cb1e0640419ac7c0df9fc9130f38b677d7649403a20aeaabcbc56ba69a342c1
             command: ["/bin/bash", "-c"]
             args:
             # The actual MIB contains the IP address, so we need to extract it from the MIB _name_ \o/
@@ -34,7 +34,8 @@ spec:
               mountPath: /ipaddr
           containers:
           - name: set-dns
-            image: gcr.io/google.com/cloudsdktool/google-cloud-cli:slim
+            # Was :slim target
+            image: gcr.io/google.com/cloudsdktool/google-cloud-cli@sha256:376d55f6a227676d41a141713046893cab839b7126990fedbe5f86a6a4a06e25
             command: ["/bin/bash", "-c"]
             args:
             - "gcloud auth activate-service-account --key-file /google/sa.json && gcloud --project $(cat /google/project) dns record-sets update --zone $(cat /google/zone) off-by-one.dev. --type A --rdatas=$(cat /ipaddr/external)"
