@@ -1,0 +1,57 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: net-update
+---
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: set-dns
+  namespace: net-update
+spec:
+  schedule: "* * * * *"  # Every minute
+  concurrencyPolicy: Replace
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          initContainers:
+          - name: get-external-ip
+            image: nicolaka/netshoot
+            command: ["/bin/bash", "-c"]
+            args:
+            # The actual MIB contains the IP address, so we need to extract it from the MIB _name_ \o/
+            # pppoe if is 38, 
+            - "snmpgetnext -v 2c -c $(COMMUNITY) 192.168.0.1 IP-MIB::ipAddressPrefixOrigin.38.ipv4 | grep -o '\".*\"' > /ipaddr/external"
+            env:
+            - name: COMMUNITY
+              valueFrom:
+                secretKeyRef:
+                  key: community
+                  name: snmp
+            volumeMounts:
+            - name: shared
+              mountPath: /ipaddr
+          containers:
+          - name: set-dns
+            image: gcr.io/google.com/cloudsdktool/google-cloud-cli:slim
+            command: ["/bin/bash", "-c"]
+            args:
+            - "gcloud auth activate-service-account --key-file /google/sa.json && gcloud --project $(cat /google/project) dns record-sets update --zone $(cat /google/zone) off-by-one.dev. --type A --rdatas=$(cat /ipaddr/external)"
+            volumeMounts:
+            - name: shared
+              mountPath: /ipaddr
+            - name: google-creds
+              mountPath: /google
+          enableServiceLinks: false
+          volumes:
+          - name: shared
+            emptyDir: {}
+          - name: google-creds
+            secret:
+              secretName: dns-google-sa
+              defaultMode: 444
+          securityContext:
+            runAsUser: 1000
+            runAsGroup: 1000
+          restartPolicy: Never
