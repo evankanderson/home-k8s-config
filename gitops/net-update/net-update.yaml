@@ -38,7 +38,7 @@ spec:
             image: gcr.io/google.com/cloudsdktool/google-cloud-cli@sha256:376d55f6a227676d41a141713046893cab839b7126990fedbe5f86a6a4a06e25
             command: ["/bin/bash", "-c"]
             args:
-            - "gcloud auth activate-service-account --key-file /google/sa.json && gcloud --project $(cat /google/project) dns record-sets update --zone $(cat /google/zone) off-by-one.dev. --type A --rdatas=$(cat /ipaddr/external)"
+            - "gcloud auth activate-service-account --key-file /google/sa.json && gcloud --project $(cat /google/project) dns record-sets update --zone $(cat /google/zone) off-by-one.dev. --type A --rrdatas=$(cat /ipaddr/external)"
             volumeMounts:
             - name: shared
               mountPath: /ipaddr
