@@ -17,7 +17,7 @@ spec:
         spec:
           initContainers:
           - name: get-external-ip
-            image: nicolaka/netshoot@sha256:2cb1e0640419ac7c0df9fc9130f38b677d7649403a20aeaabcbc56ba69a342c1
+            image: us-west1-docker.pkg.dev/k8s-foo/evana-public/netshoot@sha256:2cb1e0640419ac7c0df9fc9130f38b677d7649403a20aeaabcbc56ba69a342c1
             command: ["/bin/bash", "-c"]
             args:
             # The actual MIB contains the IP address, so we need to extract it from the MIB _name_ \o/
