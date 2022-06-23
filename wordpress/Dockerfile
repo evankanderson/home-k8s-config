@@ -4,15 +4,14 @@ RUN apt-get update && apt-get install -y unzip curl
 
 RUN mkdir /export
 RUN cd /tmp && \
-    curl -L -o nanospace.zip https://downloads.wordpress.org/theme/nanospace.1.2.1.zip && \
+    curl -L -o nanospace.zip https://downloads.wordpress.org/theme/nanospace.1.2.2.zip && \
     unzip nanospace.zip -d /export/themes
 RUN cd /tmp && \
-    curl -L -o s3-uploads.zip https://github.com/humanmade/S3-Uploads/releases/download/3.0.3/manual-install.zip && \
+    curl -L -o s3-uploads.zip https://github.com/humanmade/S3-Uploads/releases/download/3.0.4/manual-install.zip && \
     unzip s3-uploads.zip -d /export/plugins
 ADD s3-endpoint.php /export/mu-plugins/
 
-# FROM wordpress:5.7
-FROM wordpress:5.8
+FROM wordpress:5.9
 
 RUN mv "$PHP_INI_DIR/php.ini-production" "$PHP_INI_DIR/php.ini" && \
     echo "upload_max_filesize = 20M" > "$PHP_INI_DIR/conf.d/large-uploads.ini" && \
