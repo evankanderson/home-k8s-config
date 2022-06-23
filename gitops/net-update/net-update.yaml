@@ -22,7 +22,7 @@ spec:
             args:
             # The actual MIB contains the IP address, so we need to extract it from the MIB _name_ \o/
             # pppoe if is 38, 
-            - "snmpgetnext -v 2c -c $(COMMUNITY) 192.168.0.1 IP-MIB::ipAddressPrefixOrigin.38.ipv4 | grep -o '\".*\"' | sed 's/\"//g' > /ipaddr/external"
+            - "snmpgetnext -v 2c -c $(COMMUNITY) 192.168.0.1 IP-MIB::ipAddressPrefixOrigin.40.ipv4 | grep -o '\".*\"' | sed 's/\"//g' > /ipaddr/external"
             env:
             - name: COMMUNITY
               valueFrom:
