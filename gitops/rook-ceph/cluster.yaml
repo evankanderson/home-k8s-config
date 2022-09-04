@@ -19,9 +19,9 @@ spec:
     # v15 is octopus, and v16 is pacific.
     # RECOMMENDATION: In production, use a specific version tag instead of the general v14 flag, which pulls the latest release and could result in different
     # versions running within the cluster. See tags available at https://hub.docker.com/r/ceph/ceph/tags/.
-    # If you want to be more precise, you can always use a timestamp tag such quay.io/ceph/ceph:v16.2.9-20220519
+    # If you want to be more precise, you can always use a timestamp tag such quay.io/ceph/ceph:v16.2.10-20220721
     # This tag might not contain a new Ceph version, just security fixes from the underlying operating system, which will reduce vulnerabilities
-    image: quay.io/ceph/ceph:v16.2.9
+    image: quay.io/ceph/ceph:v16.2.10
     # Whether to allow unsupported versions of Ceph. Currently `octopus` and `pacific` are supported.
     # Future versions such as `pacific` would require this to be set to `true`.
     # Do not set to true in production.
@@ -54,7 +54,8 @@ spec:
     # When higher availability of the mgr is needed, increase the count to 2.
     # In that case, one mgr will be active and one in standby. When Ceph updates which
     # mgr is active, Rook will update the mgr services to match the active mgr.
-    count: 1
+    count: 2
+    allowMultiplePerNode: false
     modules:
       # Several modules should not need to be included in this list. The "dashboard" and "monitoring" modules
       # are already enabled by other settings in the cluster CR.
@@ -74,13 +75,20 @@ spec:
   monitoring:
     # requires Prometheus to be pre-installed
     enabled: false
-    # namespace to deploy prometheusRule in. If empty, namespace of the cluster will be used.
-    # Recommended:
-    # If you have a single rook-ceph cluster, set the rulesNamespace to the same namespace as the cluster or keep it empty.
-    # If you have multiple rook-ceph clusters in the same k8s cluster, choose the same namespace (ideally, namespace with prometheus
-    # deployed) to set rulesNamespace for all the clusters. Otherwise, you will get duplicate alerts with multiple alert definitions.
-    rulesNamespace: rook-ceph
   network:
+    connections:
+      # Whether to encrypt the data in transit across the wire to prevent eavesdropping the data on the network.
+      # The default is false. When encryption is enabled, all communication between clients and Ceph daemons, or between Ceph daemons will be encrypted.
+      # When encryption is not enabled, clients still establish a strong initial authentication and data integrity is still validated with a crc check.
+      # IMPORTANT: Encryption requires the 5.11 kernel for the latest nbd and cephfs drivers. Alternatively for testing only,
+      # you can set the "mounter: rbd-nbd" in the rbd storage class, or "mounter: fuse" in the cephfs storage class.
+      # The nbd and fuse drivers are *not* recommended in production since restarting the csi driver pod will disconnect the volumes.
+      encryption:
+        enabled: false
+      # Whether to compress the data in transit across the wire. The default is false.
+      # Requires Ceph Quincy (v17) or newer. Also see the kernel requirements above for encryption.
+      compression:
+        enabled: false
     # enable host networking
     #provider: host
     # enable the Multus network provider
@@ -212,12 +220,12 @@ spec:
 #    cleanup:
   # The option to automatically remove OSDs that are out and are safe to destroy.
   removeOSDsIfOutAndSafeToRemove: false
-#  priorityClassNames:
-#    all: rook-ceph-default-priority-class
-#    mon: rook-ceph-mon-priority-class
-#    osd: rook-ceph-osd-priority-class
-#    mgr: rook-ceph-mgr-priority-class
-#    crashcollector: rook-ceph-crashcollector-priority-class
+  priorityClassNames:
+    #all: rook-ceph-default-priority-class
+    mon: system-node-critical
+    osd: system-node-critical
+    mgr: system-cluster-critical
+    #crashcollector: rook-ceph-crashcollector-priority-class
   storage: # cluster level storage configuration and selection
     useAllNodes: true
     useAllDevices: true
