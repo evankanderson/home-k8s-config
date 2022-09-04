@@ -11,7 +11,7 @@ RUN cd /tmp && \
     unzip s3-uploads.zip -d /export/plugins
 ADD s3-endpoint.php /export/mu-plugins/
 
-FROM wordpress:5.9
+FROM wordpress:6.0
 
 RUN mv "$PHP_INI_DIR/php.ini-production" "$PHP_INI_DIR/php.ini" && \
     echo "upload_max_filesize = 20M" > "$PHP_INI_DIR/conf.d/large-uploads.ini" && \
