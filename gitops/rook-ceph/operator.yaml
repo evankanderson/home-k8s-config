@@ -42,9 +42,13 @@ data:
   # there is significant drop in read/write performance.
   # CSI_ENABLE_HOST_NETWORK: "true"
 
-  # Set logging level for csi containers.
+  # Set logging level for cephCSI containers maintained by the cephCSI.
   # Supported values from 0 to 5. 0 for general useful logs, 5 for trace level verbosity.
   # CSI_LOG_LEVEL: "0"
+
+  # Set logging level for Kubernetes-csi sidecar containers.
+  # Supported values from 0 to 5. 0 for general useful logs (the default), 5 for trace level verbosity.
+  # CSI_SIDECAR_LOG_LEVEL: "0"
 
   # Set replicas for csi provisioner deployment.
   CSI_PROVISIONER_REPLICAS: "2"
@@ -88,13 +92,13 @@ data:
   # The default version of CSI supported by Rook will be started. To change the version
   # of the CSI driver to something other than what is officially supported, change
   # these images to the desired release of the CSI driver.
-  # ROOK_CSI_CEPH_IMAGE: "quay.io/cephcsi/cephcsi:v3.6.1"
-  # ROOK_CSI_REGISTRAR_IMAGE: "k8s.gcr.io/sig-storage/csi-node-driver-registrar:v2.5.0"
-  # ROOK_CSI_RESIZER_IMAGE: "k8s.gcr.io/sig-storage/csi-resizer:v1.4.0"
-  # ROOK_CSI_PROVISIONER_IMAGE: "k8s.gcr.io/sig-storage/csi-provisioner:v3.1.0"
-  # ROOK_CSI_SNAPSHOTTER_IMAGE: "k8s.gcr.io/sig-storage/csi-snapshotter:v5.0.1"
-  # ROOK_CSI_ATTACHER_IMAGE: "k8s.gcr.io/sig-storage/csi-attacher:v3.4.0"
-  # ROOK_CSI_NFS_IMAGE: "k8s.gcr.io/sig-storage/nfsplugin:v3.1.0"
+  # ROOK_CSI_CEPH_IMAGE: "quay.io/cephcsi/cephcsi:v3.6.2"
+  # ROOK_CSI_REGISTRAR_IMAGE: "registry.k8s.io/sig-storage/csi-node-driver-registrar:v2.5.1"
+  # ROOK_CSI_RESIZER_IMAGE: "registry.k8s.io/sig-storage/csi-resizer:v1.4.0"
+  # ROOK_CSI_PROVISIONER_IMAGE: "registry.k8s.io/sig-storage/csi-provisioner:v3.1.0"
+  # ROOK_CSI_SNAPSHOTTER_IMAGE: "registry.k8s.io/sig-storage/csi-snapshotter:v6.0.1"
+  # ROOK_CSI_ATTACHER_IMAGE: "registry.k8s.io/sig-storage/csi-attacher:v3.4.0"
+  # ROOK_CSI_NFS_IMAGE: "registry.k8s.io/sig-storage/nfsplugin:v4.0.0"
 
   # (Optional) set user created priorityclassName for csi plugin pods.
   CSI_PLUGIN_PRIORITY_CLASSNAME: "system-node-critical"
@@ -130,7 +134,7 @@ data:
   # CSI provisioner would be best to start on the same nodes as other ceph daemons.
   # CSI_PROVISIONER_TOLERATIONS: |
   #   - effect: NoSchedule
-  #     key: node-role.kubernetes.io/controlplane
+  #     key: node-role.kubernetes.io/control-plane
   #     operator: Exists
   #   - effect: NoExecute
   #     key: node-role.kubernetes.io/etcd
@@ -142,7 +146,7 @@ data:
   # CSI plugins need to be started on all the nodes where the clients need to mount the storage.
   # CSI_PLUGIN_TOLERATIONS: |
   #   - effect: NoSchedule
-  #     key: node-role.kubernetes.io/controlplane
+  #     key: node-role.kubernetes.io/control-plane
   #     operator: Exists
   #   - effect: NoExecute
   #     key: node-role.kubernetes.io/etcd
@@ -411,7 +415,9 @@ data:
   #        memory: 1Gi
   #        cpu: 500m
 
-  # Configure CSI CSI Ceph FS grpc and liveness metrics port
+  # Configure CSI Ceph FS grpc and liveness metrics port
+  # Set to true to enable Ceph CSI liveness container.
+  CSI_ENABLE_LIVENESS: "false"
   # CSI_CEPHFS_GRPC_METRICS_PORT: "9091"
   # CSI_CEPHFS_LIVENESS_METRICS_PORT: "9081"
   # Configure CSI RBD grpc and liveness metrics port
@@ -434,7 +440,7 @@ data:
   # CSI_VOLUME_REPLICATION_IMAGE: "quay.io/csiaddons/volumereplication-operator:v0.3.0"
   # Enable the csi addons sidecar.
   CSI_ENABLE_CSIADDONS: "false"
-  # ROOK_CSIADDONS_IMAGE: "quay.io/csiaddons/k8s-sidecar:v0.2.1"
+  # ROOK_CSIADDONS_IMAGE: "quay.io/csiaddons/k8s-sidecar:v0.4.0"
   # The CSI GRPC timeout value (in seconds). It should be >= 120. If this variable is not set or is an invalid value, it's default to 150.
   CSI_GRPC_TIMEOUT_SECONDS: "150"
 ---
@@ -455,6 +461,8 @@ spec:
   selector:
     matchLabels:
       app: rook-ceph-operator
+  strategy:
+    type: Recreate
   replicas: 1
   template:
     metadata:
@@ -464,7 +472,7 @@ spec:
       serviceAccountName: rook-ceph-system
       containers:
         - name: rook-ceph-operator
-          image: rook/ceph:v1.9.2
+          image: rook/ceph:v1.9.10
           args: ["ceph", "operator"]
           securityContext:
             runAsNonRoot: true
@@ -497,7 +505,7 @@ spec:
             # - name: DISCOVER_TOLERATIONS
             #   value: |
             #     - effect: NoSchedule
-            #       key: node-role.kubernetes.io/controlplane
+            #       key: node-role.kubernetes.io/control-plane
             #       operator: Exists
             #     - effect: NoExecute
             #       key: node-role.kubernetes.io/etcd
@@ -581,7 +589,7 @@ spec:
           #resources:
           #  limits:
           #    cpu: 500m
-          #    memory: 256Mi
+          #    memory: 512Mi
           #  requests:
           #    cpu: 100m
           #    memory: 128Mi
