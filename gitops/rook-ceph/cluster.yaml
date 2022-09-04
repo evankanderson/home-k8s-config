@@ -16,13 +16,13 @@ metadata:
 spec:
   cephVersion:
     # The container image used to launch the Ceph daemon pods (mon, mgr, osd, mds, rgw).
-    # v14 is nautilus, v15 is octopus, and v16 is pacific.
+    # v15 is octopus, and v16 is pacific.
     # RECOMMENDATION: In production, use a specific version tag instead of the general v14 flag, which pulls the latest release and could result in different
     # versions running within the cluster. See tags available at https://hub.docker.com/r/ceph/ceph/tags/.
-    # If you want to be more precise, you can always use a timestamp tag such quay.io/ceph/ceph:v16.2.6-20210918
+    # If you want to be more precise, you can always use a timestamp tag such quay.io/ceph/ceph:v16.2.9-20220519
     # This tag might not contain a new Ceph version, just security fixes from the underlying operating system, which will reduce vulnerabilities
-    image: quay.io/ceph/ceph:v16.2.6
-    # Whether to allow unsupported versions of Ceph. Currently `nautilus`, `octopus`, and `pacific` are supported.
+    image: quay.io/ceph/ceph:v16.2.9
+    # Whether to allow unsupported versions of Ceph. Currently `octopus` and `pacific` are supported.
     # Future versions such as `pacific` would require this to be set to `true`.
     # Do not set to true in production.
     allowUnsupported: false
@@ -33,7 +33,7 @@ spec:
   # Whether or not upgrade should continue even if a check fails
   # This means Ceph's status could be degraded and we don't recommend upgrading but you might decide otherwise
   # Use at your OWN risk
-  # To understand Rook's upgrade process of Ceph, read https://rook.io/docs/rook/master/ceph-upgrade.html#ceph-version-upgrades
+  # To understand Rook's upgrade process of Ceph, read https://rook.io/docs/rook/latest/ceph-upgrade.html#ceph-version-upgrades
   skipUpgradeChecks: false
   # Whether or not continue if PGs are not clean during an upgrade
   continueUpgradeAfterChecksEvenIfNotHealthy: false
@@ -167,6 +167,10 @@ spec:
 #    osd:
 #    cleanup:
 #    prepareosd:
+# clusterMetadata annotations will be applied to only `rook-ceph-mon-endpoints` configmap and the `rook-ceph-mon` and `rook-ceph-admin-keyring` secrets.
+# And clusterMetadata annotations will not be merged with `all` annotations.
+#    clusterMetadata:
+#       kubed.appscode.com/sync: "true"
 # If no mgr annotations are set, prometheus scrape annotations will be set by default.
 #    mgr:
   labels:
@@ -179,6 +183,7 @@ spec:
 # monitoring is a list of key-value pairs. It is injected into all the monitoring resources created by operator.
 # These labels can be passed as LabelSelector to Prometheus
 #    monitoring:
+#    crashcollector:
   resources:
 # The requests and limits set here, allow the mgr pod to use half of one CPU core and 1 gigabyte of memory
     mgr:
@@ -212,6 +217,7 @@ spec:
 #    mon: rook-ceph-mon-priority-class
 #    osd: rook-ceph-osd-priority-class
 #    mgr: rook-ceph-mgr-priority-class
+#    crashcollector: rook-ceph-crashcollector-priority-class
   storage: # cluster level storage configuration and selection
     useAllNodes: true
     useAllDevices: true
@@ -270,8 +276,16 @@ spec:
       status:
         disabled: false
         interval: 60s
-    # Change pod liveness probe, it works for all mon,mgr,osd daemons
+    # Change pod liveness probe timing or threshold values. Works for all mon,mgr,osd daemons.
     livenessProbe:
+      mon:
+        disabled: false
+      mgr:
+        disabled: false
+      osd:
+        disabled: false
+    # Change pod startup probe timing or threshold values. Works for all mon,mgr,osd daemons.
+    startupProbe:
       mon:
         disabled: false
       mgr:
