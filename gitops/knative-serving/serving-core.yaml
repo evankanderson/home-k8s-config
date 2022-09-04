@@ -17,9 +17,9 @@ kind: Namespace
 metadata:
   name: knative-serving
   labels:
-    serving.knative.dev/release: "v1.0.0"
-    app.kubernetes.io/version: "1.0.0"
-    app.kubernetes.io/part-of: knative-serving
+    app.kubernetes.io/name: knative-serving
+    app.kubernetes.io/version: "1.3.2"
+    serving.knative.dev/release: "v1.3.2"
 
 ---
 # Copyright 2019 The Knative Authors
@@ -44,9 +44,9 @@ metadata:
   # (which should be identical, but isn't guaranteed to be installed alongside serving).
   name: knative-serving-aggregated-addressable-resolver
   labels:
-    serving.knative.dev/release: "v1.0.0"
-    app.kubernetes.io/version: "1.0.0"
-    app.kubernetes.io/part-of: knative-serving
+    serving.knative.dev/release: "v1.3.2"
+    app.kubernetes.io/version: "1.3.2"
+    app.kubernetes.io/name: knative-serving
 aggregationRule:
   clusterRoleSelectors:
     - matchLabels:
@@ -57,11 +57,11 @@ apiVersion: rbac.authorization.k8s.io/v1
 metadata:
   name: knative-serving-addressable-resolver
   labels:
-    serving.knative.dev/release: "v1.0.0"
+    serving.knative.dev/release: "v1.3.2"
+    app.kubernetes.io/version: "1.3.2"
+    app.kubernetes.io/name: knative-serving
     # Labeled to facilitate aggregated cluster roles that act on Addressables.
     duck.knative.dev/addressable: "true"
-    app.kubernetes.io/version: "1.0.0"
-    app.kubernetes.io/part-of: knative-serving
 # Do not use this role directly. These rules will be added to the "addressable-resolver" role.
 rules:
   - apiGroups:
@@ -97,9 +97,9 @@ metadata:
   name: knative-serving-namespaced-admin
   labels:
     rbac.authorization.k8s.io/aggregate-to-admin: "true"
-    serving.knative.dev/release: "v1.0.0"
-    app.kubernetes.io/version: "1.0.0"
-    app.kubernetes.io/part-of: knative-serving
+    serving.knative.dev/release: "v1.3.2"
+    app.kubernetes.io/version: "1.3.2"
+    app.kubernetes.io/name: knative-serving
 rules:
   - apiGroups: ["serving.knative.dev"]
     resources: ["*"]
@@ -114,9 +114,9 @@ metadata:
   name: knative-serving-namespaced-edit
   labels:
     rbac.authorization.k8s.io/aggregate-to-edit: "true"
-    serving.knative.dev/release: "v1.0.0"
-    app.kubernetes.io/version: "1.0.0"
-    app.kubernetes.io/part-of: knative-serving
+    serving.knative.dev/release: "v1.3.2"
+    app.kubernetes.io/version: "1.3.2"
+    app.kubernetes.io/name: knative-serving
 rules:
   - apiGroups: ["serving.knative.dev"]
     resources: ["*"]
@@ -131,9 +131,9 @@ metadata:
   name: knative-serving-namespaced-view
   labels:
     rbac.authorization.k8s.io/aggregate-to-view: "true"
-    serving.knative.dev/release: "v1.0.0"
-    app.kubernetes.io/version: "1.0.0"
-    app.kubernetes.io/part-of: knative-serving
+    serving.knative.dev/release: "v1.3.2"
+    app.kubernetes.io/version: "1.3.2"
+    app.kubernetes.io/name: knative-serving
 rules:
   - apiGroups: ["serving.knative.dev", "networking.internal.knative.dev", "autoscaling.internal.knative.dev", "caching.internal.knative.dev"]
     resources: ["*"]
@@ -159,10 +159,10 @@ apiVersion: rbac.authorization.k8s.io/v1
 metadata:
   name: knative-serving-core
   labels:
-    serving.knative.dev/release: "v1.0.0"
     serving.knative.dev/controller: "true"
-    app.kubernetes.io/version: "1.0.0"
-    app.kubernetes.io/part-of: knative-serving
+    serving.knative.dev/release: "v1.3.2"
+    app.kubernetes.io/version: "1.3.2"
+    app.kubernetes.io/name: knative-serving
 rules:
   - apiGroups: [""]
     resources: ["pods", "namespaces", "secrets", "configmaps", "endpoints", "services", "events", "serviceaccounts"]
@@ -215,11 +215,11 @@ apiVersion: rbac.authorization.k8s.io/v1
 metadata:
   name: knative-serving-podspecable-binding
   labels:
-    serving.knative.dev/release: "v1.0.0"
+    serving.knative.dev/release: "v1.3.2"
+    app.kubernetes.io/version: "1.3.2"
+    app.kubernetes.io/name: knative-serving
     # Labeled to facilitate aggregated cluster roles that act on PodSpecables.
     duck.knative.dev/podspecable: "true"
-    app.kubernetes.io/version: "1.0.0"
-    app.kubernetes.io/part-of: knative-serving
 # Do not use this role directly. These rules will be added to the "podspecable-binder" role.
 rules:
   - apiGroups:
@@ -253,19 +253,19 @@ metadata:
   name: controller
   namespace: knative-serving
   labels:
-    serving.knative.dev/release: "v1.0.0"
-    app.kubernetes.io/name: controller
-    app.kubernetes.io/version: "1.0.0"
-    app.kubernetes.io/part-of: knative-serving
+    app.kubernetes.io/component: controller
+    app.kubernetes.io/name: knative-serving
+    app.kubernetes.io/version: "1.3.2"
+    serving.knative.dev/release: "v1.3.2"
 ---
 kind: ClusterRole
 apiVersion: rbac.authorization.k8s.io/v1
 metadata:
   name: knative-serving-admin
   labels:
-    serving.knative.dev/release: "v1.0.0"
-    app.kubernetes.io/version: "1.0.0"
-    app.kubernetes.io/part-of: knative-serving
+    app.kubernetes.io/name: knative-serving
+    app.kubernetes.io/version: "1.3.2"
+    serving.knative.dev/release: "v1.3.2"
 aggregationRule:
   clusterRoleSelectors:
     - matchLabels:
@@ -276,10 +276,10 @@ kind: ClusterRoleBinding
 metadata:
   name: knative-serving-controller-admin
   labels:
-    serving.knative.dev/release: "v1.0.0"
-    app.kubernetes.io/name: controller
-    app.kubernetes.io/version: "1.0.0"
-    app.kubernetes.io/part-of: knative-serving
+    app.kubernetes.io/component: controller
+    app.kubernetes.io/name: knative-serving
+    app.kubernetes.io/version: "1.3.2"
+    serving.knative.dev/release: "v1.3.2"
 subjects:
   - kind: ServiceAccount
     name: controller
@@ -294,10 +294,10 @@ kind: ClusterRoleBinding
 metadata:
   name: knative-serving-controller-addressable-resolver
   labels:
-    serving.knative.dev/release: "v1.0.0"
-    app.kubernetes.io/name: controller
-    app.kubernetes.io/version: "1.0.0"
-    app.kubernetes.io/part-of: knative-serving
+    app.kubernetes.io/component: controller
+    app.kubernetes.io/name: knative-serving
+    app.kubernetes.io/version: "1.3.2"
+    serving.knative.dev/release: "v1.3.2"
 subjects:
   - kind: ServiceAccount
     name: controller
@@ -327,6 +327,8 @@ kind: CustomResourceDefinition
 metadata:
   name: images.caching.internal.knative.dev
   labels:
+    app.kubernetes.io/name: knative-serving
+    app.kubernetes.io/version: "1.3.2"
     knative.dev/crd-install: "true"
 spec:
   group: caching.internal.knative.dev
@@ -379,7 +381,9 @@ kind: CustomResourceDefinition
 metadata:
   name: certificates.networking.internal.knative.dev
   labels:
-    serving.knative.dev/release: "v1.0.0"
+    app.kubernetes.io/name: knative-serving
+    app.kubernetes.io/version: "1.3.2"
+    serving.knative.dev/release: "v1.3.2"
     knative.dev/crd-install: "true"
 spec:
   group: networking.internal.knative.dev
@@ -437,7 +441,9 @@ kind: CustomResourceDefinition
 metadata:
   name: configurations.serving.knative.dev
   labels:
-    serving.knative.dev/release: "v1.0.0"
+    app.kubernetes.io/name: knative-serving
+    app.kubernetes.io/version: "1.3.2"
+    serving.knative.dev/release: "v1.3.2"
     knative.dev/crd-install: "true"
     duck.knative.dev/podspecable: "true"
 spec:
@@ -535,12 +541,12 @@ spec:
                             type: object
                             properties:
                               args:
-                                description: 'Arguments to the entrypoint. The docker image''s CMD is used if this is not provided. Variable references $(VAR_NAME) are expanded using the container''s environment. If a variable cannot be resolved, the reference in the input string will be unchanged. The $(VAR_NAME) syntax can be escaped with a double $$, ie: $$(VAR_NAME). Escaped references will never be expanded, regardless of whether the variable exists or not. Cannot be updated. More info: https://kubernetes.io/docs/tasks/inject-data-application/define-command-argument-container/#running-a-command-in-a-shell'
+                                description: 'Arguments to the entrypoint. The docker image''s CMD is used if this is not provided. Variable references $(VAR_NAME) are expanded using the container''s environment. If a variable cannot be resolved, the reference in the input string will be unchanged. Double $$ are reduced to a single $, which allows for escaping the $(VAR_NAME) syntax: i.e. "$$(VAR_NAME)" will produce the string literal "$(VAR_NAME)". Escaped references will never be expanded, regardless of whether the variable exists or not. Cannot be updated. More info: https://kubernetes.io/docs/tasks/inject-data-application/define-command-argument-container/#running-a-command-in-a-shell'
                                 type: array
                                 items:
                                   type: string
                               command:
-                                description: 'Entrypoint array. Not executed within a shell. The docker image''s ENTRYPOINT is used if this is not provided. Variable references $(VAR_NAME) are expanded using the container''s environment. If a variable cannot be resolved, the reference in the input string will be unchanged. The $(VAR_NAME) syntax can be escaped with a double $$, ie: $$(VAR_NAME). Escaped references will never be expanded, regardless of whether the variable exists or not. Cannot be updated. More info: https://kubernetes.io/docs/tasks/inject-data-application/define-command-argument-container/#running-a-command-in-a-shell'
+                                description: 'Entrypoint array. Not executed within a shell. The docker image''s ENTRYPOINT is used if this is not provided. Variable references $(VAR_NAME) are expanded using the container''s environment. If a variable cannot be resolved, the reference in the input string will be unchanged. Double $$ are reduced to a single $, which allows for escaping the $(VAR_NAME) syntax: i.e. "$$(VAR_NAME)" will produce the string literal "$(VAR_NAME)". Escaped references will never be expanded, regardless of whether the variable exists or not. Cannot be updated. More info: https://kubernetes.io/docs/tasks/inject-data-application/define-command-argument-container/#running-a-command-in-a-shell'
                                 type: array
                                 items:
                                   type: string
@@ -557,7 +563,7 @@ spec:
                                       description: Name of the environment variable. Must be a C_IDENTIFIER.
                                       type: string
                                     value:
-                                      description: 'Variable references $(VAR_NAME) are expanded using the previous defined environment variables in the container and any service environment variables. If a variable cannot be resolved, the reference in the input string will be unchanged. The $(VAR_NAME) syntax can be escaped with a double $$, ie: $$(VAR_NAME). Escaped references will never be expanded, regardless of whether the variable exists or not. Defaults to "".'
+                                      description: 'Variable references $(VAR_NAME) are expanded using the previously defined environment variables in the container and any service environment variables. If a variable cannot be resolved, the reference in the input string will be unchanged. Double $$ are reduced to a single $, which allows for escaping the $(VAR_NAME) syntax: i.e. "$$(VAR_NAME)" will produce the string literal "$(VAR_NAME)". Escaped references will never be expanded, regardless of whether the variable exists or not. Defaults to "".'
                                       type: string
                                     valueFrom:
                                       description: Source for the environment variable's value. Cannot be used if value is not empty.
@@ -823,7 +829,7 @@ spec:
                                         - type: string
                                       x-kubernetes-int-or-string: true
                               securityContext:
-                                description: 'Security options the pod should run with. More info: https://kubernetes.io/docs/concepts/policy/security-context/ More info: https://kubernetes.io/docs/tasks/configure-pod-container/security-context/'
+                                description: 'SecurityContext defines the security options the container should be run with. If set, the fields of SecurityContext override the equivalent fields of PodSecurityContext. More info: https://kubernetes.io/docs/tasks/configure-pod-container/security-context/'
                                 type: object
                                 properties:
                                   capabilities:
@@ -1139,7 +1145,9 @@ kind: CustomResourceDefinition
 metadata:
   name: clusterdomainclaims.networking.internal.knative.dev
   labels:
-    serving.knative.dev/release: "v1.0.0"
+    app.kubernetes.io/name: knative-serving
+    app.kubernetes.io/version: "1.3.2"
+    serving.knative.dev/release: "v1.3.2"
     knative.dev/crd-install: "true"
 spec:
   group: networking.internal.knative.dev
@@ -1188,7 +1196,9 @@ kind: CustomResourceDefinition
 metadata:
   name: domainmappings.serving.knative.dev
   labels:
-    serving.knative.dev/release: "v1.0.0"
+    app.kubernetes.io/name: knative-serving
+    app.kubernetes.io/version: "1.3.2"
+    serving.knative.dev/release: "v1.3.2"
     knative.dev/crd-install: "true"
 spec:
   group: serving.knative.dev
@@ -1457,7 +1467,9 @@ kind: CustomResourceDefinition
 metadata:
   name: ingresses.networking.internal.knative.dev
   labels:
-    serving.knative.dev/release: "v1.0.0"
+    app.kubernetes.io/name: knative-serving
+    app.kubernetes.io/version: "1.3.2"
+    serving.knative.dev/release: "v1.3.2"
     knative.dev/crd-install: "true"
 spec:
   group: networking.internal.knative.dev
@@ -1516,7 +1528,9 @@ kind: CustomResourceDefinition
 metadata:
   name: metrics.autoscaling.internal.knative.dev
   labels:
-    serving.knative.dev/release: "v1.0.0"
+    app.kubernetes.io/name: knative-serving
+    app.kubernetes.io/version: "1.3.2"
+    serving.knative.dev/release: "v1.3.2"
     knative.dev/crd-install: "true"
 spec:
   group: autoscaling.internal.knative.dev
@@ -1638,7 +1652,9 @@ kind: CustomResourceDefinition
 metadata:
   name: podautoscalers.autoscaling.internal.knative.dev
   labels:
-    serving.knative.dev/release: "v1.0.0"
+    app.kubernetes.io/name: knative-serving
+    app.kubernetes.io/version: "1.3.2"
+    serving.knative.dev/release: "v1.3.2"
     knative.dev/crd-install: "true"
 spec:
   group: autoscaling.internal.knative.dev
@@ -1797,7 +1813,9 @@ kind: CustomResourceDefinition
 metadata:
   name: revisions.serving.knative.dev
   labels:
-    serving.knative.dev/release: "v1.0.0"
+    app.kubernetes.io/name: knative-serving
+    app.kubernetes.io/version: "1.3.2"
+    serving.knative.dev/release: "v1.3.2"
     knative.dev/crd-install: "true"
 spec:
   group: serving.knative.dev
@@ -1874,12 +1892,12 @@ spec:
                     type: object
                     properties:
                       args:
-                        description: 'Arguments to the entrypoint. The docker image''s CMD is used if this is not provided. Variable references $(VAR_NAME) are expanded using the container''s environment. If a variable cannot be resolved, the reference in the input string will be unchanged. The $(VAR_NAME) syntax can be escaped with a double $$, ie: $$(VAR_NAME). Escaped references will never be expanded, regardless of whether the variable exists or not. Cannot be updated. More info: https://kubernetes.io/docs/tasks/inject-data-application/define-command-argument-container/#running-a-command-in-a-shell'
+                        description: 'Arguments to the entrypoint. The docker image''s CMD is used if this is not provided. Variable references $(VAR_NAME) are expanded using the container''s environment. If a variable cannot be resolved, the reference in the input string will be unchanged. Double $$ are reduced to a single $, which allows for escaping the $(VAR_NAME) syntax: i.e. "$$(VAR_NAME)" will produce the string literal "$(VAR_NAME)". Escaped references will never be expanded, regardless of whether the variable exists or not. Cannot be updated. More info: https://kubernetes.io/docs/tasks/inject-data-application/define-command-argument-container/#running-a-command-in-a-shell'
                         type: array
                         items:
                           type: string
                       command:
-                        description: 'Entrypoint array. Not executed within a shell. The docker image''s ENTRYPOINT is used if this is not provided. Variable references $(VAR_NAME) are expanded using the container''s environment. If a variable cannot be resolved, the reference in the input string will be unchanged. The $(VAR_NAME) syntax can be escaped with a double $$, ie: $$(VAR_NAME). Escaped references will never be expanded, regardless of whether the variable exists or not. Cannot be updated. More info: https://kubernetes.io/docs/tasks/inject-data-application/define-command-argument-container/#running-a-command-in-a-shell'
+                        description: 'Entrypoint array. Not executed within a shell. The docker image''s ENTRYPOINT is used if this is not provided. Variable references $(VAR_NAME) are expanded using the container''s environment. If a variable cannot be resolved, the reference in the input string will be unchanged. Double $$ are reduced to a single $, which allows for escaping the $(VAR_NAME) syntax: i.e. "$$(VAR_NAME)" will produce the string literal "$(VAR_NAME)". Escaped references will never be expanded, regardless of whether the variable exists or not. Cannot be updated. More info: https://kubernetes.io/docs/tasks/inject-data-application/define-command-argument-container/#running-a-command-in-a-shell'
                         type: array
                         items:
                           type: string
@@ -1896,7 +1914,7 @@ spec:
                               description: Name of the environment variable. Must be a C_IDENTIFIER.
                               type: string
                             value:
-                              description: 'Variable references $(VAR_NAME) are expanded using the previous defined environment variables in the container and any service environment variables. If a variable cannot be resolved, the reference in the input string will be unchanged. The $(VAR_NAME) syntax can be escaped with a double $$, ie: $$(VAR_NAME). Escaped references will never be expanded, regardless of whether the variable exists or not. Defaults to "".'
+                              description: 'Variable references $(VAR_NAME) are expanded using the previously defined environment variables in the container and any service environment variables. If a variable cannot be resolved, the reference in the input string will be unchanged. Double $$ are reduced to a single $, which allows for escaping the $(VAR_NAME) syntax: i.e. "$$(VAR_NAME)" will produce the string literal "$(VAR_NAME)". Escaped references will never be expanded, regardless of whether the variable exists or not. Defaults to "".'
                               type: string
                             valueFrom:
                               description: Source for the environment variable's value. Cannot be used if value is not empty.
@@ -2162,7 +2180,7 @@ spec:
                                 - type: string
                               x-kubernetes-int-or-string: true
                       securityContext:
-                        description: 'Security options the pod should run with. More info: https://kubernetes.io/docs/concepts/policy/security-context/ More info: https://kubernetes.io/docs/tasks/configure-pod-container/security-context/'
+                        description: 'SecurityContext defines the security options the container should be run with. If set, the fields of SecurityContext override the equivalent fields of PodSecurityContext. More info: https://kubernetes.io/docs/tasks/configure-pod-container/security-context/'
                         type: object
                         properties:
                           capabilities:
@@ -2466,6 +2484,17 @@ spec:
                   description: DesiredReplicas reflects the desired amount of pods running this revision.
                   type: integer
                   format: int32
+                initContainerStatuses:
+                  description: 'InitContainerStatuses is a slice of images present in .Spec.InitContainer[*].Image to their respective digests and their container name. The digests are resolved during the creation of Revision. ContainerStatuses holds the container name and image digests for both serving and non serving containers. ref: http://bit.ly/image-digests'
+                  type: array
+                  items:
+                    description: ContainerStatus holds the information of container name and image digest value
+                    type: object
+                    properties:
+                      imageDigest:
+                        type: string
+                      name:
+                        type: string
                 logUrl:
                   description: LogURL specifies the generated logging url for this particular revision based on the revision url template specified in the controller's config.
                   type: string
@@ -2496,7 +2525,9 @@ kind: CustomResourceDefinition
 metadata:
   name: routes.serving.knative.dev
   labels:
-    serving.knative.dev/release: "v1.0.0"
+    app.kubernetes.io/name: knative-serving
+    app.kubernetes.io/version: "1.3.2"
+    serving.knative.dev/release: "v1.3.2"
     knative.dev/crd-install: "true"
     duck.knative.dev/addressable: "true"
 spec:
@@ -2669,7 +2700,9 @@ kind: CustomResourceDefinition
 metadata:
   name: serverlessservices.networking.internal.knative.dev
   labels:
-    serving.knative.dev/release: "v1.0.0"
+    app.kubernetes.io/name: knative-serving
+    app.kubernetes.io/version: "1.3.2"
+    serving.knative.dev/release: "v1.3.2"
     knative.dev/crd-install: "true"
 spec:
   group: networking.internal.knative.dev
@@ -2739,7 +2772,9 @@ kind: CustomResourceDefinition
 metadata:
   name: services.serving.knative.dev
   labels:
-    serving.knative.dev/release: "v1.0.0"
+    app.kubernetes.io/name: knative-serving
+    app.kubernetes.io/version: "1.3.2"
+    serving.knative.dev/release: "v1.3.2"
     knative.dev/crd-install: "true"
     duck.knative.dev/addressable: "true"
     duck.knative.dev/podspecable: "true"
@@ -2841,12 +2876,12 @@ spec:
                             type: object
                             properties:
                               args:
-                                description: 'Arguments to the entrypoint. The docker image''s CMD is used if this is not provided. Variable references $(VAR_NAME) are expanded using the container''s environment. If a variable cannot be resolved, the reference in the input string will be unchanged. The $(VAR_NAME) syntax can be escaped with a double $$, ie: $$(VAR_NAME). Escaped references will never be expanded, regardless of whether the variable exists or not. Cannot be updated. More info: https://kubernetes.io/docs/tasks/inject-data-application/define-command-argument-container/#running-a-command-in-a-shell'
+                                description: 'Arguments to the entrypoint. The docker image''s CMD is used if this is not provided. Variable references $(VAR_NAME) are expanded using the container''s environment. If a variable cannot be resolved, the reference in the input string will be unchanged. Double $$ are reduced to a single $, which allows for escaping the $(VAR_NAME) syntax: i.e. "$$(VAR_NAME)" will produce the string literal "$(VAR_NAME)". Escaped references will never be expanded, regardless of whether the variable exists or not. Cannot be updated. More info: https://kubernetes.io/docs/tasks/inject-data-application/define-command-argument-container/#running-a-command-in-a-shell'
                                 type: array
                                 items:
                                   type: string
                               command:
-                                description: 'Entrypoint array. Not executed within a shell. The docker image''s ENTRYPOINT is used if this is not provided. Variable references $(VAR_NAME) are expanded using the container''s environment. If a variable cannot be resolved, the reference in the input string will be unchanged. The $(VAR_NAME) syntax can be escaped with a double $$, ie: $$(VAR_NAME). Escaped references will never be expanded, regardless of whether the variable exists or not. Cannot be updated. More info: https://kubernetes.io/docs/tasks/inject-data-application/define-command-argument-container/#running-a-command-in-a-shell'
+                                description: 'Entrypoint array. Not executed within a shell. The docker image''s ENTRYPOINT is used if this is not provided. Variable references $(VAR_NAME) are expanded using the container''s environment. If a variable cannot be resolved, the reference in the input string will be unchanged. Double $$ are reduced to a single $, which allows for escaping the $(VAR_NAME) syntax: i.e. "$$(VAR_NAME)" will produce the string literal "$(VAR_NAME)". Escaped references will never be expanded, regardless of whether the variable exists or not. Cannot be updated. More info: https://kubernetes.io/docs/tasks/inject-data-application/define-command-argument-container/#running-a-command-in-a-shell'
                                 type: array
                                 items:
                                   type: string
@@ -2863,7 +2898,7 @@ spec:
                                       description: Name of the environment variable. Must be a C_IDENTIFIER.
                                       type: string
                                     value:
-                                      description: 'Variable references $(VAR_NAME) are expanded using the previous defined environment variables in the container and any service environment variables. If a variable cannot be resolved, the reference in the input string will be unchanged. The $(VAR_NAME) syntax can be escaped with a double $$, ie: $$(VAR_NAME). Escaped references will never be expanded, regardless of whether the variable exists or not. Defaults to "".'
+                                      description: 'Variable references $(VAR_NAME) are expanded using the previously defined environment variables in the container and any service environment variables. If a variable cannot be resolved, the reference in the input string will be unchanged. Double $$ are reduced to a single $, which allows for escaping the $(VAR_NAME) syntax: i.e. "$$(VAR_NAME)" will produce the string literal "$(VAR_NAME)". Escaped references will never be expanded, regardless of whether the variable exists or not. Defaults to "".'
                                       type: string
                                     valueFrom:
                                       description: Source for the environment variable's value. Cannot be used if value is not empty.
@@ -3129,7 +3164,7 @@ spec:
                                         - type: string
                                       x-kubernetes-int-or-string: true
                               securityContext:
-                                description: 'Security options the pod should run with. More info: https://kubernetes.io/docs/concepts/policy/security-context/ More info: https://kubernetes.io/docs/tasks/configure-pod-container/security-context/'
+                                description: 'SecurityContext defines the security options the container should be run with. If set, the fields of SecurityContext override the equivalent fields of PodSecurityContext. More info: https://kubernetes.io/docs/tasks/configure-pod-container/security-context/'
                                 type: object
                                 properties:
                                   capabilities:
@@ -3507,14 +3542,14 @@ metadata:
   name: queue-proxy
   namespace: knative-serving
   labels:
-    serving.knative.dev/release: "v1.0.0"
-    app.kubernetes.io/name: queue-proxy
-    app.kubernetes.io/version: "1.0.0"
-    app.kubernetes.io/part-of: knative-serving
+    app.kubernetes.io/component: queue-proxy
+    app.kubernetes.io/name: knative-serving
+    app.kubernetes.io/version: "1.3.2"
+    serving.knative.dev/release: "v1.3.2"
 spec:
   # This is the Go import path for the binary that is containerized
   # and substituted here.
-  image: gcr.io/knative-releases/knative.dev/serving/cmd/queue@sha256:6b642967b884ae8971c6fa1f0d3a436c06ccf90ec03da81f85e74768773eb290
+  image: gcr.io/knative-releases/knative.dev/serving/cmd/queue@sha256:2249dc873059c0dfc0783bce5f614a0d8ada3d4499d63aa1dffd19f2788ba64b
 
 ---
 # Copyright 2018 The Knative Authors
@@ -3537,12 +3572,12 @@ metadata:
   name: config-autoscaler
   namespace: knative-serving
   labels:
-    serving.knative.dev/release: "v1.0.0"
-    app.kubernetes.io/name: autoscaler
-    app.kubernetes.io/version: "1.0.0"
-    app.kubernetes.io/part-of: knative-serving
+    app.kubernetes.io/component: autoscaler
+    app.kubernetes.io/name: knative-serving
+    app.kubernetes.io/version: "1.3.2"
+    serving.knative.dev/release: "v1.3.2"
   annotations:
-    knative.dev/example-checksum: "604cb513"
+    knative.dev/example-checksum: "16af78ce"
 data:
   _example: |
     ################################
@@ -3684,8 +3719,8 @@ data:
     scale-to-zero-pod-retention-period: "0s"
 
     # pod-autoscaler-class specifies the default pod autoscaler class
-    # that should be used if none is specified. If omitted, the Knative
-    # Horizontal Pod Autoscaler (KPA) is used by default.
+    # that should be used if none is specified. If omitted,
+    # the Knative Pod Autoscaler (KPA) is used by default.
     pod-autoscaler-class: "kpa.autoscaling.knative.dev"
 
     # The capacity of a single activator task.
@@ -3705,6 +3740,10 @@ data:
     # allow-zero-initial-scale controls whether either the cluster-wide initial-scale flag,
     # or the "autoscaling.knative.dev/initialScale" annotation, can be set to 0.
     allow-zero-initial-scale: "false"
+
+    # min-scale is the cluster-wide default value for the min scale of a revision,
+    # unless overridden by the "autoscaling.knative.dev/minScale" annotation.
+    min-scale: "0"
 
     # max-scale is the cluster-wide default value for the max scale of a revision,
     # unless overridden by the "autoscaling.knative.dev/maxScale" annotation.
@@ -3745,11 +3784,12 @@ metadata:
   name: config-defaults
   namespace: knative-serving
   labels:
-    serving.knative.dev/release: "v1.0.0"
-    app.kubernetes.io/version: "1.0.0"
-    app.kubernetes.io/part-of: knative-serving
+    app.kubernetes.io/name: knative-serving
+    app.kubernetes.io/component: controller
+    app.kubernetes.io/version: "1.3.2"
+    serving.knative.dev/release: "v1.3.2"
   annotations:
-    knative.dev/example-checksum: "cdabec96"
+    knative.dev/example-checksum: "a0feb4c6"
 data:
   _example: |
     ################################
@@ -3826,6 +3866,13 @@ data:
     # {{.Name}} are also valid.
     container-name-template: "user-container"
 
+    # init-container-name-template contains a template for the default
+    # init container name, if none is specified.  This field supports
+    # Go templating and is supplied with the ObjectMeta of the
+    # enclosing Service or Configuration, so values such as
+    # {{.Name}} are also valid.
+    init-container-name-template: "init-container"
+
     # container-concurrency specifies the maximum number
     # of requests the Container can handle at once, and requests
     # above this threshold are queued.  Setting a value of zero
@@ -3881,16 +3928,17 @@ metadata:
   name: config-deployment
   namespace: knative-serving
   labels:
-    serving.knative.dev/release: "v1.0.0"
-    app.kubernetes.io/version: "1.0.0"
-    app.kubernetes.io/part-of: knative-serving
+    app.kubernetes.io/name: knative-serving
+    app.kubernetes.io/component: controller
+    app.kubernetes.io/version: "1.3.2"
+    serving.knative.dev/release: "v1.3.2"
   annotations:
     knative.dev/example-checksum: "dd7ee769"
 data:
   # This is the Go import path for the binary that is containerized
   # and substituted here.
   # TODO: switch to 'queue-sidecar-image' after 0.27
-  queueSidecarImage: gcr.io/knative-releases/knative.dev/serving/cmd/queue@sha256:6b642967b884ae8971c6fa1f0d3a436c06ccf90ec03da81f85e74768773eb290
+  queueSidecarImage: gcr.io/knative-releases/knative.dev/serving/cmd/queue@sha256:2249dc873059c0dfc0783bce5f614a0d8ada3d4499d63aa1dffd19f2788ba64b
   _example: |-
     ################################
     #                              #
@@ -3984,9 +4032,10 @@ metadata:
   name: config-domain
   namespace: knative-serving
   labels:
-    serving.knative.dev/release: "v1.0.0"
-    app.kubernetes.io/version: "1.0.0"
-    app.kubernetes.io/part-of: knative-serving
+    app.kubernetes.io/name: knative-serving
+    app.kubernetes.io/component: controller
+    app.kubernetes.io/version: "1.3.2"
+    serving.knative.dev/release: "v1.3.2"
   annotations:
     knative.dev/example-checksum: "81552d0b"
 data:
@@ -4031,6 +4080,7 @@ data:
     selector:
       app: none
   microkn.off-by-one.dev: ""
+
 ---
 # Copyright 2020 The Knative Authors
 #
@@ -4052,11 +4102,12 @@ metadata:
   name: config-features
   namespace: knative-serving
   labels:
-    serving.knative.dev/release: "v1.0.0"
-    app.kubernetes.io/version: "1.0.0"
-    app.kubernetes.io/part-of: knative-serving
+    app.kubernetes.io/name: knative-serving
+    app.kubernetes.io/component: controller
+    app.kubernetes.io/version: "1.3.2"
+    serving.knative.dev/release: "v1.3.2"
   annotations:
-    knative.dev/example-checksum: "2897f625"
+    knative.dev/example-checksum: "d9e300ba"
 data:
   _example: |-
     ################################
@@ -4183,6 +4234,16 @@ data:
     # 2. Disabled: disabling init containers support
     kubernetes.podspec-init-containers: "disabled"
 
+    # Controls whether persistent volume claim support is enabled or not.
+    # 1. Enabled: enabling persistent volume claim support
+    # 2. Disabled: disabling persistent volume claim support
+    kubernetes.podspec-persistent-volume-claim: "disabled"
+
+    # Controls whether write access for persistent volumes is enabled or not.
+    # 1. Enabled: enabling write access for persistent volumes
+    # 2. Disabled: disabling write access for persistent volumes
+    kubernetes.podspec-persistent-volume-write: "disabled"
+
 ---
 # Copyright 2018 The Knative Authors
 #
@@ -4204,11 +4265,12 @@ metadata:
   name: config-gc
   namespace: knative-serving
   labels:
-    serving.knative.dev/release: "v1.0.0"
-    app.kubernetes.io/version: "1.0.0"
-    app.kubernetes.io/part-of: knative-serving
+    app.kubernetes.io/name: knative-serving
+    app.kubernetes.io/component: controller
+    app.kubernetes.io/version: "1.3.2"
+    serving.knative.dev/release: "v1.3.2"
   annotations:
-    knative.dev/example-checksum: "51b4d68a"
+    knative.dev/example-checksum: "45463e45"
 data:
   _example: |
     ################################
@@ -4249,6 +4311,7 @@ data:
     #
     # Example config to immediately collect any inactive revision:
     #    min-non-active-revisions: "0"
+    #    max-non-active-revisions: "0"
     #    retain-since-create-time: "disabled"
     #    retain-since-last-active-time: "disabled"
     #
@@ -4304,11 +4367,12 @@ metadata:
   name: config-leader-election
   namespace: knative-serving
   labels:
-    serving.knative.dev/release: "v1.0.0"
-    app.kubernetes.io/version: "1.0.0"
-    app.kubernetes.io/part-of: knative-serving
+    app.kubernetes.io/name: knative-serving
+    app.kubernetes.io/component: controller
+    app.kubernetes.io/version: "1.3.2"
+    serving.knative.dev/release: "v1.3.2"
   annotations:
-    knative.dev/example-checksum: "f7948630"
+    knative.dev/example-checksum: "f4b71f57"
 data:
   _example: |
     ################################
@@ -4328,15 +4392,15 @@ data:
 
     # lease-duration is how long non-leaders will wait to try to acquire the
     # lock; 15 seconds is the value used by core kubernetes controllers.
-    lease-duration: "15s"
+    lease-duration: "60s"
 
     # renew-deadline is how long a leader will try to renew the lease before
     # giving up; 10 seconds is the value used by core kubernetes controllers.
-    renew-deadline: "10s"
+    renew-deadline: "40s"
 
     # retry-period is how long the leader election client waits between tries of
     # actions; 2 seconds is the value used by core kubernetes controllers.
-    retry-period: "2s"
+    retry-period: "10s"
 
     # buckets is the number of buckets used to partition key space of each
     # Reconciler. If this number is M and the replica number of the controller
@@ -4366,11 +4430,12 @@ metadata:
   name: config-logging
   namespace: knative-serving
   labels:
-    serving.knative.dev/release: "v1.0.0"
-    app.kubernetes.io/version: "1.0.0"
-    app.kubernetes.io/part-of: knative-serving
+    serving.knative.dev/release: "v1.3.2"
+    app.kubernetes.io/version: "1.3.2"
+    app.kubernetes.io/component: logging
+    app.kubernetes.io/name: knative-serving
   annotations:
-    knative.dev/example-checksum: "be93ff10"
+    knative.dev/example-checksum: "b0f3c6f2"
 data:
   _example: |
     ################################
@@ -4423,6 +4488,7 @@ data:
     loglevel.hpaautoscaler: "info"
     loglevel.net-certmanager-controller: "info"
     loglevel.net-istio-controller: "info"
+    loglevel.net-contour-controller: "info"
 
 ---
 # Copyright 2018 The Knative Authors
@@ -4445,9 +4511,12 @@ metadata:
   name: config-network
   namespace: knative-serving
   labels:
-    serving.knative.dev/release: "v1.0.0"
+    app.kubernetes.io/name: knative-serving
+    app.kubernetes.io/component: networking
+    app.kubernetes.io/version: "1.3.2"
+    serving.knative.dev/release: "v1.3.2"
   annotations:
-    knative.dev/example-checksum: "6e2033e0"
+    knative.dev/example-checksum: "ddc3250f"
 data:
   _example: |
     ################################
@@ -4597,6 +4666,22 @@ data:
     # fronting Knative with an external loadbalancer that deals with TLS termination and
     # Knative doesn't know about that otherwise.
     default-external-scheme: "http"
+
+    # The CA public certificate used to sign the activator TLS certificate.
+    # It is specified by the secret name, which has the "ca.crt" data field.
+    # Use an empty value to disable the feature (default).
+    #
+    # NOTE: This flag is in an alpha state and is mostly here to enable internal testing
+    #       for now. Use with caution.
+    activator-ca: ""
+
+    # The SAN (Subject Alt Name) used to validate the activator TLS certificate.
+    # It is available only when "activator-ca" is specified.
+    # Use an empty value to disable the feature (default).
+    #
+    # NOTE: This flag is in an alpha state and is mostly here to enable internal testing
+    #       for now. Use with caution.
+    activator-san: ""
   namespace-wildcard-cert-selector: |
     matchExpressions:
     - key: "networking.knative.dev/disableWildcardCert"
@@ -4624,9 +4709,10 @@ metadata:
   name: config-observability
   namespace: knative-serving
   labels:
-    serving.knative.dev/release: "v1.0.0"
-    app.kubernetes.io/version: "1.0.0"
-    app.kubernetes.io/part-of: knative-serving
+    app.kubernetes.io/name: knative-serving
+    app.kubernetes.io/component: observability
+    app.kubernetes.io/version: "1.3.2"
+    serving.knative.dev/release: "v1.3.2"
   annotations:
     knative.dev/example-checksum: "fed4756e"
 data:
@@ -4733,9 +4819,10 @@ metadata:
   name: config-tracing
   namespace: knative-serving
   labels:
-    serving.knative.dev/release: "v1.0.0"
-    app.kubernetes.io/version: "1.0.0"
-    app.kubernetes.io/part-of: knative-serving
+    app.kubernetes.io/name: knative-serving
+    app.kubernetes.io/component: tracing
+    app.kubernetes.io/version: "1.3.2"
+    serving.knative.dev/release: "v1.3.2"
   annotations:
     knative.dev/example-checksum: "26614636"
 data:
@@ -4790,10 +4877,10 @@ metadata:
   name: activator
   namespace: knative-serving
   labels:
-    serving.knative.dev/release: "v1.0.0"
-    app.kubernetes.io/name: activator
-    app.kubernetes.io/version: "1.0.0"
-    app.kubernetes.io/part-of: knative-serving
+    app.kubernetes.io/component: activator
+    app.kubernetes.io/name: knative-serving
+    app.kubernetes.io/version: "1.3.2"
+    serving.knative.dev/release: "v1.3.2"
 spec:
   minReplicas: 1
   maxReplicas: 20
@@ -4813,16 +4900,16 @@ spec:
 # Activator PDB. Currently we permit unavailability of 20% of tasks at the same time.
 # Given the subsetting and that the activators are partially stateful systems, we want
 # a slow rollout of the new versions and slow migration during node upgrades.
-apiVersion: policy/v1beta1
+apiVersion: policy/v1
 kind: PodDisruptionBudget
 metadata:
   name: activator-pdb
   namespace: knative-serving
   labels:
-    serving.knative.dev/release: "v1.0.0"
-    app.kubernetes.io/name: activator
-    app.kubernetes.io/version: "1.0.0"
-    app.kubernetes.io/part-of: knative-serving
+    app.kubernetes.io/component: activator
+    app.kubernetes.io/name: knative-serving
+    app.kubernetes.io/version: "1.3.2"
+    serving.knative.dev/release: "v1.3.2"
 spec:
   minAvailable: 50%  # Two replicas, allow one to be unavailable
   selector:
@@ -4850,10 +4937,10 @@ metadata:
   name: activator
   namespace: knative-serving
   labels:
-    serving.knative.dev/release: "v1.0.0"
-    app.kubernetes.io/name: activator
-    app.kubernetes.io/version: "1.0.0"
-    app.kubernetes.io/part-of: knative-serving
+    app.kubernetes.io/component: activator
+    app.kubernetes.io/version: "1.3.2"
+    app.kubernetes.io/name: knative-serving
+    serving.knative.dev/release: "v1.3.2"
 spec:
   selector:
     matchLabels:
@@ -4866,17 +4953,17 @@ spec:
       labels:
         app: activator
         role: activator
-        serving.knative.dev/release: "v1.0.0"
-        app.kubernetes.io/name: activator
-        app.kubernetes.io/part-of: knative-serving
-        app.kubernetes.io/version: "1.0.0"
+        app.kubernetes.io/component: activator
+        app.kubernetes.io/name: knative-serving
+        app.kubernetes.io/version: "1.3.2"
+        serving.knative.dev/release: "v1.3.2"
     spec:
       serviceAccountName: controller
       containers:
         - name: activator
           # This is the Go import path for the binary that is containerized
           # and substituted here.
-          image: gcr.io/knative-releases/knative.dev/serving/cmd/activator@sha256:c54682f20c4758aabd9e9a45805ae382ef9de8a953026a308273fb94b71719d5
+          image: gcr.io/knative-releases/knative.dev/serving/cmd/activator@sha256:01270196a1eba7e5fd5fe34b877c82a7e8c93861de535a82342717d28f81d671
           # The numbers are based on performance test results from
           # https://github.com/knative/serving/issues/1625#issuecomment-511930023
           resources:
@@ -4931,13 +5018,15 @@ spec:
               httpHeaders:
                 - name: k-kubelet-probe
                   value: "activator"
-            failureThreshold: 12
+            periodSeconds: 5
+            failureThreshold: 5
           livenessProbe:
             httpGet:
               port: 8012
               httpHeaders:
                 - name: k-kubelet-probe
                   value: "activator"
+            periodSeconds: 10
             failureThreshold: 12
             initialDelaySeconds: 15
       # The activator (often) sits on the dataplane, and may proxy long (e.g.
@@ -4956,10 +5045,10 @@ metadata:
   namespace: knative-serving
   labels:
     app: activator
-    serving.knative.dev/release: "v1.0.0"
-    app.kubernetes.io/name: activator
-    app.kubernetes.io/version: "1.0.0"
-    app.kubernetes.io/part-of: knative-serving
+    app.kubernetes.io/component: activator
+    app.kubernetes.io/version: "1.3.2"
+    app.kubernetes.io/name: knative-serving
+    serving.knative.dev/release: "v1.3.2"
 spec:
   selector:
     app: activator
@@ -5000,25 +5089,29 @@ metadata:
   name: autoscaler
   namespace: knative-serving
   labels:
-    serving.knative.dev/release: "v1.0.0"
-    app.kubernetes.io/name: autoscaler
-    app.kubernetes.io/part-of: knative-serving
-    app.kubernetes.io/version: "1.0.0"
+    app.kubernetes.io/component: autoscaler
+    app.kubernetes.io/name: knative-serving
+    app.kubernetes.io/version: "1.3.2"
+    serving.knative.dev/release: "v1.3.2"
 spec:
   replicas: 1
   selector:
     matchLabels:
       app: autoscaler
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 0
   template:
     metadata:
       annotations:
         cluster-autoscaler.kubernetes.io/safe-to-evict: "false"
       labels:
         app: autoscaler
-        serving.knative.dev/release: "v1.0.0"
-        app.kubernetes.io/name: autoscaler
-        app.kubernetes.io/part-of: knative-serving
-        app.kubernetes.io/version: "1.0.0"
+        app.kubernetes.io/component: autoscaler
+        app.kubernetes.io/name: knative-serving
+        app.kubernetes.io/version: "1.3.2"
+        serving.knative.dev/release: "v1.3.2"
     spec:
       # To avoid node becoming SPOF, spread our replicas to different nodes.
       affinity:
@@ -5035,7 +5128,7 @@ spec:
         - name: autoscaler
           # This is the Go import path for the binary that is containerized
           # and substituted here.
-          image: gcr.io/knative-releases/knative.dev/serving/cmd/autoscaler@sha256:a2938d3c0e913b74b96f69845cdc09d4674a465a0895f71db9afe76d805db853
+          image: gcr.io/knative-releases/knative.dev/serving/cmd/autoscaler@sha256:c5a03a236bfe2abdc7d40203d787668c8accaaf39062a86e68b4d403077835e2
           resources:
             requests:
               cpu: 100m
@@ -5096,10 +5189,10 @@ kind: Service
 metadata:
   labels:
     app: autoscaler
-    serving.knative.dev/release: "v1.0.0"
-    app.kubernetes.io/name: autoscaler
-    app.kubernetes.io/part-of: knative-serving
-    app.kubernetes.io/version: "1.0.0"
+    app.kubernetes.io/component: autoscaler
+    app.kubernetes.io/name: knative-serving
+    app.kubernetes.io/version: "1.3.2"
+    serving.knative.dev/release: "v1.3.2"
   name: autoscaler
   namespace: knative-serving
 spec:
@@ -5138,10 +5231,10 @@ metadata:
   name: controller
   namespace: knative-serving
   labels:
-    serving.knative.dev/release: "v1.0.0"
-    app.kubernetes.io/name: controller
-    app.kubernetes.io/version: "1.0.0"
-    app.kubernetes.io/part-of: knative-serving
+    app.kubernetes.io/component: controller
+    app.kubernetes.io/name: knative-serving
+    app.kubernetes.io/version: "1.3.2"
+    serving.knative.dev/release: "v1.3.2"
 spec:
   selector:
     matchLabels:
@@ -5152,10 +5245,10 @@ spec:
         cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
       labels:
         app: controller
-        serving.knative.dev/release: "v1.0.0"
-        app.kubernetes.io/name: controller
-        app.kubernetes.io/version: "1.0.0"
-        app.kubernetes.io/part-of: knative-serving
+        app.kubernetes.io/component: controller
+        app.kubernetes.io/name: knative-serving
+        app.kubernetes.io/version: "1.3.2"
+        serving.knative.dev/release: "v1.3.2"
     spec:
       # To avoid node becoming SPOF, spread our replicas to different nodes.
       affinity:
@@ -5172,7 +5265,7 @@ spec:
         - name: controller
           # This is the Go import path for the binary that is containerized
           # and substituted here.
-          image: gcr.io/knative-releases/knative.dev/serving/cmd/controller@sha256:d903707ec8c20f7a0a36852a0cf70062fbd23015d820f4ef085855de02e293ec
+          image: gcr.io/knative-releases/knative.dev/serving/cmd/controller@sha256:cc33e6392485e9d015886d4443324b9a41c17f6ce98b31ef4b19e47325a9a7e8
           resources:
             requests:
               cpu: 100m
@@ -5214,10 +5307,10 @@ kind: Service
 metadata:
   labels:
     app: controller
-    serving.knative.dev/release: "v1.0.0"
-    app.kubernetes.io/name: controller
-    app.kubernetes.io/version: "1.0.0"
-    app.kubernetes.io/part-of: knative-serving
+    app.kubernetes.io/component: controller
+    app.kubernetes.io/name: knative-serving
+    app.kubernetes.io/version: "1.3.2"
+    serving.knative.dev/release: "v1.3.2"
   name: controller
   namespace: knative-serving
 spec:
@@ -5253,10 +5346,10 @@ metadata:
   name: domain-mapping
   namespace: knative-serving
   labels:
-    serving.knative.dev/release: "v1.0.0"
-    app.kubernetes.io/name: domain-mapping
-    app.kubernetes.io/version: "1.0.0"
-    app.kubernetes.io/part-of: knative-serving
+    app.kubernetes.io/component: domain-mapping
+    app.kubernetes.io/name: knative-serving
+    app.kubernetes.io/version: "1.3.2"
+    serving.knative.dev/release: "v1.3.2"
 spec:
   selector:
     matchLabels:
@@ -5267,10 +5360,10 @@ spec:
         cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
       labels:
         app: domain-mapping
-        serving.knative.dev/release: "v1.0.0"
-        app.kubernetes.io/name: domain-mapping
-        app.kubernetes.io/part-of: knative-serving
-        app.kubernetes.io/version: "1.0.0"
+        app.kubernetes.io/component: domain-mapping
+        app.kubernetes.io/name: knative-serving
+        app.kubernetes.io/version: "1.3.2"
+        serving.knative.dev/release: "v1.3.2"
     spec:
       # To avoid node becoming SPOF, spread our replicas to different nodes.
       affinity:
@@ -5287,7 +5380,7 @@ spec:
         - name: domain-mapping
           # This is the Go import path for the binary that is containerized
           # and substituted here.
-          image: gcr.io/knative-releases/knative.dev/serving/cmd/domain-mapping@sha256:d8754f853daefe201785ee4e3f71626bd5c010456259debe520ea0da78f04673
+          image: gcr.io/knative-releases/knative.dev/serving/cmd/domain-mapping@sha256:00a26f25ef119952b0ecf890f9f9dcb877b5f5d496f43c44756b93343d71b66e
           resources:
             requests:
               cpu: 30m
@@ -5341,10 +5434,10 @@ metadata:
   name: domainmapping-webhook
   namespace: knative-serving
   labels:
-    serving.knative.dev/release: "v1.0.0"
-    app.kubernetes.io/name: domainmapping-webhook
-    app.kubernetes.io/version: "1.0.0"
-    app.kubernetes.io/part-of: knative-serving
+    app.kubernetes.io/component: domain-mapping
+    app.kubernetes.io/name: knative-serving
+    app.kubernetes.io/version: "1.3.2"
+    serving.knative.dev/release: "v1.3.2"
 spec:
   selector:
     matchLabels:
@@ -5356,11 +5449,11 @@ spec:
         cluster-autoscaler.kubernetes.io/safe-to-evict: "false"
       labels:
         app: domainmapping-webhook
-        app.kubernetes.io/name: domainmapping-webhook
-        app.kubernetes.io/part-of: knative-serving
-        app.kubernetes.io/version: "1.0.0"
         role: domainmapping-webhook
-        serving.knative.dev/release: "v1.0.0"
+        app.kubernetes.io/component: domain-mapping
+        app.kubernetes.io/name: knative-serving
+        app.kubernetes.io/version: "1.3.2"
+        serving.knative.dev/release: "v1.3.2"
     spec:
       # To avoid node becoming SPOF, spread our replicas to different nodes.
       affinity:
@@ -5377,7 +5470,7 @@ spec:
         - name: domainmapping-webhook
           # This is the Go import path for the binary that is containerized
           # and substituted here.
-          image: gcr.io/knative-releases/knative.dev/serving/cmd/domain-mapping-webhook@sha256:0b8fe2e03c4ce979d9f98df542ce48884b46cda098006fafa7db45b7f90ccfdb
+          image: gcr.io/knative-releases/knative.dev/serving/cmd/domain-mapping-webhook@sha256:f8f09d3a509b0c25d50be7532d4337a30df4ec5f51b9ed23ad9f21b3940c16ca
           resources:
             requests:
               cpu: 100m
@@ -5444,10 +5537,10 @@ kind: Service
 metadata:
   labels:
     role: domainmapping-webhook
-    serving.knative.dev/release: "v1.0.0"
-    app.kubernetes.io/name: domainmapping-webhook
-    app.kubernetes.io/version: "1.0.0"
-    app.kubernetes.io/part-of: knative-serving
+    app.kubernetes.io/component: domain-mapping
+    app.kubernetes.io/name: knative-serving
+    app.kubernetes.io/version: "1.3.2"
+    serving.knative.dev/release: "v1.3.2"
   name: domainmapping-webhook
   namespace: knative-serving
 spec:
@@ -5486,10 +5579,10 @@ metadata:
   name: webhook
   namespace: knative-serving
   labels:
-    serving.knative.dev/release: "v1.0.0"
-    app.kubernetes.io/name: webhook
-    app.kubernetes.io/version: "1.0.0"
-    app.kubernetes.io/part-of: knative-serving
+    app.kubernetes.io/component: webhook
+    app.kubernetes.io/name: knative-serving
+    app.kubernetes.io/version: "1.3.2"
+    serving.knative.dev/release: "v1.3.2"
 spec:
   minReplicas: 1
   maxReplicas: 5
@@ -5507,16 +5600,16 @@ spec:
           averageUtilization: 100
 ---
 # Webhook PDB.
-apiVersion: policy/v1beta1
+apiVersion: policy/v1
 kind: PodDisruptionBudget
 metadata:
   name: webhook-pdb
   namespace: knative-serving
   labels:
-    serving.knative.dev/release: "v1.0.0"
-    app.kubernetes.io/name: webhook
-    app.kubernetes.io/version: "1.0.0"
-    app.kubernetes.io/part-of: knative-serving
+    app.kubernetes.io/component: webhook
+    app.kubernetes.io/name: knative-serving
+    app.kubernetes.io/version: "1.3.2"
+    serving.knative.dev/release: "v1.3.2"
 spec:
   minAvailable: 50%  # Two replicas, allow one to be unavailable
   selector:
@@ -5544,10 +5637,10 @@ metadata:
   name: webhook
   namespace: knative-serving
   labels:
-    serving.knative.dev/release: "v1.0.0"
-    app.kubernetes.io/name: webhook
-    app.kubernetes.io/version: "1.0.0"
-    app.kubernetes.io/part-of: knative-serving
+    serving.knative.dev/release: "v1.3.2"
+    app.kubernetes.io/component: webhook
+    app.kubernetes.io/version: "1.3.2"
+    app.kubernetes.io/name: knative-serving
 spec:
   selector:
     matchLabels:
@@ -5560,10 +5653,10 @@ spec:
       labels:
         app: webhook
         role: webhook
-        serving.knative.dev/release: "v1.0.0"
-        app.kubernetes.io/name: webhook
-        app.kubernetes.io/version: "1.0.0"
-        app.kubernetes.io/part-of: knative-serving
+        serving.knative.dev/release: "v1.3.2"
+        app.kubernetes.io/component: webhook
+        app.kubernetes.io/version: "1.3.2"
+        app.kubernetes.io/name: knative-serving
     spec:
       # To avoid node becoming SPOF, spread our replicas to different nodes.
       affinity:
@@ -5580,7 +5673,7 @@ spec:
         - name: webhook
           # This is the Go import path for the binary that is containerized
           # and substituted here.
-          image: gcr.io/knative-releases/knative.dev/serving/cmd/webhook@sha256:86a5b8bb6cc0bd8cc9f02bf7035cff840c3543055578286013d59e8b4c313308
+          image: gcr.io/knative-releases/knative.dev/serving/cmd/webhook@sha256:b001a58cb7eac7fbae4d83d8a111fa0f6726d36e86844d5b1dc3c9b8fdd5710a
           resources:
             requests:
               cpu: 100m
@@ -5649,10 +5742,10 @@ kind: Service
 metadata:
   labels:
     role: webhook
-    serving.knative.dev/release: "v1.0.0"
-    app.kubernetes.io/name: webhook
-    app.kubernetes.io/version: "1.0.0"
-    app.kubernetes.io/part-of: knative-serving
+    serving.knative.dev/release: "v1.3.2"
+    app.kubernetes.io/component: webhook
+    app.kubernetes.io/version: "1.3.2"
+    app.kubernetes.io/name: knative-serving
   name: webhook
   namespace: knative-serving
 spec:
@@ -5690,10 +5783,10 @@ kind: ValidatingWebhookConfiguration
 metadata:
   name: config.webhook.serving.knative.dev
   labels:
-    serving.knative.dev/release: "v1.0.0"
-    app.kubernetes.io/name: configmap-validation-webhook
-    app.kubernetes.io/version: "1.0.0"
-    app.kubernetes.io/part-of: knative-serving
+    app.kubernetes.io/component: webhook
+    app.kubernetes.io/name: knative-serving
+    app.kubernetes.io/version: "1.3.2"
+    serving.knative.dev/release: "v1.3.2"
 webhooks:
   - admissionReviewVersions: ["v1", "v1beta1"]
     clientConfig:
@@ -5703,10 +5796,14 @@ webhooks:
     failurePolicy: Fail
     sideEffects: None
     name: config.webhook.serving.knative.dev
-    namespaceSelector:
+    objectSelector:
       matchExpressions:
-        - key: serving.knative.dev/release
-          operator: Exists
+        - key: app.kubernetes.io/name
+          operator: In
+          values: ["knative-serving"]
+        - key: app.kubernetes.io/component
+          operator: In
+          values: ["autoscaler", "controller", "logging", "networking", "observability", "tracing"]
     timeoutSeconds: 10
 
 ---
@@ -5729,10 +5826,10 @@ kind: MutatingWebhookConfiguration
 metadata:
   name: webhook.serving.knative.dev
   labels:
-    serving.knative.dev/release: "v1.0.0"
-    app.kubernetes.io/name: defaulting-webhook
-    app.kubernetes.io/version: "1.0.0"
-    app.kubernetes.io/part-of: knative-serving
+    app.kubernetes.io/component: webhook
+    app.kubernetes.io/name: knative-serving
+    app.kubernetes.io/version: "1.3.2"
+    serving.knative.dev/release: "v1.3.2"
 webhooks:
   - admissionReviewVersions: ["v1", "v1beta1"]
     clientConfig:
@@ -5785,7 +5882,10 @@ kind: MutatingWebhookConfiguration
 metadata:
   name: webhook.domainmapping.serving.knative.dev
   labels:
-    serving.knative.dev/release: "v1.0.0"
+    app.kubernetes.io/component: domain-mapping
+    app.kubernetes.io/name: knative-serving
+    app.kubernetes.io/version: "1.3.2"
+    serving.knative.dev/release: "v1.3.2"
 webhooks:
   - admissionReviewVersions: ["v1", "v1beta1"]
     clientConfig:
@@ -5830,7 +5930,10 @@ metadata:
   name: domainmapping-webhook-certs
   namespace: knative-serving
   labels:
-    serving.knative.dev/release: "v1.0.0"
+    app.kubernetes.io/component: domain-mapping
+    app.kubernetes.io/name: knative-serving
+    app.kubernetes.io/version: "1.3.2"
+    serving.knative.dev/release: "v1.3.2"
 # The data is populated at install time.
 
 ---
@@ -5853,10 +5956,10 @@ kind: ValidatingWebhookConfiguration
 metadata:
   name: validation.webhook.domainmapping.serving.knative.dev
   labels:
-    serving.knative.dev/release: "v1.0.0"
-    app.kubernetes.io/name: domainmapping-webhook
-    app.kubernetes.io/version: "1.0.0"
-    app.kubernetes.io/part-of: knative-serving
+    app.kubernetes.io/component: domain-mapping
+    app.kubernetes.io/name: knative-serving
+    app.kubernetes.io/version: "1.3.2"
+    serving.knative.dev/release: "v1.3.2"
 webhooks:
   - admissionReviewVersions: ["v1", "v1beta1"]
     clientConfig:
@@ -5901,10 +6004,10 @@ kind: ValidatingWebhookConfiguration
 metadata:
   name: validation.webhook.serving.knative.dev
   labels:
-    serving.knative.dev/release: "v1.0.0"
-    app.kubernetes.io/name: validating-webhook
-    app.kubernetes.io/version: "1.0.0"
-    app.kubernetes.io/part-of: knative-serving
+    app.kubernetes.io/component: webhook
+    app.kubernetes.io/name: knative-serving
+    app.kubernetes.io/version: "1.3.2"
+    serving.knative.dev/release: "v1.3.2"
 webhooks:
   - admissionReviewVersions: ["v1", "v1beta1"]
     clientConfig:
@@ -5959,10 +6062,10 @@ metadata:
   name: webhook-certs
   namespace: knative-serving
   labels:
-    serving.knative.dev/release: "v1.0.0"
-    app.kubernetes.io/name: webhook
-    app.kubernetes.io/version: "1.0.0"
-    app.kubernetes.io/part-of: knative-serving
+    app.kubernetes.io/component: webhook
+    app.kubernetes.io/name: knative-serving
+    app.kubernetes.io/version: "1.3.2"
+    serving.knative.dev/release: "v1.3.2"
 # The data is populated at install time.
 
 ---
