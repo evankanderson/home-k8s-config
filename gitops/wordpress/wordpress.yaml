@@ -3,6 +3,9 @@ kind: Service
 metadata:
   name: wordpress
   namespace: wordpress
+  annotations:
+    serving.knative.dev/creator: kubernetes-admin
+    serving.knative.dev/lastModifier: kubernetes-admin
 spec:
   template:
     metadata:
