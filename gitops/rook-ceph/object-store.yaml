@@ -15,7 +15,6 @@ spec:
       codingChunks: 1
   preservePoolsOnDelete: true
   gateway:
-    type: s3
     sslCertificateRef: rook-ceph.microkn.off-by-one.dev
     port: 80
     securePort: 443
