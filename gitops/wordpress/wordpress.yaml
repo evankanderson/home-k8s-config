@@ -160,7 +160,7 @@ metadata:
   namespace: wordpress
 spec:
   type: ExternalName
-  externalName: envoy.contour-external.microkn.off-by-one.dev
+  externalName: envoy.contour-external.svc.cluster.local
   ports:
   - name: https
     port: 443
@@ -189,7 +189,7 @@ spec:
     requestHeadersPolicy:
       set:
       - name: Host
-        value: wordpress.wordpress.svc.cluster.local
+        value: wordpress.wordpress.microkn.off-by-one.dev
   - services:
     - name: s3
       port: 80
