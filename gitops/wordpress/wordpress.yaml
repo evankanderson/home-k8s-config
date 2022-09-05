@@ -5,14 +5,14 @@ metadata:
   namespace: wordpress
   annotations:
     serving.knative.dev/creator: kubernetes-admin
-    serving.knative.dev/lastModifier: kubernetes-admin
+    serving.knative.dev/lastModifier: system:serviceaccount:flux-system:kustomize-controller
 spec:
   template:
     metadata:
       annotations:
         autoscaling.knative.dev/maxScale: "12"
     spec:
-      containerConcurrency: 100
+      containerConcurrency: 50
       timeoutSeconds: 25
       containers:
       - image: us-west1-docker.pkg.dev/eandersons-net/knative-wordpress/wordpress:2022-09-04
@@ -169,8 +169,9 @@ spec:
       secretName: off-by-one
   routes:
   - services:
-    - name: wordpress
-      port: 80
+    - name: knative-external
+      port: 443
+      protocol: tls
     requestHeadersPolicy:
       set:
       - name: Host
