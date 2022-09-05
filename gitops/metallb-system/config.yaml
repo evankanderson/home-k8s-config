@@ -1,0 +1,27 @@
+apiVersion: metallb.io/v1beta1
+kind: IPAddressPool
+metadata:
+  name: external-service-pool
+  namespace: metallb-system
+spec:
+  addresses:
+  - 192.168.10.0/23
+---
+apiVersion: metallb.io/v1beta2
+kind: BGPPeer
+metadata:
+  name: edgerouter
+  namespace: metallb-system
+spec:
+  myASN: 64512
+  peerASN: 64512
+  peerAddress: 192.168.0.1
+---
+apiVersion: metallb.io/v1beta1
+kind: BGPAdvertisement
+metadata:
+  name: multipath-edgerouter
+  namespace: metallb-system
+spec:
+  ipAddressPools:
+  - external-service-pool
