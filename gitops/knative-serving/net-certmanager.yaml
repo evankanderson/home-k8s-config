@@ -149,6 +149,9 @@ data:
     issuerRef: |
       kind: ClusterIssuer
       name: letsencrypt-issuer
+  issuerRef:
+    kind: ClusterIssuer
+    name: letsencrypt-prod
 
 ---
 # Copyright 2020 The Knative Authors
