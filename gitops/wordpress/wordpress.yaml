@@ -160,7 +160,7 @@ metadata:
   namespace: wordpress
 spec:
   type: ExternalName
-  externalName: envoy.contour-external.svc.cluster.local
+  externalName: envoy.contour-external.microkn.off-by-one.dev
   ports:
   - name: https
     port: 443
