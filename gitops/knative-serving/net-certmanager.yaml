@@ -149,7 +149,7 @@ data:
     issuerRef: |
       kind: ClusterIssuer
       name: letsencrypt-issuer
-  issuerRef:
+  issuerRef: |
     kind: ClusterIssuer
     name: letsencrypt-prod
 
