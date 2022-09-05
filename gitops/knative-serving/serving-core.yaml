@@ -4684,9 +4684,9 @@ data:
     activator-san: ""
   namespace-wildcard-cert-selector: |
     matchExpressions:
-    - key: "networking.knative.dev/disableWildcardCert"
+    - key: "kubernetes.io/metadata.name"
       operator: "NotIn"
-      values: ["true"]
+      values: ["cert-manager", "contour-external", "contour-internal", "flux-system", "knative-serving", "kube-node-lease", "kube-system", "mysql-operator", "metallb-system"]
 
 ---
 # Copyright 2018 The Knative Authors
