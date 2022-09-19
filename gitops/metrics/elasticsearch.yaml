@@ -175,5 +175,7 @@ spec:
     http:
       paths:
       - backend:
-          serviceName: kibana
-          servicePort: kibana
+          service:
+	    name: kibana
+            port:
+	      name: kibana
