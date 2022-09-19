@@ -174,7 +174,9 @@ spec:
   - host: kibana.off-by-one.dev
     http:
       paths:
-      - backend:
+      - path: /
+        pathType: Prefix
+        backend:
           service:
             name: kibana
             port:
