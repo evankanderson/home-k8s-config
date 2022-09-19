@@ -27,7 +27,7 @@ spec:
   selector:
     matchLabels:
       app: elasticsearch
-  template:	
+  template:
     metadata:
       labels:
         app: elasticsearch
@@ -176,6 +176,6 @@ spec:
       paths:
       - backend:
           service:
-	    name: kibana
+            name: kibana
             port:
-	      name: kibana
+              name: kibana
