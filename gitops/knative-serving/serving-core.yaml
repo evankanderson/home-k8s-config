@@ -5546,6 +5546,8 @@ data:
     internal-encryption: "false"
 
   ingress-class: contour.ingress.networking.knative.dev
+  auto-tls: Enabled
+  http-protocol: Redirected
 
   namespace-wildcard-cert-selector: |
     matchExpressions:
