@@ -5545,6 +5545,8 @@ data:
     #       for now. Use with caution.
     internal-encryption: "false"
 
+  ingress-class: contour.ingress.networking.knative.dev
+
   namespace-wildcard-cert-selector: |
     matchExpressions:
     - key: "kubernetes.io/metadata.name"
