@@ -15,7 +15,7 @@ spec:
       containerConcurrency: 50
       timeoutSeconds: 25
       containers:
-      - image: us-west1-docker.pkg.dev/eandersons-net/knative-wordpress/wordpress:2022-09-04
+      - image: us-west1-docker.pkg.dev/eandersons-net/knative-wordpress/wordpress:2022-12-30
         resources:
           requests:
             cpu: 100m

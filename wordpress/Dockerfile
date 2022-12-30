@@ -7,11 +7,11 @@ RUN cd /tmp && \
     curl -L -o nanospace.zip https://downloads.wordpress.org/theme/nanospace.1.2.2.zip && \
     unzip nanospace.zip -d /export/themes
 RUN cd /tmp && \
-    curl -L -o s3-uploads.zip https://github.com/humanmade/S3-Uploads/releases/download/3.0.4/manual-install.zip && \
+    curl -L -o s3-uploads.zip https://github.com/humanmade/S3-Uploads/releases/download/3.0.6/manual-install.zip && \
     unzip s3-uploads.zip -d /export/plugins
 ADD s3-endpoint.php /export/mu-plugins/
 
-FROM wordpress:6.0
+FROM wordpress:6.1-fpm
 
 RUN mv "$PHP_INI_DIR/php.ini-production" "$PHP_INI_DIR/php.ini" && \
     echo "upload_max_filesize = 20M" > "$PHP_INI_DIR/conf.d/large-uploads.ini" && \
@@ -20,7 +20,7 @@ RUN mv "$PHP_INI_DIR/php.ini-production" "$PHP_INI_DIR/php.ini" && \
 COPY --from=modules /export /var/www/html/wp-content/
 
 # Run the entrypoint once to copy files to the correct location.
-RUN /usr/local/bin/docker-entrypoint.sh apache2ctl configtest
+RUN /usr/local/bin/docker-entrypoint.sh php-fpm --test
 
 # Consider tweaking the following:
 # opcache.file_cache - https://www.php.net/manual/en/opcache.configuration.php#ini.opcache.file-cache
