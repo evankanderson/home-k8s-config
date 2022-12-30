@@ -123,7 +123,7 @@ spec:
             // Make WordPress serve all the media, rather than redirecting to S3/Ceph
             define( 'S3_UPLOADS_DISABLE_REPLACE_UPLOAD_URL', true );
         ports:
-        - containerPort: 9000
+        - containerPort: 80
           name: http1
 ---
 apiVersion: cert-manager.io/v1

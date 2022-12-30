@@ -11,7 +11,7 @@ RUN cd /tmp && \
     unzip s3-uploads.zip -d /export/plugins
 ADD s3-endpoint.php /export/mu-plugins/
 
-FROM wordpress:6.1-fpm
+FROM wordpress:6.1
 
 RUN mv "$PHP_INI_DIR/php.ini-production" "$PHP_INI_DIR/php.ini" && \
     echo "upload_max_filesize = 20M" > "$PHP_INI_DIR/conf.d/large-uploads.ini" && \
@@ -20,7 +20,7 @@ RUN mv "$PHP_INI_DIR/php.ini-production" "$PHP_INI_DIR/php.ini" && \
 COPY --from=modules /export /var/www/html/wp-content/
 
 # Run the entrypoint once to copy files to the correct location.
-RUN /usr/local/bin/docker-entrypoint.sh php-fpm --test
+RUN /usr/local/bin/docker-entrypoint.sh apache2ctl configtest
 
 # Consider tweaking the following:
 # opcache.file_cache - https://www.php.net/manual/en/opcache.configuration.php#ini.opcache.file-cache
