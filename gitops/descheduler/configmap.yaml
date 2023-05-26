@@ -18,13 +18,13 @@ data:
          params:
            nodeResourceUtilizationThresholds:
              thresholds:
-               "cpu" : 20
+               "cpu" : 30
                "memory": 20
-               "pods": 20
+               "pods": 10
              targetThresholds:
-               "cpu" : 50
-               "memory": 50
-               "pods": 50
+               "cpu" : 80
+               "memory": 65
+               "pods": 30
       "RemovePodsViolatingTopologySpreadConstraint":
         enabled: true
       "PodLifeTime":
@@ -32,6 +32,6 @@ data:
         params:
           podLifeTime:
             maxPodLifeTimeSeconds: 4320000
-            states:
+            podStatusPhases:
             - "Running"
             - "Pending"
