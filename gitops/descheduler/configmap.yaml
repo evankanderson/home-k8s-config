@@ -32,6 +32,12 @@ data:
         params:
           podLifeTime:
             maxPodLifeTimeSeconds: 4320000
+            namespaces:
+              include:
+              - knative-serving
+              - flux-system
+              - contour-default
+              - contour-internal
             podStatusPhases:
             - "Running"
             - "Pending"
