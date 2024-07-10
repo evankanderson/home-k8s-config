@@ -1482,6 +1482,7 @@ metadata:
   namespace: metallb-system
 spec:
   revisionHistoryLimit: 3
+  replicas: 0
   selector:
     matchLabels:
       app: metallb
@@ -1640,6 +1641,7 @@ spec:
       hostNetwork: true
       nodeSelector:
         kubernetes.io/os: linux
+        disabled: "switching-to-calico"
       serviceAccountName: speaker
       terminationGracePeriodSeconds: 2
       tolerations:
