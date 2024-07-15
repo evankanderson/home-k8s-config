@@ -5127,8 +5127,6 @@ metadata:
     app.kubernetes.io/name: knative-serving
     app.kubernetes.io/component: controller
     app.kubernetes.io/version: "1.10.6"
-  annotations:
-    knative.dev/example-checksum: "26c09de5"
 data:
   _example: |
     ################################
