@@ -18,7 +18,7 @@ metadata:
   name: knative-serving
   labels:
     app.kubernetes.io/name: knative-serving
-    app.kubernetes.io/version: "1.7.1"
+    app.kubernetes.io/version: "1.10.6"
 
 ---
 # Copyright 2019 The Knative Authors
@@ -43,7 +43,7 @@ metadata:
   # (which should be identical, but isn't guaranteed to be installed alongside serving).
   name: knative-serving-aggregated-addressable-resolver
   labels:
-    app.kubernetes.io/version: "1.7.1"
+    app.kubernetes.io/version: "1.10.6"
     app.kubernetes.io/name: knative-serving
 aggregationRule:
   clusterRoleSelectors:
@@ -55,7 +55,7 @@ apiVersion: rbac.authorization.k8s.io/v1
 metadata:
   name: knative-serving-addressable-resolver
   labels:
-    app.kubernetes.io/version: "1.7.1"
+    app.kubernetes.io/version: "1.10.6"
     app.kubernetes.io/name: knative-serving
     # Labeled to facilitate aggregated cluster roles that act on Addressables.
     duck.knative.dev/addressable: "true"
@@ -94,7 +94,7 @@ metadata:
   name: knative-serving-namespaced-admin
   labels:
     rbac.authorization.k8s.io/aggregate-to-admin: "true"
-    app.kubernetes.io/version: "1.7.1"
+    app.kubernetes.io/version: "1.10.6"
     app.kubernetes.io/name: knative-serving
 rules:
   - apiGroups: ["serving.knative.dev"]
@@ -110,7 +110,7 @@ metadata:
   name: knative-serving-namespaced-edit
   labels:
     rbac.authorization.k8s.io/aggregate-to-edit: "true"
-    app.kubernetes.io/version: "1.7.1"
+    app.kubernetes.io/version: "1.10.6"
     app.kubernetes.io/name: knative-serving
 rules:
   - apiGroups: ["serving.knative.dev"]
@@ -126,7 +126,7 @@ metadata:
   name: knative-serving-namespaced-view
   labels:
     rbac.authorization.k8s.io/aggregate-to-view: "true"
-    app.kubernetes.io/version: "1.7.1"
+    app.kubernetes.io/version: "1.10.6"
     app.kubernetes.io/name: knative-serving
 rules:
   - apiGroups: ["serving.knative.dev", "networking.internal.knative.dev", "autoscaling.internal.knative.dev", "caching.internal.knative.dev"]
@@ -154,7 +154,7 @@ metadata:
   name: knative-serving-core
   labels:
     serving.knative.dev/controller: "true"
-    app.kubernetes.io/version: "1.7.1"
+    app.kubernetes.io/version: "1.10.6"
     app.kubernetes.io/name: knative-serving
 rules:
   - apiGroups: [""]
@@ -208,7 +208,7 @@ apiVersion: rbac.authorization.k8s.io/v1
 metadata:
   name: knative-serving-podspecable-binding
   labels:
-    app.kubernetes.io/version: "1.7.1"
+    app.kubernetes.io/version: "1.10.6"
     app.kubernetes.io/name: knative-serving
     # Labeled to facilitate aggregated cluster roles that act on PodSpecables.
     duck.knative.dev/podspecable: "true"
@@ -247,7 +247,7 @@ metadata:
   labels:
     app.kubernetes.io/component: controller
     app.kubernetes.io/name: knative-serving
-    app.kubernetes.io/version: "1.7.1"
+    app.kubernetes.io/version: "1.10.6"
 ---
 kind: ClusterRole
 apiVersion: rbac.authorization.k8s.io/v1
@@ -255,7 +255,7 @@ metadata:
   name: knative-serving-admin
   labels:
     app.kubernetes.io/name: knative-serving
-    app.kubernetes.io/version: "1.7.1"
+    app.kubernetes.io/version: "1.10.6"
 aggregationRule:
   clusterRoleSelectors:
     - matchLabels:
@@ -268,7 +268,7 @@ metadata:
   labels:
     app.kubernetes.io/component: controller
     app.kubernetes.io/name: knative-serving
-    app.kubernetes.io/version: "1.7.1"
+    app.kubernetes.io/version: "1.10.6"
 subjects:
   - kind: ServiceAccount
     name: controller
@@ -285,7 +285,7 @@ metadata:
   labels:
     app.kubernetes.io/component: controller
     app.kubernetes.io/name: knative-serving
-    app.kubernetes.io/version: "1.7.1"
+    app.kubernetes.io/version: "1.10.6"
 subjects:
   - kind: ServiceAccount
     name: controller
@@ -316,7 +316,7 @@ metadata:
   name: images.caching.internal.knative.dev
   labels:
     app.kubernetes.io/name: knative-serving
-    app.kubernetes.io/version: "1.7.1"
+    app.kubernetes.io/version: "1.10.6"
     knative.dev/crd-install: "true"
 spec:
   group: caching.internal.knative.dev
@@ -438,7 +438,7 @@ metadata:
   labels:
     app.kubernetes.io/name: knative-serving
     app.kubernetes.io/component: networking
-    app.kubernetes.io/version: "1.7.1"
+    app.kubernetes.io/version: "1.10.6"
     knative.dev/crd-install: "true"
 spec:
   group: networking.internal.knative.dev
@@ -473,6 +473,9 @@ spec:
                   type: array
                   items:
                     type: string
+                domain:
+                  description: Domain is the top level domain of the values for DNSNames.
+                  type: string
                 secretName:
                   description: SecretName is the name of the secret resource to store the SSL certificate in.
                   type: string
@@ -584,7 +587,7 @@ metadata:
   name: configurations.serving.knative.dev
   labels:
     app.kubernetes.io/name: knative-serving
-    app.kubernetes.io/version: "1.7.1"
+    app.kubernetes.io/version: "1.10.6"
     knative.dev/crd-install: "true"
     duck.knative.dev/podspecable: "true"
 spec:
@@ -686,12 +689,12 @@ spec:
                             type: object
                             properties:
                               args:
-                                description: 'Arguments to the entrypoint. The docker image''s CMD is used if this is not provided. Variable references $(VAR_NAME) are expanded using the container''s environment. If a variable cannot be resolved, the reference in the input string will be unchanged. Double $$ are reduced to a single $, which allows for escaping the $(VAR_NAME) syntax: i.e. "$$(VAR_NAME)" will produce the string literal "$(VAR_NAME)". Escaped references will never be expanded, regardless of whether the variable exists or not. Cannot be updated. More info: https://kubernetes.io/docs/tasks/inject-data-application/define-command-argument-container/#running-a-command-in-a-shell'
+                                description: 'Arguments to the entrypoint. The container image''s CMD is used if this is not provided. Variable references $(VAR_NAME) are expanded using the container''s environment. If a variable cannot be resolved, the reference in the input string will be unchanged. Double $$ are reduced to a single $, which allows for escaping the $(VAR_NAME) syntax: i.e. "$$(VAR_NAME)" will produce the string literal "$(VAR_NAME)". Escaped references will never be expanded, regardless of whether the variable exists or not. Cannot be updated. More info: https://kubernetes.io/docs/tasks/inject-data-application/define-command-argument-container/#running-a-command-in-a-shell'
                                 type: array
                                 items:
                                   type: string
                               command:
-                                description: 'Entrypoint array. Not executed within a shell. The docker image''s ENTRYPOINT is used if this is not provided. Variable references $(VAR_NAME) are expanded using the container''s environment. If a variable cannot be resolved, the reference in the input string will be unchanged. Double $$ are reduced to a single $, which allows for escaping the $(VAR_NAME) syntax: i.e. "$$(VAR_NAME)" will produce the string literal "$(VAR_NAME)". Escaped references will never be expanded, regardless of whether the variable exists or not. Cannot be updated. More info: https://kubernetes.io/docs/tasks/inject-data-application/define-command-argument-container/#running-a-command-in-a-shell'
+                                description: 'Entrypoint array. Not executed within a shell. The container image''s ENTRYPOINT is used if this is not provided. Variable references $(VAR_NAME) are expanded using the container''s environment. If a variable cannot be resolved, the reference in the input string will be unchanged. Double $$ are reduced to a single $, which allows for escaping the $(VAR_NAME) syntax: i.e. "$$(VAR_NAME)" will produce the string literal "$(VAR_NAME)". Escaped references will never be expanded, regardless of whether the variable exists or not. Cannot be updated. More info: https://kubernetes.io/docs/tasks/inject-data-application/define-command-argument-container/#running-a-command-in-a-shell'
                                 type: array
                                 items:
                                   type: string
@@ -789,7 +792,7 @@ spec:
                                           type: boolean
                                       x-kubernetes-map-type: atomic
                               image:
-                                description: 'Docker image name. More info: https://kubernetes.io/docs/concepts/containers/images This field is optional to allow higher level config management to default or override container images in workload controllers like Deployments and StatefulSets.'
+                                description: 'Container image name. More info: https://kubernetes.io/docs/concepts/containers/images This field is optional to allow higher level config management to default or override container images in workload controllers like Deployments and StatefulSets.'
                                 type: string
                               imagePullPolicy:
                                 description: 'Image pull policy. One of Always, Never, IfNotPresent. Defaults to Always if :latest tag is specified, or IfNotPresent otherwise. Cannot be updated. More info: https://kubernetes.io/docs/concepts/containers/images#updating-images'
@@ -879,7 +882,7 @@ spec:
                                 description: Name of the container specified as a DNS_LABEL. Each container in a pod must have a unique name (DNS_LABEL). Cannot be updated.
                                 type: string
                               ports:
-                                description: List of ports to expose from the container. Exposing a port here gives the system additional information about the network connections a container uses, but is primarily informational. Not specifying a port here DOES NOT prevent that port from being exposed. Any port which is listening on the default "0.0.0.0" address inside a container will be accessible from the network. Cannot be updated.
+                                description: List of ports to expose from the container. Not specifying a port here DOES NOT prevent that port from being exposed. Any port which is listening on the default "0.0.0.0" address inside a container will be accessible from the network. Modifying this array with strategic merge patch may corrupt the data. For more information See https://github.com/kubernetes/kubernetes/issues/108255. Cannot be updated.
                                 type: array
                                 items:
                                   description: ContainerPort represents a network port in a single container.
@@ -1009,6 +1012,9 @@ spec:
                                 description: 'SecurityContext defines the security options the container should be run with. If set, the fields of SecurityContext override the equivalent fields of PodSecurityContext. More info: https://kubernetes.io/docs/tasks/configure-pod-container/security-context/'
                                 type: object
                                 properties:
+                                  allowPrivilegeEscalation:
+                                    description: 'AllowPrivilegeEscalation controls whether a process can gain more privileges than its parent process. This bool directly controls if the no_new_privs flag will be set on the container process. AllowPrivilegeEscalation is true always when the container is: 1) run as Privileged 2) has CAP_SYS_ADMIN Note that this field cannot be set when spec.os.name is windows.'
+                                    type: boolean
                                   capabilities:
                                     description: The capabilities to add/drop when running containers. Defaults to the default set of capabilities granted by the container runtime. Note that this field cannot be set when spec.os.name is windows.
                                     type: object
@@ -1039,6 +1045,18 @@ spec:
                                     description: The UID to run the entrypoint of the container process. Defaults to user specified in image metadata if unspecified. May also be set in PodSecurityContext.  If set in both SecurityContext and PodSecurityContext, the value specified in SecurityContext takes precedence. Note that this field cannot be set when spec.os.name is windows.
                                     type: integer
                                     format: int64
+                                  seccompProfile:
+                                    description: The seccomp options to use by this container. If seccomp options are provided at both the pod & container level, the container options override the pod options. Note that this field cannot be set when spec.os.name is windows.
+                                    type: object
+                                    required:
+                                      - type
+                                    properties:
+                                      localhostProfile:
+                                        description: localhostProfile indicates a profile defined in a file on the node should be used. The profile must be preconfigured on the node to work. Must be a descending path, relative to the kubelet's configured seccomp profile location. Must only be set if type is "Localhost".
+                                        type: string
+                                      type:
+                                        description: "type indicates which kind of seccomp profile will be applied. Valid options are: \n Localhost - a profile defined in a file on the node should be used. RuntimeDefault - the container runtime default profile should be used. Unconfined - no profile should be applied."
+                                        type: string
                               terminationMessagePath:
                                 description: 'Optional: Path at which the file to which the container''s termination message will be written is mounted into the container''s filesystem. Message written is intended to be brief final status, such as an assertion failure message. Will be truncated by the node if greater than 4096 bytes. The total message length across all containers will be limited to 12kb. Defaults to /dev/termination-log. Cannot be updated.'
                                 type: string
@@ -1092,7 +1110,7 @@ spec:
                           type: integer
                           format: int64
                         imagePullSecrets:
-                          description: 'ImagePullSecrets is an optional list of references to secrets in the same namespace to use for pulling any of the images used by this PodSpec. If specified, these secrets will be passed to individual puller implementations for them to use. For example, in the case of docker, only DockerConfig type secrets are honored. More info: https://kubernetes.io/docs/concepts/containers/images#specifying-imagepullsecrets-on-a-pod'
+                          description: 'ImagePullSecrets is an optional list of references to secrets in the same namespace to use for pulling any of the images used by this PodSpec. If specified, these secrets will be passed to individual puller implementations for them to use. More info: https://kubernetes.io/docs/concepts/containers/images#specifying-imagepullsecrets-on-a-pod'
                           type: array
                           items:
                             description: LocalObjectReference contains enough information to let you locate the referenced object inside the same namespace.
@@ -1165,15 +1183,15 @@ spec:
                               - name
                             properties:
                               configMap:
-                                description: ConfigMap represents a configMap that should populate this volume
+                                description: configMap represents a configMap that should populate this volume
                                 type: object
                                 properties:
                                   defaultMode:
-                                    description: 'Optional: mode bits used to set permissions on created files by default. Must be an octal value between 0000 and 0777 or a decimal value between 0 and 511. YAML accepts both octal and decimal values, JSON requires decimal values for mode bits. Defaults to 0644. Directories within the path are not affected by this setting. This might be in conflict with other options that affect the file mode, like fsGroup, and the result can be other mode bits set.'
+                                    description: 'defaultMode is optional: mode bits used to set permissions on created files by default. Must be an octal value between 0000 and 0777 or a decimal value between 0 and 511. YAML accepts both octal and decimal values, JSON requires decimal values for mode bits. Defaults to 0644. Directories within the path are not affected by this setting. This might be in conflict with other options that affect the file mode, like fsGroup, and the result can be other mode bits set.'
                                     type: integer
                                     format: int32
                                   items:
-                                    description: If unspecified, each key-value pair in the Data field of the referenced ConfigMap will be projected into the volume as a file whose name is the key and content is the value. If specified, the listed keys will be projected into the specified paths, and unlisted keys will not be present. If a key is specified which is not present in the ConfigMap, the volume setup will error unless it is marked optional. Paths must be relative and may not contain the '..' path or start with '..'.
+                                    description: items if unspecified, each key-value pair in the Data field of the referenced ConfigMap will be projected into the volume as a file whose name is the key and content is the value. If specified, the listed keys will be projected into the specified paths, and unlisted keys will not be present. If a key is specified which is not present in the ConfigMap, the volume setup will error unless it is marked optional. Paths must be relative and may not contain the '..' path or start with '..'.
                                     type: array
                                     items:
                                       description: Maps a string key to a path within a volume.
@@ -1183,20 +1201,20 @@ spec:
                                         - path
                                       properties:
                                         key:
-                                          description: The key to project.
+                                          description: key is the key to project.
                                           type: string
                                         mode:
-                                          description: 'Optional: mode bits used to set permissions on this file. Must be an octal value between 0000 and 0777 or a decimal value between 0 and 511. YAML accepts both octal and decimal values, JSON requires decimal values for mode bits. If not specified, the volume defaultMode will be used. This might be in conflict with other options that affect the file mode, like fsGroup, and the result can be other mode bits set.'
+                                          description: 'mode is Optional: mode bits used to set permissions on this file. Must be an octal value between 0000 and 0777 or a decimal value between 0 and 511. YAML accepts both octal and decimal values, JSON requires decimal values for mode bits. If not specified, the volume defaultMode will be used. This might be in conflict with other options that affect the file mode, like fsGroup, and the result can be other mode bits set.'
                                           type: integer
                                           format: int32
                                         path:
-                                          description: The relative path of the file to map the key to. May not be an absolute path. May not contain the path element '..'. May not start with the string '..'.
+                                          description: path is the relative path of the file to map the key to. May not be an absolute path. May not contain the path element '..'. May not start with the string '..'.
                                           type: string
                                   name:
                                     description: 'Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?'
                                     type: string
                                   optional:
-                                    description: Specify whether the ConfigMap or its keys must be defined
+                                    description: optional specify whether the ConfigMap or its keys must be defined
                                     type: boolean
                                 x-kubernetes-map-type: atomic
                               emptyDir:
@@ -1204,33 +1222,33 @@ spec:
                                 type: object
                                 x-kubernetes-preserve-unknown-fields: true
                               name:
-                                description: 'Volume''s name. Must be a DNS_LABEL and unique within the pod. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names'
+                                description: 'name of the volume. Must be a DNS_LABEL and unique within the pod. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names'
                                 type: string
                               persistentVolumeClaim:
                                 description: This is accessible behind a feature flag - kubernetes.podspec-persistent-volume-claim
                                 type: object
                                 x-kubernetes-preserve-unknown-fields: true
                               projected:
-                                description: Items for all in one resources secrets, configmaps, and downward API
+                                description: projected items for all in one resources secrets, configmaps, and downward API
                                 type: object
                                 properties:
                                   defaultMode:
-                                    description: Mode bits used to set permissions on created files by default. Must be an octal value between 0000 and 0777 or a decimal value between 0 and 511. YAML accepts both octal and decimal values, JSON requires decimal values for mode bits. Directories within the path are not affected by this setting. This might be in conflict with other options that affect the file mode, like fsGroup, and the result can be other mode bits set.
+                                    description: defaultMode are the mode bits used to set permissions on created files by default. Must be an octal value between 0000 and 0777 or a decimal value between 0 and 511. YAML accepts both octal and decimal values, JSON requires decimal values for mode bits. Directories within the path are not affected by this setting. This might be in conflict with other options that affect the file mode, like fsGroup, and the result can be other mode bits set.
                                     type: integer
                                     format: int32
                                   sources:
-                                    description: list of volume projections
+                                    description: sources is the list of volume projections
                                     type: array
                                     items:
                                       description: Projection that may be projected along with other supported volume types
                                       type: object
                                       properties:
                                         configMap:
-                                          description: information about the configMap data to project
+                                          description: configMap information about the configMap data to project
                                           type: object
                                           properties:
                                             items:
-                                              description: If unspecified, each key-value pair in the Data field of the referenced ConfigMap will be projected into the volume as a file whose name is the key and content is the value. If specified, the listed keys will be projected into the specified paths, and unlisted keys will not be present. If a key is specified which is not present in the ConfigMap, the volume setup will error unless it is marked optional. Paths must be relative and may not contain the '..' path or start with '..'.
+                                              description: items if unspecified, each key-value pair in the Data field of the referenced ConfigMap will be projected into the volume as a file whose name is the key and content is the value. If specified, the listed keys will be projected into the specified paths, and unlisted keys will not be present. If a key is specified which is not present in the ConfigMap, the volume setup will error unless it is marked optional. Paths must be relative and may not contain the '..' path or start with '..'.
                                               type: array
                                               items:
                                                 description: Maps a string key to a path within a volume.
@@ -1240,28 +1258,81 @@ spec:
                                                   - path
                                                 properties:
                                                   key:
-                                                    description: The key to project.
+                                                    description: key is the key to project.
                                                     type: string
                                                   mode:
-                                                    description: 'Optional: mode bits used to set permissions on this file. Must be an octal value between 0000 and 0777 or a decimal value between 0 and 511. YAML accepts both octal and decimal values, JSON requires decimal values for mode bits. If not specified, the volume defaultMode will be used. This might be in conflict with other options that affect the file mode, like fsGroup, and the result can be other mode bits set.'
+                                                    description: 'mode is Optional: mode bits used to set permissions on this file. Must be an octal value between 0000 and 0777 or a decimal value between 0 and 511. YAML accepts both octal and decimal values, JSON requires decimal values for mode bits. If not specified, the volume defaultMode will be used. This might be in conflict with other options that affect the file mode, like fsGroup, and the result can be other mode bits set.'
                                                     type: integer
                                                     format: int32
                                                   path:
-                                                    description: The relative path of the file to map the key to. May not be an absolute path. May not contain the path element '..'. May not start with the string '..'.
+                                                    description: path is the relative path of the file to map the key to. May not be an absolute path. May not contain the path element '..'. May not start with the string '..'.
                                                     type: string
                                             name:
                                               description: 'Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?'
                                               type: string
                                             optional:
-                                              description: Specify whether the ConfigMap or its keys must be defined
+                                              description: optional specify whether the ConfigMap or its keys must be defined
                                               type: boolean
                                           x-kubernetes-map-type: atomic
-                                        secret:
-                                          description: information about the secret data to project
+                                        downwardAPI:
+                                          description: downwardAPI information about the downwardAPI data to project
                                           type: object
                                           properties:
                                             items:
-                                              description: If unspecified, each key-value pair in the Data field of the referenced Secret will be projected into the volume as a file whose name is the key and content is the value. If specified, the listed keys will be projected into the specified paths, and unlisted keys will not be present. If a key is specified which is not present in the Secret, the volume setup will error unless it is marked optional. Paths must be relative and may not contain the '..' path or start with '..'.
+                                              description: Items is a list of DownwardAPIVolume file
+                                              type: array
+                                              items:
+                                                description: DownwardAPIVolumeFile represents information to create the file containing the pod field
+                                                type: object
+                                                required:
+                                                  - path
+                                                properties:
+                                                  fieldRef:
+                                                    description: 'Required: Selects a field of the pod: only annotations, labels, name and namespace are supported.'
+                                                    type: object
+                                                    required:
+                                                      - fieldPath
+                                                    properties:
+                                                      apiVersion:
+                                                        description: Version of the schema the FieldPath is written in terms of, defaults to "v1".
+                                                        type: string
+                                                      fieldPath:
+                                                        description: Path of the field to select in the specified API version.
+                                                        type: string
+                                                    x-kubernetes-map-type: atomic
+                                                  mode:
+                                                    description: 'Optional: mode bits used to set permissions on this file, must be an octal value between 0000 and 0777 or a decimal value between 0 and 511. YAML accepts both octal and decimal values, JSON requires decimal values for mode bits. If not specified, the volume defaultMode will be used. This might be in conflict with other options that affect the file mode, like fsGroup, and the result can be other mode bits set.'
+                                                    type: integer
+                                                    format: int32
+                                                  path:
+                                                    description: 'Required: Path is  the relative path name of the file to be created. Must not be absolute or contain the ''..'' path. Must be utf-8 encoded. The first item of the relative path must not start with ''..'''
+                                                    type: string
+                                                  resourceFieldRef:
+                                                    description: 'Selects a resource of the container: only resources limits and requests (limits.cpu, limits.memory, requests.cpu and requests.memory) are currently supported.'
+                                                    type: object
+                                                    required:
+                                                      - resource
+                                                    properties:
+                                                      containerName:
+                                                        description: 'Container name: required for volumes, optional for env vars'
+                                                        type: string
+                                                      divisor:
+                                                        description: Specifies the output format of the exposed resources, defaults to "1"
+                                                        pattern: ^(\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))(([KMGTPE]i)|[numkMGTPE]|([eE](\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))))?$
+                                                        anyOf:
+                                                          - type: integer
+                                                          - type: string
+                                                        x-kubernetes-int-or-string: true
+                                                      resource:
+                                                        description: 'Required: resource to select'
+                                                        type: string
+                                                    x-kubernetes-map-type: atomic
+                                        secret:
+                                          description: secret information about the secret data to project
+                                          type: object
+                                          properties:
+                                            items:
+                                              description: items if unspecified, each key-value pair in the Data field of the referenced Secret will be projected into the volume as a file whose name is the key and content is the value. If specified, the listed keys will be projected into the specified paths, and unlisted keys will not be present. If a key is specified which is not present in the Secret, the volume setup will error unless it is marked optional. Paths must be relative and may not contain the '..' path or start with '..'.
                                               type: array
                                               items:
                                                 description: Maps a string key to a path within a volume.
@@ -1271,48 +1342,48 @@ spec:
                                                   - path
                                                 properties:
                                                   key:
-                                                    description: The key to project.
+                                                    description: key is the key to project.
                                                     type: string
                                                   mode:
-                                                    description: 'Optional: mode bits used to set permissions on this file. Must be an octal value between 0000 and 0777 or a decimal value between 0 and 511. YAML accepts both octal and decimal values, JSON requires decimal values for mode bits. If not specified, the volume defaultMode will be used. This might be in conflict with other options that affect the file mode, like fsGroup, and the result can be other mode bits set.'
+                                                    description: 'mode is Optional: mode bits used to set permissions on this file. Must be an octal value between 0000 and 0777 or a decimal value between 0 and 511. YAML accepts both octal and decimal values, JSON requires decimal values for mode bits. If not specified, the volume defaultMode will be used. This might be in conflict with other options that affect the file mode, like fsGroup, and the result can be other mode bits set.'
                                                     type: integer
                                                     format: int32
                                                   path:
-                                                    description: The relative path of the file to map the key to. May not be an absolute path. May not contain the path element '..'. May not start with the string '..'.
+                                                    description: path is the relative path of the file to map the key to. May not be an absolute path. May not contain the path element '..'. May not start with the string '..'.
                                                     type: string
                                             name:
                                               description: 'Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?'
                                               type: string
                                             optional:
-                                              description: Specify whether the Secret or its key must be defined
+                                              description: optional field specify whether the Secret or its key must be defined
                                               type: boolean
                                           x-kubernetes-map-type: atomic
                                         serviceAccountToken:
-                                          description: information about the serviceAccountToken data to project
+                                          description: serviceAccountToken is information about the serviceAccountToken data to project
                                           type: object
                                           required:
                                             - path
                                           properties:
                                             audience:
-                                              description: Audience is the intended audience of the token. A recipient of a token must identify itself with an identifier specified in the audience of the token, and otherwise should reject the token. The audience defaults to the identifier of the apiserver.
+                                              description: audience is the intended audience of the token. A recipient of a token must identify itself with an identifier specified in the audience of the token, and otherwise should reject the token. The audience defaults to the identifier of the apiserver.
                                               type: string
                                             expirationSeconds:
-                                              description: ExpirationSeconds is the requested duration of validity of the service account token. As the token approaches expiration, the kubelet volume plugin will proactively rotate the service account token. The kubelet will start trying to rotate the token if the token is older than 80 percent of its time to live or if the token is older than 24 hours.Defaults to 1 hour and must be at least 10 minutes.
+                                              description: expirationSeconds is the requested duration of validity of the service account token. As the token approaches expiration, the kubelet volume plugin will proactively rotate the service account token. The kubelet will start trying to rotate the token if the token is older than 80 percent of its time to live or if the token is older than 24 hours.Defaults to 1 hour and must be at least 10 minutes.
                                               type: integer
                                               format: int64
                                             path:
-                                              description: Path is the path relative to the mount point of the file to project the token into.
+                                              description: path is the path relative to the mount point of the file to project the token into.
                                               type: string
                               secret:
-                                description: 'Secret represents a secret that should populate this volume. More info: https://kubernetes.io/docs/concepts/storage/volumes#secret'
+                                description: 'secret represents a secret that should populate this volume. More info: https://kubernetes.io/docs/concepts/storage/volumes#secret'
                                 type: object
                                 properties:
                                   defaultMode:
-                                    description: 'Optional: mode bits used to set permissions on created files by default. Must be an octal value between 0000 and 0777 or a decimal value between 0 and 511. YAML accepts both octal and decimal values, JSON requires decimal values for mode bits. Defaults to 0644. Directories within the path are not affected by this setting. This might be in conflict with other options that affect the file mode, like fsGroup, and the result can be other mode bits set.'
+                                    description: 'defaultMode is Optional: mode bits used to set permissions on created files by default. Must be an octal value between 0000 and 0777 or a decimal value between 0 and 511. YAML accepts both octal and decimal values, JSON requires decimal values for mode bits. Defaults to 0644. Directories within the path are not affected by this setting. This might be in conflict with other options that affect the file mode, like fsGroup, and the result can be other mode bits set.'
                                     type: integer
                                     format: int32
                                   items:
-                                    description: If unspecified, each key-value pair in the Data field of the referenced Secret will be projected into the volume as a file whose name is the key and content is the value. If specified, the listed keys will be projected into the specified paths, and unlisted keys will not be present. If a key is specified which is not present in the Secret, the volume setup will error unless it is marked optional. Paths must be relative and may not contain the '..' path or start with '..'.
+                                    description: items If unspecified, each key-value pair in the Data field of the referenced Secret will be projected into the volume as a file whose name is the key and content is the value. If specified, the listed keys will be projected into the specified paths, and unlisted keys will not be present. If a key is specified which is not present in the Secret, the volume setup will error unless it is marked optional. Paths must be relative and may not contain the '..' path or start with '..'.
                                     type: array
                                     items:
                                       description: Maps a string key to a path within a volume.
@@ -1322,20 +1393,20 @@ spec:
                                         - path
                                       properties:
                                         key:
-                                          description: The key to project.
+                                          description: key is the key to project.
                                           type: string
                                         mode:
-                                          description: 'Optional: mode bits used to set permissions on this file. Must be an octal value between 0000 and 0777 or a decimal value between 0 and 511. YAML accepts both octal and decimal values, JSON requires decimal values for mode bits. If not specified, the volume defaultMode will be used. This might be in conflict with other options that affect the file mode, like fsGroup, and the result can be other mode bits set.'
+                                          description: 'mode is Optional: mode bits used to set permissions on this file. Must be an octal value between 0000 and 0777 or a decimal value between 0 and 511. YAML accepts both octal and decimal values, JSON requires decimal values for mode bits. If not specified, the volume defaultMode will be used. This might be in conflict with other options that affect the file mode, like fsGroup, and the result can be other mode bits set.'
                                           type: integer
                                           format: int32
                                         path:
-                                          description: The relative path of the file to map the key to. May not be an absolute path. May not contain the path element '..'. May not start with the string '..'.
+                                          description: path is the relative path of the file to map the key to. May not be an absolute path. May not contain the path element '..'. May not start with the string '..'.
                                           type: string
                                   optional:
-                                    description: Specify whether the Secret or its keys must be defined
+                                    description: optional field specify whether the Secret or its keys must be defined
                                     type: boolean
                                   secretName:
-                                    description: 'Name of the secret in the pod''s namespace to use. More info: https://kubernetes.io/docs/concepts/storage/volumes#secret'
+                                    description: 'secretName is the name of the secret in the pod''s namespace to use. More info: https://kubernetes.io/docs/concepts/storage/volumes#secret'
                                     type: string
             status:
               description: ConfigurationStatus communicates the observed state of the Configuration (from the controller).
@@ -1407,7 +1478,7 @@ metadata:
   labels:
     app.kubernetes.io/name: knative-serving
     app.kubernetes.io/component: networking
-    app.kubernetes.io/version: "1.7.1"
+    app.kubernetes.io/version: "1.10.6"
     knative.dev/crd-install: "true"
 spec:
   group: networking.internal.knative.dev
@@ -1471,7 +1542,7 @@ metadata:
   name: domainmappings.serving.knative.dev
   labels:
     app.kubernetes.io/name: knative-serving
-    app.kubernetes.io/version: "1.7.1"
+    app.kubernetes.io/version: "1.10.6"
     knative.dev/crd-install: "true"
 spec:
   group: serving.knative.dev
@@ -1517,6 +1588,9 @@ spec:
                     - kind
                     - name
                   properties:
+                    address:
+                      description: Address points to a specific Address Name.
+                      type: string
                     apiVersion:
                       description: API version of the referent.
                       type: string
@@ -1549,6 +1623,12 @@ spec:
                   description: Address holds the information needed for a DomainMapping to be the target of an event.
                   type: object
                   properties:
+                    CACerts:
+                      description: CACerts is the Certification Authority (CA) certificates in PEM format according to https://www.rfc-editor.org/rfc/rfc7468.
+                      type: string
+                    name:
+                      description: Name is the name of the address.
+                      type: string
                     url:
                       type: string
                 annotations:
@@ -1622,6 +1702,9 @@ spec:
                     - kind
                     - name
                   properties:
+                    address:
+                      description: Address points to a specific Address Name.
+                      type: string
                     apiVersion:
                       description: API version of the referent.
                       type: string
@@ -1654,6 +1737,12 @@ spec:
                   description: Address holds the information needed for a DomainMapping to be the target of an event.
                   type: object
                   properties:
+                    CACerts:
+                      description: CACerts is the Certification Authority (CA) certificates in PEM format according to https://www.rfc-editor.org/rfc/rfc7468.
+                      type: string
+                    name:
+                      description: Name is the name of the address.
+                      type: string
                     url:
                       type: string
                 annotations:
@@ -1740,7 +1829,7 @@ metadata:
   labels:
     app.kubernetes.io/name: knative-serving
     app.kubernetes.io/component: networking
-    app.kubernetes.io/version: "1.7.1"
+    app.kubernetes.io/version: "1.10.6"
     knative.dev/crd-install: "true"
 spec:
   group: networking.internal.knative.dev
@@ -2000,7 +2089,7 @@ metadata:
   name: metrics.autoscaling.internal.knative.dev
   labels:
     app.kubernetes.io/name: knative-serving
-    app.kubernetes.io/version: "1.7.1"
+    app.kubernetes.io/version: "1.10.6"
     knative.dev/crd-install: "true"
 spec:
   group: autoscaling.internal.knative.dev
@@ -2122,7 +2211,7 @@ metadata:
   name: podautoscalers.autoscaling.internal.knative.dev
   labels:
     app.kubernetes.io/name: knative-serving
-    app.kubernetes.io/version: "1.7.1"
+    app.kubernetes.io/version: "1.10.6"
     knative.dev/crd-install: "true"
 spec:
   group: autoscaling.internal.knative.dev
@@ -2282,7 +2371,7 @@ metadata:
   name: revisions.serving.knative.dev
   labels:
     app.kubernetes.io/name: knative-serving
-    app.kubernetes.io/version: "1.7.1"
+    app.kubernetes.io/version: "1.10.6"
     knative.dev/crd-install: "true"
 spec:
   group: serving.knative.dev
@@ -2363,12 +2452,12 @@ spec:
                     type: object
                     properties:
                       args:
-                        description: 'Arguments to the entrypoint. The docker image''s CMD is used if this is not provided. Variable references $(VAR_NAME) are expanded using the container''s environment. If a variable cannot be resolved, the reference in the input string will be unchanged. Double $$ are reduced to a single $, which allows for escaping the $(VAR_NAME) syntax: i.e. "$$(VAR_NAME)" will produce the string literal "$(VAR_NAME)". Escaped references will never be expanded, regardless of whether the variable exists or not. Cannot be updated. More info: https://kubernetes.io/docs/tasks/inject-data-application/define-command-argument-container/#running-a-command-in-a-shell'
+                        description: 'Arguments to the entrypoint. The container image''s CMD is used if this is not provided. Variable references $(VAR_NAME) are expanded using the container''s environment. If a variable cannot be resolved, the reference in the input string will be unchanged. Double $$ are reduced to a single $, which allows for escaping the $(VAR_NAME) syntax: i.e. "$$(VAR_NAME)" will produce the string literal "$(VAR_NAME)". Escaped references will never be expanded, regardless of whether the variable exists or not. Cannot be updated. More info: https://kubernetes.io/docs/tasks/inject-data-application/define-command-argument-container/#running-a-command-in-a-shell'
                         type: array
                         items:
                           type: string
                       command:
-                        description: 'Entrypoint array. Not executed within a shell. The docker image''s ENTRYPOINT is used if this is not provided. Variable references $(VAR_NAME) are expanded using the container''s environment. If a variable cannot be resolved, the reference in the input string will be unchanged. Double $$ are reduced to a single $, which allows for escaping the $(VAR_NAME) syntax: i.e. "$$(VAR_NAME)" will produce the string literal "$(VAR_NAME)". Escaped references will never be expanded, regardless of whether the variable exists or not. Cannot be updated. More info: https://kubernetes.io/docs/tasks/inject-data-application/define-command-argument-container/#running-a-command-in-a-shell'
+                        description: 'Entrypoint array. Not executed within a shell. The container image''s ENTRYPOINT is used if this is not provided. Variable references $(VAR_NAME) are expanded using the container''s environment. If a variable cannot be resolved, the reference in the input string will be unchanged. Double $$ are reduced to a single $, which allows for escaping the $(VAR_NAME) syntax: i.e. "$$(VAR_NAME)" will produce the string literal "$(VAR_NAME)". Escaped references will never be expanded, regardless of whether the variable exists or not. Cannot be updated. More info: https://kubernetes.io/docs/tasks/inject-data-application/define-command-argument-container/#running-a-command-in-a-shell'
                         type: array
                         items:
                           type: string
@@ -2466,7 +2555,7 @@ spec:
                                   type: boolean
                               x-kubernetes-map-type: atomic
                       image:
-                        description: 'Docker image name. More info: https://kubernetes.io/docs/concepts/containers/images This field is optional to allow higher level config management to default or override container images in workload controllers like Deployments and StatefulSets.'
+                        description: 'Container image name. More info: https://kubernetes.io/docs/concepts/containers/images This field is optional to allow higher level config management to default or override container images in workload controllers like Deployments and StatefulSets.'
                         type: string
                       imagePullPolicy:
                         description: 'Image pull policy. One of Always, Never, IfNotPresent. Defaults to Always if :latest tag is specified, or IfNotPresent otherwise. Cannot be updated. More info: https://kubernetes.io/docs/concepts/containers/images#updating-images'
@@ -2556,7 +2645,7 @@ spec:
                         description: Name of the container specified as a DNS_LABEL. Each container in a pod must have a unique name (DNS_LABEL). Cannot be updated.
                         type: string
                       ports:
-                        description: List of ports to expose from the container. Exposing a port here gives the system additional information about the network connections a container uses, but is primarily informational. Not specifying a port here DOES NOT prevent that port from being exposed. Any port which is listening on the default "0.0.0.0" address inside a container will be accessible from the network. Cannot be updated.
+                        description: List of ports to expose from the container. Not specifying a port here DOES NOT prevent that port from being exposed. Any port which is listening on the default "0.0.0.0" address inside a container will be accessible from the network. Modifying this array with strategic merge patch may corrupt the data. For more information See https://github.com/kubernetes/kubernetes/issues/108255. Cannot be updated.
                         type: array
                         items:
                           description: ContainerPort represents a network port in a single container.
@@ -2686,6 +2775,9 @@ spec:
                         description: 'SecurityContext defines the security options the container should be run with. If set, the fields of SecurityContext override the equivalent fields of PodSecurityContext. More info: https://kubernetes.io/docs/tasks/configure-pod-container/security-context/'
                         type: object
                         properties:
+                          allowPrivilegeEscalation:
+                            description: 'AllowPrivilegeEscalation controls whether a process can gain more privileges than its parent process. This bool directly controls if the no_new_privs flag will be set on the container process. AllowPrivilegeEscalation is true always when the container is: 1) run as Privileged 2) has CAP_SYS_ADMIN Note that this field cannot be set when spec.os.name is windows.'
+                            type: boolean
                           capabilities:
                             description: The capabilities to add/drop when running containers. Defaults to the default set of capabilities granted by the container runtime. Note that this field cannot be set when spec.os.name is windows.
                             type: object
@@ -2716,6 +2808,18 @@ spec:
                             description: The UID to run the entrypoint of the container process. Defaults to user specified in image metadata if unspecified. May also be set in PodSecurityContext.  If set in both SecurityContext and PodSecurityContext, the value specified in SecurityContext takes precedence. Note that this field cannot be set when spec.os.name is windows.
                             type: integer
                             format: int64
+                          seccompProfile:
+                            description: The seccomp options to use by this container. If seccomp options are provided at both the pod & container level, the container options override the pod options. Note that this field cannot be set when spec.os.name is windows.
+                            type: object
+                            required:
+                              - type
+                            properties:
+                              localhostProfile:
+                                description: localhostProfile indicates a profile defined in a file on the node should be used. The profile must be preconfigured on the node to work. Must be a descending path, relative to the kubelet's configured seccomp profile location. Must only be set if type is "Localhost".
+                                type: string
+                              type:
+                                description: "type indicates which kind of seccomp profile will be applied. Valid options are: \n Localhost - a profile defined in a file on the node should be used. RuntimeDefault - the container runtime default profile should be used. Unconfined - no profile should be applied."
+                                type: string
                       terminationMessagePath:
                         description: 'Optional: Path at which the file to which the container''s termination message will be written is mounted into the container''s filesystem. Message written is intended to be brief final status, such as an assertion failure message. Will be truncated by the node if greater than 4096 bytes. The total message length across all containers will be limited to 12kb. Defaults to /dev/termination-log. Cannot be updated.'
                         type: string
@@ -2769,7 +2873,7 @@ spec:
                   type: integer
                   format: int64
                 imagePullSecrets:
-                  description: 'ImagePullSecrets is an optional list of references to secrets in the same namespace to use for pulling any of the images used by this PodSpec. If specified, these secrets will be passed to individual puller implementations for them to use. For example, in the case of docker, only DockerConfig type secrets are honored. More info: https://kubernetes.io/docs/concepts/containers/images#specifying-imagepullsecrets-on-a-pod'
+                  description: 'ImagePullSecrets is an optional list of references to secrets in the same namespace to use for pulling any of the images used by this PodSpec. If specified, these secrets will be passed to individual puller implementations for them to use. More info: https://kubernetes.io/docs/concepts/containers/images#specifying-imagepullsecrets-on-a-pod'
                   type: array
                   items:
                     description: LocalObjectReference contains enough information to let you locate the referenced object inside the same namespace.
@@ -2842,15 +2946,15 @@ spec:
                       - name
                     properties:
                       configMap:
-                        description: ConfigMap represents a configMap that should populate this volume
+                        description: configMap represents a configMap that should populate this volume
                         type: object
                         properties:
                           defaultMode:
-                            description: 'Optional: mode bits used to set permissions on created files by default. Must be an octal value between 0000 and 0777 or a decimal value between 0 and 511. YAML accepts both octal and decimal values, JSON requires decimal values for mode bits. Defaults to 0644. Directories within the path are not affected by this setting. This might be in conflict with other options that affect the file mode, like fsGroup, and the result can be other mode bits set.'
+                            description: 'defaultMode is optional: mode bits used to set permissions on created files by default. Must be an octal value between 0000 and 0777 or a decimal value between 0 and 511. YAML accepts both octal and decimal values, JSON requires decimal values for mode bits. Defaults to 0644. Directories within the path are not affected by this setting. This might be in conflict with other options that affect the file mode, like fsGroup, and the result can be other mode bits set.'
                             type: integer
                             format: int32
                           items:
-                            description: If unspecified, each key-value pair in the Data field of the referenced ConfigMap will be projected into the volume as a file whose name is the key and content is the value. If specified, the listed keys will be projected into the specified paths, and unlisted keys will not be present. If a key is specified which is not present in the ConfigMap, the volume setup will error unless it is marked optional. Paths must be relative and may not contain the '..' path or start with '..'.
+                            description: items if unspecified, each key-value pair in the Data field of the referenced ConfigMap will be projected into the volume as a file whose name is the key and content is the value. If specified, the listed keys will be projected into the specified paths, and unlisted keys will not be present. If a key is specified which is not present in the ConfigMap, the volume setup will error unless it is marked optional. Paths must be relative and may not contain the '..' path or start with '..'.
                             type: array
                             items:
                               description: Maps a string key to a path within a volume.
@@ -2860,20 +2964,20 @@ spec:
                                 - path
                               properties:
                                 key:
-                                  description: The key to project.
+                                  description: key is the key to project.
                                   type: string
                                 mode:
-                                  description: 'Optional: mode bits used to set permissions on this file. Must be an octal value between 0000 and 0777 or a decimal value between 0 and 511. YAML accepts both octal and decimal values, JSON requires decimal values for mode bits. If not specified, the volume defaultMode will be used. This might be in conflict with other options that affect the file mode, like fsGroup, and the result can be other mode bits set.'
+                                  description: 'mode is Optional: mode bits used to set permissions on this file. Must be an octal value between 0000 and 0777 or a decimal value between 0 and 511. YAML accepts both octal and decimal values, JSON requires decimal values for mode bits. If not specified, the volume defaultMode will be used. This might be in conflict with other options that affect the file mode, like fsGroup, and the result can be other mode bits set.'
                                   type: integer
                                   format: int32
                                 path:
-                                  description: The relative path of the file to map the key to. May not be an absolute path. May not contain the path element '..'. May not start with the string '..'.
+                                  description: path is the relative path of the file to map the key to. May not be an absolute path. May not contain the path element '..'. May not start with the string '..'.
                                   type: string
                           name:
                             description: 'Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?'
                             type: string
                           optional:
-                            description: Specify whether the ConfigMap or its keys must be defined
+                            description: optional specify whether the ConfigMap or its keys must be defined
                             type: boolean
                         x-kubernetes-map-type: atomic
                       emptyDir:
@@ -2881,33 +2985,33 @@ spec:
                         type: object
                         x-kubernetes-preserve-unknown-fields: true
                       name:
-                        description: 'Volume''s name. Must be a DNS_LABEL and unique within the pod. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names'
+                        description: 'name of the volume. Must be a DNS_LABEL and unique within the pod. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names'
                         type: string
                       persistentVolumeClaim:
                         description: This is accessible behind a feature flag - kubernetes.podspec-persistent-volume-claim
                         type: object
                         x-kubernetes-preserve-unknown-fields: true
                       projected:
-                        description: Items for all in one resources secrets, configmaps, and downward API
+                        description: projected items for all in one resources secrets, configmaps, and downward API
                         type: object
                         properties:
                           defaultMode:
-                            description: Mode bits used to set permissions on created files by default. Must be an octal value between 0000 and 0777 or a decimal value between 0 and 511. YAML accepts both octal and decimal values, JSON requires decimal values for mode bits. Directories within the path are not affected by this setting. This might be in conflict with other options that affect the file mode, like fsGroup, and the result can be other mode bits set.
+                            description: defaultMode are the mode bits used to set permissions on created files by default. Must be an octal value between 0000 and 0777 or a decimal value between 0 and 511. YAML accepts both octal and decimal values, JSON requires decimal values for mode bits. Directories within the path are not affected by this setting. This might be in conflict with other options that affect the file mode, like fsGroup, and the result can be other mode bits set.
                             type: integer
                             format: int32
                           sources:
-                            description: list of volume projections
+                            description: sources is the list of volume projections
                             type: array
                             items:
                               description: Projection that may be projected along with other supported volume types
                               type: object
                               properties:
                                 configMap:
-                                  description: information about the configMap data to project
+                                  description: configMap information about the configMap data to project
                                   type: object
                                   properties:
                                     items:
-                                      description: If unspecified, each key-value pair in the Data field of the referenced ConfigMap will be projected into the volume as a file whose name is the key and content is the value. If specified, the listed keys will be projected into the specified paths, and unlisted keys will not be present. If a key is specified which is not present in the ConfigMap, the volume setup will error unless it is marked optional. Paths must be relative and may not contain the '..' path or start with '..'.
+                                      description: items if unspecified, each key-value pair in the Data field of the referenced ConfigMap will be projected into the volume as a file whose name is the key and content is the value. If specified, the listed keys will be projected into the specified paths, and unlisted keys will not be present. If a key is specified which is not present in the ConfigMap, the volume setup will error unless it is marked optional. Paths must be relative and may not contain the '..' path or start with '..'.
                                       type: array
                                       items:
                                         description: Maps a string key to a path within a volume.
@@ -2917,28 +3021,81 @@ spec:
                                           - path
                                         properties:
                                           key:
-                                            description: The key to project.
+                                            description: key is the key to project.
                                             type: string
                                           mode:
-                                            description: 'Optional: mode bits used to set permissions on this file. Must be an octal value between 0000 and 0777 or a decimal value between 0 and 511. YAML accepts both octal and decimal values, JSON requires decimal values for mode bits. If not specified, the volume defaultMode will be used. This might be in conflict with other options that affect the file mode, like fsGroup, and the result can be other mode bits set.'
+                                            description: 'mode is Optional: mode bits used to set permissions on this file. Must be an octal value between 0000 and 0777 or a decimal value between 0 and 511. YAML accepts both octal and decimal values, JSON requires decimal values for mode bits. If not specified, the volume defaultMode will be used. This might be in conflict with other options that affect the file mode, like fsGroup, and the result can be other mode bits set.'
                                             type: integer
                                             format: int32
                                           path:
-                                            description: The relative path of the file to map the key to. May not be an absolute path. May not contain the path element '..'. May not start with the string '..'.
+                                            description: path is the relative path of the file to map the key to. May not be an absolute path. May not contain the path element '..'. May not start with the string '..'.
                                             type: string
                                     name:
                                       description: 'Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?'
                                       type: string
                                     optional:
-                                      description: Specify whether the ConfigMap or its keys must be defined
+                                      description: optional specify whether the ConfigMap or its keys must be defined
                                       type: boolean
                                   x-kubernetes-map-type: atomic
-                                secret:
-                                  description: information about the secret data to project
+                                downwardAPI:
+                                  description: downwardAPI information about the downwardAPI data to project
                                   type: object
                                   properties:
                                     items:
-                                      description: If unspecified, each key-value pair in the Data field of the referenced Secret will be projected into the volume as a file whose name is the key and content is the value. If specified, the listed keys will be projected into the specified paths, and unlisted keys will not be present. If a key is specified which is not present in the Secret, the volume setup will error unless it is marked optional. Paths must be relative and may not contain the '..' path or start with '..'.
+                                      description: Items is a list of DownwardAPIVolume file
+                                      type: array
+                                      items:
+                                        description: DownwardAPIVolumeFile represents information to create the file containing the pod field
+                                        type: object
+                                        required:
+                                          - path
+                                        properties:
+                                          fieldRef:
+                                            description: 'Required: Selects a field of the pod: only annotations, labels, name and namespace are supported.'
+                                            type: object
+                                            required:
+                                              - fieldPath
+                                            properties:
+                                              apiVersion:
+                                                description: Version of the schema the FieldPath is written in terms of, defaults to "v1".
+                                                type: string
+                                              fieldPath:
+                                                description: Path of the field to select in the specified API version.
+                                                type: string
+                                            x-kubernetes-map-type: atomic
+                                          mode:
+                                            description: 'Optional: mode bits used to set permissions on this file, must be an octal value between 0000 and 0777 or a decimal value between 0 and 511. YAML accepts both octal and decimal values, JSON requires decimal values for mode bits. If not specified, the volume defaultMode will be used. This might be in conflict with other options that affect the file mode, like fsGroup, and the result can be other mode bits set.'
+                                            type: integer
+                                            format: int32
+                                          path:
+                                            description: 'Required: Path is  the relative path name of the file to be created. Must not be absolute or contain the ''..'' path. Must be utf-8 encoded. The first item of the relative path must not start with ''..'''
+                                            type: string
+                                          resourceFieldRef:
+                                            description: 'Selects a resource of the container: only resources limits and requests (limits.cpu, limits.memory, requests.cpu and requests.memory) are currently supported.'
+                                            type: object
+                                            required:
+                                              - resource
+                                            properties:
+                                              containerName:
+                                                description: 'Container name: required for volumes, optional for env vars'
+                                                type: string
+                                              divisor:
+                                                description: Specifies the output format of the exposed resources, defaults to "1"
+                                                pattern: ^(\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))(([KMGTPE]i)|[numkMGTPE]|([eE](\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))))?$
+                                                anyOf:
+                                                  - type: integer
+                                                  - type: string
+                                                x-kubernetes-int-or-string: true
+                                              resource:
+                                                description: 'Required: resource to select'
+                                                type: string
+                                            x-kubernetes-map-type: atomic
+                                secret:
+                                  description: secret information about the secret data to project
+                                  type: object
+                                  properties:
+                                    items:
+                                      description: items if unspecified, each key-value pair in the Data field of the referenced Secret will be projected into the volume as a file whose name is the key and content is the value. If specified, the listed keys will be projected into the specified paths, and unlisted keys will not be present. If a key is specified which is not present in the Secret, the volume setup will error unless it is marked optional. Paths must be relative and may not contain the '..' path or start with '..'.
                                       type: array
                                       items:
                                         description: Maps a string key to a path within a volume.
@@ -2948,48 +3105,48 @@ spec:
                                           - path
                                         properties:
                                           key:
-                                            description: The key to project.
+                                            description: key is the key to project.
                                             type: string
                                           mode:
-                                            description: 'Optional: mode bits used to set permissions on this file. Must be an octal value between 0000 and 0777 or a decimal value between 0 and 511. YAML accepts both octal and decimal values, JSON requires decimal values for mode bits. If not specified, the volume defaultMode will be used. This might be in conflict with other options that affect the file mode, like fsGroup, and the result can be other mode bits set.'
+                                            description: 'mode is Optional: mode bits used to set permissions on this file. Must be an octal value between 0000 and 0777 or a decimal value between 0 and 511. YAML accepts both octal and decimal values, JSON requires decimal values for mode bits. If not specified, the volume defaultMode will be used. This might be in conflict with other options that affect the file mode, like fsGroup, and the result can be other mode bits set.'
                                             type: integer
                                             format: int32
                                           path:
-                                            description: The relative path of the file to map the key to. May not be an absolute path. May not contain the path element '..'. May not start with the string '..'.
+                                            description: path is the relative path of the file to map the key to. May not be an absolute path. May not contain the path element '..'. May not start with the string '..'.
                                             type: string
                                     name:
                                       description: 'Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?'
                                       type: string
                                     optional:
-                                      description: Specify whether the Secret or its key must be defined
+                                      description: optional field specify whether the Secret or its key must be defined
                                       type: boolean
                                   x-kubernetes-map-type: atomic
                                 serviceAccountToken:
-                                  description: information about the serviceAccountToken data to project
+                                  description: serviceAccountToken is information about the serviceAccountToken data to project
                                   type: object
                                   required:
                                     - path
                                   properties:
                                     audience:
-                                      description: Audience is the intended audience of the token. A recipient of a token must identify itself with an identifier specified in the audience of the token, and otherwise should reject the token. The audience defaults to the identifier of the apiserver.
+                                      description: audience is the intended audience of the token. A recipient of a token must identify itself with an identifier specified in the audience of the token, and otherwise should reject the token. The audience defaults to the identifier of the apiserver.
                                       type: string
                                     expirationSeconds:
-                                      description: ExpirationSeconds is the requested duration of validity of the service account token. As the token approaches expiration, the kubelet volume plugin will proactively rotate the service account token. The kubelet will start trying to rotate the token if the token is older than 80 percent of its time to live or if the token is older than 24 hours.Defaults to 1 hour and must be at least 10 minutes.
+                                      description: expirationSeconds is the requested duration of validity of the service account token. As the token approaches expiration, the kubelet volume plugin will proactively rotate the service account token. The kubelet will start trying to rotate the token if the token is older than 80 percent of its time to live or if the token is older than 24 hours.Defaults to 1 hour and must be at least 10 minutes.
                                       type: integer
                                       format: int64
                                     path:
-                                      description: Path is the path relative to the mount point of the file to project the token into.
+                                      description: path is the path relative to the mount point of the file to project the token into.
                                       type: string
                       secret:
-                        description: 'Secret represents a secret that should populate this volume. More info: https://kubernetes.io/docs/concepts/storage/volumes#secret'
+                        description: 'secret represents a secret that should populate this volume. More info: https://kubernetes.io/docs/concepts/storage/volumes#secret'
                         type: object
                         properties:
                           defaultMode:
-                            description: 'Optional: mode bits used to set permissions on created files by default. Must be an octal value between 0000 and 0777 or a decimal value between 0 and 511. YAML accepts both octal and decimal values, JSON requires decimal values for mode bits. Defaults to 0644. Directories within the path are not affected by this setting. This might be in conflict with other options that affect the file mode, like fsGroup, and the result can be other mode bits set.'
+                            description: 'defaultMode is Optional: mode bits used to set permissions on created files by default. Must be an octal value between 0000 and 0777 or a decimal value between 0 and 511. YAML accepts both octal and decimal values, JSON requires decimal values for mode bits. Defaults to 0644. Directories within the path are not affected by this setting. This might be in conflict with other options that affect the file mode, like fsGroup, and the result can be other mode bits set.'
                             type: integer
                             format: int32
                           items:
-                            description: If unspecified, each key-value pair in the Data field of the referenced Secret will be projected into the volume as a file whose name is the key and content is the value. If specified, the listed keys will be projected into the specified paths, and unlisted keys will not be present. If a key is specified which is not present in the Secret, the volume setup will error unless it is marked optional. Paths must be relative and may not contain the '..' path or start with '..'.
+                            description: items If unspecified, each key-value pair in the Data field of the referenced Secret will be projected into the volume as a file whose name is the key and content is the value. If specified, the listed keys will be projected into the specified paths, and unlisted keys will not be present. If a key is specified which is not present in the Secret, the volume setup will error unless it is marked optional. Paths must be relative and may not contain the '..' path or start with '..'.
                             type: array
                             items:
                               description: Maps a string key to a path within a volume.
@@ -2999,20 +3156,20 @@ spec:
                                 - path
                               properties:
                                 key:
-                                  description: The key to project.
+                                  description: key is the key to project.
                                   type: string
                                 mode:
-                                  description: 'Optional: mode bits used to set permissions on this file. Must be an octal value between 0000 and 0777 or a decimal value between 0 and 511. YAML accepts both octal and decimal values, JSON requires decimal values for mode bits. If not specified, the volume defaultMode will be used. This might be in conflict with other options that affect the file mode, like fsGroup, and the result can be other mode bits set.'
+                                  description: 'mode is Optional: mode bits used to set permissions on this file. Must be an octal value between 0000 and 0777 or a decimal value between 0 and 511. YAML accepts both octal and decimal values, JSON requires decimal values for mode bits. If not specified, the volume defaultMode will be used. This might be in conflict with other options that affect the file mode, like fsGroup, and the result can be other mode bits set.'
                                   type: integer
                                   format: int32
                                 path:
-                                  description: The relative path of the file to map the key to. May not be an absolute path. May not contain the path element '..'. May not start with the string '..'.
+                                  description: path is the relative path of the file to map the key to. May not be an absolute path. May not contain the path element '..'. May not start with the string '..'.
                                   type: string
                           optional:
-                            description: Specify whether the Secret or its keys must be defined
+                            description: optional field specify whether the Secret or its keys must be defined
                             type: boolean
                           secretName:
-                            description: 'Name of the secret in the pod''s namespace to use. More info: https://kubernetes.io/docs/concepts/storage/volumes#secret'
+                            description: 'secretName is the name of the secret in the pod''s namespace to use. More info: https://kubernetes.io/docs/concepts/storage/volumes#secret'
                             type: string
             status:
               description: RevisionStatus communicates the observed state of the Revision (from the controller).
@@ -3112,7 +3269,7 @@ metadata:
   name: routes.serving.knative.dev
   labels:
     app.kubernetes.io/name: knative-serving
-    app.kubernetes.io/version: "1.7.1"
+    app.kubernetes.io/version: "1.10.6"
     knative.dev/crd-install: "true"
     duck.knative.dev/addressable: "true"
 spec:
@@ -3195,6 +3352,12 @@ spec:
                   description: Address holds the information needed for a Route to be the target of an event.
                   type: object
                   properties:
+                    CACerts:
+                      description: CACerts is the Certification Authority (CA) certificates in PEM format according to https://www.rfc-editor.org/rfc/rfc7468.
+                      type: string
+                    name:
+                      description: Name is the name of the address.
+                      type: string
                     url:
                       type: string
                 annotations:
@@ -3286,7 +3449,7 @@ metadata:
   labels:
     app.kubernetes.io/name: knative-serving
     app.kubernetes.io/component: networking
-    app.kubernetes.io/version: "1.7.1"
+    app.kubernetes.io/version: "1.10.6"
     knative.dev/crd-install: "true"
 spec:
   group: networking.internal.knative.dev
@@ -3452,7 +3615,7 @@ metadata:
   name: services.serving.knative.dev
   labels:
     app.kubernetes.io/name: knative-serving
-    app.kubernetes.io/version: "1.7.1"
+    app.kubernetes.io/version: "1.10.6"
     knative.dev/crd-install: "true"
     duck.knative.dev/addressable: "true"
     duck.knative.dev/podspecable: "true"
@@ -3558,12 +3721,12 @@ spec:
                             type: object
                             properties:
                               args:
-                                description: 'Arguments to the entrypoint. The docker image''s CMD is used if this is not provided. Variable references $(VAR_NAME) are expanded using the container''s environment. If a variable cannot be resolved, the reference in the input string will be unchanged. Double $$ are reduced to a single $, which allows for escaping the $(VAR_NAME) syntax: i.e. "$$(VAR_NAME)" will produce the string literal "$(VAR_NAME)". Escaped references will never be expanded, regardless of whether the variable exists or not. Cannot be updated. More info: https://kubernetes.io/docs/tasks/inject-data-application/define-command-argument-container/#running-a-command-in-a-shell'
+                                description: 'Arguments to the entrypoint. The container image''s CMD is used if this is not provided. Variable references $(VAR_NAME) are expanded using the container''s environment. If a variable cannot be resolved, the reference in the input string will be unchanged. Double $$ are reduced to a single $, which allows for escaping the $(VAR_NAME) syntax: i.e. "$$(VAR_NAME)" will produce the string literal "$(VAR_NAME)". Escaped references will never be expanded, regardless of whether the variable exists or not. Cannot be updated. More info: https://kubernetes.io/docs/tasks/inject-data-application/define-command-argument-container/#running-a-command-in-a-shell'
                                 type: array
                                 items:
                                   type: string
                               command:
-                                description: 'Entrypoint array. Not executed within a shell. The docker image''s ENTRYPOINT is used if this is not provided. Variable references $(VAR_NAME) are expanded using the container''s environment. If a variable cannot be resolved, the reference in the input string will be unchanged. Double $$ are reduced to a single $, which allows for escaping the $(VAR_NAME) syntax: i.e. "$$(VAR_NAME)" will produce the string literal "$(VAR_NAME)". Escaped references will never be expanded, regardless of whether the variable exists or not. Cannot be updated. More info: https://kubernetes.io/docs/tasks/inject-data-application/define-command-argument-container/#running-a-command-in-a-shell'
+                                description: 'Entrypoint array. Not executed within a shell. The container image''s ENTRYPOINT is used if this is not provided. Variable references $(VAR_NAME) are expanded using the container''s environment. If a variable cannot be resolved, the reference in the input string will be unchanged. Double $$ are reduced to a single $, which allows for escaping the $(VAR_NAME) syntax: i.e. "$$(VAR_NAME)" will produce the string literal "$(VAR_NAME)". Escaped references will never be expanded, regardless of whether the variable exists or not. Cannot be updated. More info: https://kubernetes.io/docs/tasks/inject-data-application/define-command-argument-container/#running-a-command-in-a-shell'
                                 type: array
                                 items:
                                   type: string
@@ -3661,7 +3824,7 @@ spec:
                                           type: boolean
                                       x-kubernetes-map-type: atomic
                               image:
-                                description: 'Docker image name. More info: https://kubernetes.io/docs/concepts/containers/images This field is optional to allow higher level config management to default or override container images in workload controllers like Deployments and StatefulSets.'
+                                description: 'Container image name. More info: https://kubernetes.io/docs/concepts/containers/images This field is optional to allow higher level config management to default or override container images in workload controllers like Deployments and StatefulSets.'
                                 type: string
                               imagePullPolicy:
                                 description: 'Image pull policy. One of Always, Never, IfNotPresent. Defaults to Always if :latest tag is specified, or IfNotPresent otherwise. Cannot be updated. More info: https://kubernetes.io/docs/concepts/containers/images#updating-images'
@@ -3751,7 +3914,7 @@ spec:
                                 description: Name of the container specified as a DNS_LABEL. Each container in a pod must have a unique name (DNS_LABEL). Cannot be updated.
                                 type: string
                               ports:
-                                description: List of ports to expose from the container. Exposing a port here gives the system additional information about the network connections a container uses, but is primarily informational. Not specifying a port here DOES NOT prevent that port from being exposed. Any port which is listening on the default "0.0.0.0" address inside a container will be accessible from the network. Cannot be updated.
+                                description: List of ports to expose from the container. Not specifying a port here DOES NOT prevent that port from being exposed. Any port which is listening on the default "0.0.0.0" address inside a container will be accessible from the network. Modifying this array with strategic merge patch may corrupt the data. For more information See https://github.com/kubernetes/kubernetes/issues/108255. Cannot be updated.
                                 type: array
                                 items:
                                   description: ContainerPort represents a network port in a single container.
@@ -3881,6 +4044,9 @@ spec:
                                 description: 'SecurityContext defines the security options the container should be run with. If set, the fields of SecurityContext override the equivalent fields of PodSecurityContext. More info: https://kubernetes.io/docs/tasks/configure-pod-container/security-context/'
                                 type: object
                                 properties:
+                                  allowPrivilegeEscalation:
+                                    description: 'AllowPrivilegeEscalation controls whether a process can gain more privileges than its parent process. This bool directly controls if the no_new_privs flag will be set on the container process. AllowPrivilegeEscalation is true always when the container is: 1) run as Privileged 2) has CAP_SYS_ADMIN Note that this field cannot be set when spec.os.name is windows.'
+                                    type: boolean
                                   capabilities:
                                     description: The capabilities to add/drop when running containers. Defaults to the default set of capabilities granted by the container runtime. Note that this field cannot be set when spec.os.name is windows.
                                     type: object
@@ -3911,6 +4077,18 @@ spec:
                                     description: The UID to run the entrypoint of the container process. Defaults to user specified in image metadata if unspecified. May also be set in PodSecurityContext.  If set in both SecurityContext and PodSecurityContext, the value specified in SecurityContext takes precedence. Note that this field cannot be set when spec.os.name is windows.
                                     type: integer
                                     format: int64
+                                  seccompProfile:
+                                    description: The seccomp options to use by this container. If seccomp options are provided at both the pod & container level, the container options override the pod options. Note that this field cannot be set when spec.os.name is windows.
+                                    type: object
+                                    required:
+                                      - type
+                                    properties:
+                                      localhostProfile:
+                                        description: localhostProfile indicates a profile defined in a file on the node should be used. The profile must be preconfigured on the node to work. Must be a descending path, relative to the kubelet's configured seccomp profile location. Must only be set if type is "Localhost".
+                                        type: string
+                                      type:
+                                        description: "type indicates which kind of seccomp profile will be applied. Valid options are: \n Localhost - a profile defined in a file on the node should be used. RuntimeDefault - the container runtime default profile should be used. Unconfined - no profile should be applied."
+                                        type: string
                               terminationMessagePath:
                                 description: 'Optional: Path at which the file to which the container''s termination message will be written is mounted into the container''s filesystem. Message written is intended to be brief final status, such as an assertion failure message. Will be truncated by the node if greater than 4096 bytes. The total message length across all containers will be limited to 12kb. Defaults to /dev/termination-log. Cannot be updated.'
                                 type: string
@@ -3964,7 +4142,7 @@ spec:
                           type: integer
                           format: int64
                         imagePullSecrets:
-                          description: 'ImagePullSecrets is an optional list of references to secrets in the same namespace to use for pulling any of the images used by this PodSpec. If specified, these secrets will be passed to individual puller implementations for them to use. For example, in the case of docker, only DockerConfig type secrets are honored. More info: https://kubernetes.io/docs/concepts/containers/images#specifying-imagepullsecrets-on-a-pod'
+                          description: 'ImagePullSecrets is an optional list of references to secrets in the same namespace to use for pulling any of the images used by this PodSpec. If specified, these secrets will be passed to individual puller implementations for them to use. More info: https://kubernetes.io/docs/concepts/containers/images#specifying-imagepullsecrets-on-a-pod'
                           type: array
                           items:
                             description: LocalObjectReference contains enough information to let you locate the referenced object inside the same namespace.
@@ -4037,15 +4215,15 @@ spec:
                               - name
                             properties:
                               configMap:
-                                description: ConfigMap represents a configMap that should populate this volume
+                                description: configMap represents a configMap that should populate this volume
                                 type: object
                                 properties:
                                   defaultMode:
-                                    description: 'Optional: mode bits used to set permissions on created files by default. Must be an octal value between 0000 and 0777 or a decimal value between 0 and 511. YAML accepts both octal and decimal values, JSON requires decimal values for mode bits. Defaults to 0644. Directories within the path are not affected by this setting. This might be in conflict with other options that affect the file mode, like fsGroup, and the result can be other mode bits set.'
+                                    description: 'defaultMode is optional: mode bits used to set permissions on created files by default. Must be an octal value between 0000 and 0777 or a decimal value between 0 and 511. YAML accepts both octal and decimal values, JSON requires decimal values for mode bits. Defaults to 0644. Directories within the path are not affected by this setting. This might be in conflict with other options that affect the file mode, like fsGroup, and the result can be other mode bits set.'
                                     type: integer
                                     format: int32
                                   items:
-                                    description: If unspecified, each key-value pair in the Data field of the referenced ConfigMap will be projected into the volume as a file whose name is the key and content is the value. If specified, the listed keys will be projected into the specified paths, and unlisted keys will not be present. If a key is specified which is not present in the ConfigMap, the volume setup will error unless it is marked optional. Paths must be relative and may not contain the '..' path or start with '..'.
+                                    description: items if unspecified, each key-value pair in the Data field of the referenced ConfigMap will be projected into the volume as a file whose name is the key and content is the value. If specified, the listed keys will be projected into the specified paths, and unlisted keys will not be present. If a key is specified which is not present in the ConfigMap, the volume setup will error unless it is marked optional. Paths must be relative and may not contain the '..' path or start with '..'.
                                     type: array
                                     items:
                                       description: Maps a string key to a path within a volume.
@@ -4055,20 +4233,20 @@ spec:
                                         - path
                                       properties:
                                         key:
-                                          description: The key to project.
+                                          description: key is the key to project.
                                           type: string
                                         mode:
-                                          description: 'Optional: mode bits used to set permissions on this file. Must be an octal value between 0000 and 0777 or a decimal value between 0 and 511. YAML accepts both octal and decimal values, JSON requires decimal values for mode bits. If not specified, the volume defaultMode will be used. This might be in conflict with other options that affect the file mode, like fsGroup, and the result can be other mode bits set.'
+                                          description: 'mode is Optional: mode bits used to set permissions on this file. Must be an octal value between 0000 and 0777 or a decimal value between 0 and 511. YAML accepts both octal and decimal values, JSON requires decimal values for mode bits. If not specified, the volume defaultMode will be used. This might be in conflict with other options that affect the file mode, like fsGroup, and the result can be other mode bits set.'
                                           type: integer
                                           format: int32
                                         path:
-                                          description: The relative path of the file to map the key to. May not be an absolute path. May not contain the path element '..'. May not start with the string '..'.
+                                          description: path is the relative path of the file to map the key to. May not be an absolute path. May not contain the path element '..'. May not start with the string '..'.
                                           type: string
                                   name:
                                     description: 'Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?'
                                     type: string
                                   optional:
-                                    description: Specify whether the ConfigMap or its keys must be defined
+                                    description: optional specify whether the ConfigMap or its keys must be defined
                                     type: boolean
                                 x-kubernetes-map-type: atomic
                               emptyDir:
@@ -4076,33 +4254,33 @@ spec:
                                 type: object
                                 x-kubernetes-preserve-unknown-fields: true
                               name:
-                                description: 'Volume''s name. Must be a DNS_LABEL and unique within the pod. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names'
+                                description: 'name of the volume. Must be a DNS_LABEL and unique within the pod. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names'
                                 type: string
                               persistentVolumeClaim:
                                 description: This is accessible behind a feature flag - kubernetes.podspec-persistent-volume-claim
                                 type: object
                                 x-kubernetes-preserve-unknown-fields: true
                               projected:
-                                description: Items for all in one resources secrets, configmaps, and downward API
+                                description: projected items for all in one resources secrets, configmaps, and downward API
                                 type: object
                                 properties:
                                   defaultMode:
-                                    description: Mode bits used to set permissions on created files by default. Must be an octal value between 0000 and 0777 or a decimal value between 0 and 511. YAML accepts both octal and decimal values, JSON requires decimal values for mode bits. Directories within the path are not affected by this setting. This might be in conflict with other options that affect the file mode, like fsGroup, and the result can be other mode bits set.
+                                    description: defaultMode are the mode bits used to set permissions on created files by default. Must be an octal value between 0000 and 0777 or a decimal value between 0 and 511. YAML accepts both octal and decimal values, JSON requires decimal values for mode bits. Directories within the path are not affected by this setting. This might be in conflict with other options that affect the file mode, like fsGroup, and the result can be other mode bits set.
                                     type: integer
                                     format: int32
                                   sources:
-                                    description: list of volume projections
+                                    description: sources is the list of volume projections
                                     type: array
                                     items:
                                       description: Projection that may be projected along with other supported volume types
                                       type: object
                                       properties:
                                         configMap:
-                                          description: information about the configMap data to project
+                                          description: configMap information about the configMap data to project
                                           type: object
                                           properties:
                                             items:
-                                              description: If unspecified, each key-value pair in the Data field of the referenced ConfigMap will be projected into the volume as a file whose name is the key and content is the value. If specified, the listed keys will be projected into the specified paths, and unlisted keys will not be present. If a key is specified which is not present in the ConfigMap, the volume setup will error unless it is marked optional. Paths must be relative and may not contain the '..' path or start with '..'.
+                                              description: items if unspecified, each key-value pair in the Data field of the referenced ConfigMap will be projected into the volume as a file whose name is the key and content is the value. If specified, the listed keys will be projected into the specified paths, and unlisted keys will not be present. If a key is specified which is not present in the ConfigMap, the volume setup will error unless it is marked optional. Paths must be relative and may not contain the '..' path or start with '..'.
                                               type: array
                                               items:
                                                 description: Maps a string key to a path within a volume.
@@ -4112,28 +4290,81 @@ spec:
                                                   - path
                                                 properties:
                                                   key:
-                                                    description: The key to project.
+                                                    description: key is the key to project.
                                                     type: string
                                                   mode:
-                                                    description: 'Optional: mode bits used to set permissions on this file. Must be an octal value between 0000 and 0777 or a decimal value between 0 and 511. YAML accepts both octal and decimal values, JSON requires decimal values for mode bits. If not specified, the volume defaultMode will be used. This might be in conflict with other options that affect the file mode, like fsGroup, and the result can be other mode bits set.'
+                                                    description: 'mode is Optional: mode bits used to set permissions on this file. Must be an octal value between 0000 and 0777 or a decimal value between 0 and 511. YAML accepts both octal and decimal values, JSON requires decimal values for mode bits. If not specified, the volume defaultMode will be used. This might be in conflict with other options that affect the file mode, like fsGroup, and the result can be other mode bits set.'
                                                     type: integer
                                                     format: int32
                                                   path:
-                                                    description: The relative path of the file to map the key to. May not be an absolute path. May not contain the path element '..'. May not start with the string '..'.
+                                                    description: path is the relative path of the file to map the key to. May not be an absolute path. May not contain the path element '..'. May not start with the string '..'.
                                                     type: string
                                             name:
                                               description: 'Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?'
                                               type: string
                                             optional:
-                                              description: Specify whether the ConfigMap or its keys must be defined
+                                              description: optional specify whether the ConfigMap or its keys must be defined
                                               type: boolean
                                           x-kubernetes-map-type: atomic
-                                        secret:
-                                          description: information about the secret data to project
+                                        downwardAPI:
+                                          description: downwardAPI information about the downwardAPI data to project
                                           type: object
                                           properties:
                                             items:
-                                              description: If unspecified, each key-value pair in the Data field of the referenced Secret will be projected into the volume as a file whose name is the key and content is the value. If specified, the listed keys will be projected into the specified paths, and unlisted keys will not be present. If a key is specified which is not present in the Secret, the volume setup will error unless it is marked optional. Paths must be relative and may not contain the '..' path or start with '..'.
+                                              description: Items is a list of DownwardAPIVolume file
+                                              type: array
+                                              items:
+                                                description: DownwardAPIVolumeFile represents information to create the file containing the pod field
+                                                type: object
+                                                required:
+                                                  - path
+                                                properties:
+                                                  fieldRef:
+                                                    description: 'Required: Selects a field of the pod: only annotations, labels, name and namespace are supported.'
+                                                    type: object
+                                                    required:
+                                                      - fieldPath
+                                                    properties:
+                                                      apiVersion:
+                                                        description: Version of the schema the FieldPath is written in terms of, defaults to "v1".
+                                                        type: string
+                                                      fieldPath:
+                                                        description: Path of the field to select in the specified API version.
+                                                        type: string
+                                                    x-kubernetes-map-type: atomic
+                                                  mode:
+                                                    description: 'Optional: mode bits used to set permissions on this file, must be an octal value between 0000 and 0777 or a decimal value between 0 and 511. YAML accepts both octal and decimal values, JSON requires decimal values for mode bits. If not specified, the volume defaultMode will be used. This might be in conflict with other options that affect the file mode, like fsGroup, and the result can be other mode bits set.'
+                                                    type: integer
+                                                    format: int32
+                                                  path:
+                                                    description: 'Required: Path is  the relative path name of the file to be created. Must not be absolute or contain the ''..'' path. Must be utf-8 encoded. The first item of the relative path must not start with ''..'''
+                                                    type: string
+                                                  resourceFieldRef:
+                                                    description: 'Selects a resource of the container: only resources limits and requests (limits.cpu, limits.memory, requests.cpu and requests.memory) are currently supported.'
+                                                    type: object
+                                                    required:
+                                                      - resource
+                                                    properties:
+                                                      containerName:
+                                                        description: 'Container name: required for volumes, optional for env vars'
+                                                        type: string
+                                                      divisor:
+                                                        description: Specifies the output format of the exposed resources, defaults to "1"
+                                                        pattern: ^(\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))(([KMGTPE]i)|[numkMGTPE]|([eE](\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))))?$
+                                                        anyOf:
+                                                          - type: integer
+                                                          - type: string
+                                                        x-kubernetes-int-or-string: true
+                                                      resource:
+                                                        description: 'Required: resource to select'
+                                                        type: string
+                                                    x-kubernetes-map-type: atomic
+                                        secret:
+                                          description: secret information about the secret data to project
+                                          type: object
+                                          properties:
+                                            items:
+                                              description: items if unspecified, each key-value pair in the Data field of the referenced Secret will be projected into the volume as a file whose name is the key and content is the value. If specified, the listed keys will be projected into the specified paths, and unlisted keys will not be present. If a key is specified which is not present in the Secret, the volume setup will error unless it is marked optional. Paths must be relative and may not contain the '..' path or start with '..'.
                                               type: array
                                               items:
                                                 description: Maps a string key to a path within a volume.
@@ -4143,48 +4374,48 @@ spec:
                                                   - path
                                                 properties:
                                                   key:
-                                                    description: The key to project.
+                                                    description: key is the key to project.
                                                     type: string
                                                   mode:
-                                                    description: 'Optional: mode bits used to set permissions on this file. Must be an octal value between 0000 and 0777 or a decimal value between 0 and 511. YAML accepts both octal and decimal values, JSON requires decimal values for mode bits. If not specified, the volume defaultMode will be used. This might be in conflict with other options that affect the file mode, like fsGroup, and the result can be other mode bits set.'
+                                                    description: 'mode is Optional: mode bits used to set permissions on this file. Must be an octal value between 0000 and 0777 or a decimal value between 0 and 511. YAML accepts both octal and decimal values, JSON requires decimal values for mode bits. If not specified, the volume defaultMode will be used. This might be in conflict with other options that affect the file mode, like fsGroup, and the result can be other mode bits set.'
                                                     type: integer
                                                     format: int32
                                                   path:
-                                                    description: The relative path of the file to map the key to. May not be an absolute path. May not contain the path element '..'. May not start with the string '..'.
+                                                    description: path is the relative path of the file to map the key to. May not be an absolute path. May not contain the path element '..'. May not start with the string '..'.
                                                     type: string
                                             name:
                                               description: 'Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?'
                                               type: string
                                             optional:
-                                              description: Specify whether the Secret or its key must be defined
+                                              description: optional field specify whether the Secret or its key must be defined
                                               type: boolean
                                           x-kubernetes-map-type: atomic
                                         serviceAccountToken:
-                                          description: information about the serviceAccountToken data to project
+                                          description: serviceAccountToken is information about the serviceAccountToken data to project
                                           type: object
                                           required:
                                             - path
                                           properties:
                                             audience:
-                                              description: Audience is the intended audience of the token. A recipient of a token must identify itself with an identifier specified in the audience of the token, and otherwise should reject the token. The audience defaults to the identifier of the apiserver.
+                                              description: audience is the intended audience of the token. A recipient of a token must identify itself with an identifier specified in the audience of the token, and otherwise should reject the token. The audience defaults to the identifier of the apiserver.
                                               type: string
                                             expirationSeconds:
-                                              description: ExpirationSeconds is the requested duration of validity of the service account token. As the token approaches expiration, the kubelet volume plugin will proactively rotate the service account token. The kubelet will start trying to rotate the token if the token is older than 80 percent of its time to live or if the token is older than 24 hours.Defaults to 1 hour and must be at least 10 minutes.
+                                              description: expirationSeconds is the requested duration of validity of the service account token. As the token approaches expiration, the kubelet volume plugin will proactively rotate the service account token. The kubelet will start trying to rotate the token if the token is older than 80 percent of its time to live or if the token is older than 24 hours.Defaults to 1 hour and must be at least 10 minutes.
                                               type: integer
                                               format: int64
                                             path:
-                                              description: Path is the path relative to the mount point of the file to project the token into.
+                                              description: path is the path relative to the mount point of the file to project the token into.
                                               type: string
                               secret:
-                                description: 'Secret represents a secret that should populate this volume. More info: https://kubernetes.io/docs/concepts/storage/volumes#secret'
+                                description: 'secret represents a secret that should populate this volume. More info: https://kubernetes.io/docs/concepts/storage/volumes#secret'
                                 type: object
                                 properties:
                                   defaultMode:
-                                    description: 'Optional: mode bits used to set permissions on created files by default. Must be an octal value between 0000 and 0777 or a decimal value between 0 and 511. YAML accepts both octal and decimal values, JSON requires decimal values for mode bits. Defaults to 0644. Directories within the path are not affected by this setting. This might be in conflict with other options that affect the file mode, like fsGroup, and the result can be other mode bits set.'
+                                    description: 'defaultMode is Optional: mode bits used to set permissions on created files by default. Must be an octal value between 0000 and 0777 or a decimal value between 0 and 511. YAML accepts both octal and decimal values, JSON requires decimal values for mode bits. Defaults to 0644. Directories within the path are not affected by this setting. This might be in conflict with other options that affect the file mode, like fsGroup, and the result can be other mode bits set.'
                                     type: integer
                                     format: int32
                                   items:
-                                    description: If unspecified, each key-value pair in the Data field of the referenced Secret will be projected into the volume as a file whose name is the key and content is the value. If specified, the listed keys will be projected into the specified paths, and unlisted keys will not be present. If a key is specified which is not present in the Secret, the volume setup will error unless it is marked optional. Paths must be relative and may not contain the '..' path or start with '..'.
+                                    description: items If unspecified, each key-value pair in the Data field of the referenced Secret will be projected into the volume as a file whose name is the key and content is the value. If specified, the listed keys will be projected into the specified paths, and unlisted keys will not be present. If a key is specified which is not present in the Secret, the volume setup will error unless it is marked optional. Paths must be relative and may not contain the '..' path or start with '..'.
                                     type: array
                                     items:
                                       description: Maps a string key to a path within a volume.
@@ -4194,20 +4425,20 @@ spec:
                                         - path
                                       properties:
                                         key:
-                                          description: The key to project.
+                                          description: key is the key to project.
                                           type: string
                                         mode:
-                                          description: 'Optional: mode bits used to set permissions on this file. Must be an octal value between 0000 and 0777 or a decimal value between 0 and 511. YAML accepts both octal and decimal values, JSON requires decimal values for mode bits. If not specified, the volume defaultMode will be used. This might be in conflict with other options that affect the file mode, like fsGroup, and the result can be other mode bits set.'
+                                          description: 'mode is Optional: mode bits used to set permissions on this file. Must be an octal value between 0000 and 0777 or a decimal value between 0 and 511. YAML accepts both octal and decimal values, JSON requires decimal values for mode bits. If not specified, the volume defaultMode will be used. This might be in conflict with other options that affect the file mode, like fsGroup, and the result can be other mode bits set.'
                                           type: integer
                                           format: int32
                                         path:
-                                          description: The relative path of the file to map the key to. May not be an absolute path. May not contain the path element '..'. May not start with the string '..'.
+                                          description: path is the relative path of the file to map the key to. May not be an absolute path. May not contain the path element '..'. May not start with the string '..'.
                                           type: string
                                   optional:
-                                    description: Specify whether the Secret or its keys must be defined
+                                    description: optional field specify whether the Secret or its keys must be defined
                                     type: boolean
                                   secretName:
-                                    description: 'Name of the secret in the pod''s namespace to use. More info: https://kubernetes.io/docs/concepts/storage/volumes#secret'
+                                    description: 'secretName is the name of the secret in the pod''s namespace to use. More info: https://kubernetes.io/docs/concepts/storage/volumes#secret'
                                     type: string
                 traffic:
                   description: Traffic specifies how to distribute traffic over a collection of revisions and configurations.
@@ -4243,6 +4474,12 @@ spec:
                   description: Address holds the information needed for a Route to be the target of an event.
                   type: object
                   properties:
+                    CACerts:
+                      description: CACerts is the Certification Authority (CA) certificates in PEM format according to https://www.rfc-editor.org/rfc/rfc7468.
+                      type: string
+                    name:
+                      description: Name is the name of the address.
+                      type: string
                     url:
                       type: string
                 annotations:
@@ -4340,6 +4577,9 @@ metadata:
   # https://github.com/knative-sandbox/control-protocol/blob/main/pkg/certificates/reconciler/controller.go
   name: serving-certs-ctrl-ca
   namespace: knative-serving
+  labels:
+    serving-certs-ctrl: "data-plane"
+    networking.internal.knative.dev/certificate-uid: "serving-certs"
 
 # The data is populated when internal-encryption is enabled.
 ---
@@ -4350,6 +4590,29 @@ metadata:
   namespace: knative-serving
   labels:
     serving-certs-ctrl: "data-plane"
+    networking.internal.knative.dev/certificate-uid: "serving-certs"
+
+# The data is populated when internal-encryption is enabled.
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: control-serving-certs
+  namespace: knative-serving
+  labels:
+    serving-certs-ctrl: "control-plane"
+    networking.internal.knative.dev/certificate-uid: "serving-certs"
+
+# The data is populated when internal-encryption is enabled.
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: routing-serving-certs
+  namespace: knative-serving
+  labels:
+    serving-certs-ctrl: "data-plane-routing"
+    routing-id: "0"
     networking.internal.knative.dev/certificate-uid: "serving-certs"
 # The data is populated when internal-encryption is enabled.
 
@@ -4376,11 +4639,11 @@ metadata:
   labels:
     app.kubernetes.io/component: queue-proxy
     app.kubernetes.io/name: knative-serving
-    app.kubernetes.io/version: "1.7.1"
+    app.kubernetes.io/version: "1.10.6"
 spec:
   # This is the Go import path for the binary that is containerized
   # and substituted here.
-  image: gcr.io/knative-releases/knative.dev/serving/cmd/queue@sha256:f0e506209c784eb65fe79c1d5b6c329c33c9df2b2f8bce44fb4566d12457c54d
+  image: gcr.io/knative-releases/knative.dev/serving/cmd/queue@sha256:235423c2c0b8bd2ca264afa3acd102a071ad2bff509efe43cb508f759c0c98d8
 
 ---
 # Copyright 2018 The Knative Authors
@@ -4405,7 +4668,7 @@ metadata:
   labels:
     app.kubernetes.io/component: autoscaler
     app.kubernetes.io/name: knative-serving
-    app.kubernetes.io/version: "1.7.1"
+    app.kubernetes.io/version: "1.10.6"
   annotations:
     knative.dev/example-checksum: "47c2487f"
 data:
@@ -4616,7 +4879,7 @@ metadata:
   labels:
     app.kubernetes.io/name: knative-serving
     app.kubernetes.io/component: controller
-    app.kubernetes.io/version: "1.7.1"
+    app.kubernetes.io/version: "1.10.6"
   annotations:
     knative.dev/example-checksum: "e7973912"
 data:
@@ -4771,14 +5034,13 @@ metadata:
   labels:
     app.kubernetes.io/name: knative-serving
     app.kubernetes.io/component: controller
-    app.kubernetes.io/version: "1.7.1"
+    app.kubernetes.io/version: "1.10.6"
   annotations:
-    knative.dev/example-checksum: "dd7ee769"
+    knative.dev/example-checksum: "410041a0"
 data:
   # This is the Go import path for the binary that is containerized
   # and substituted here.
-  # TODO: switch to 'queue-sidecar-image' after 0.27
-  queueSidecarImage: gcr.io/knative-releases/knative.dev/serving/cmd/queue@sha256:f0e506209c784eb65fe79c1d5b6c329c33c9df2b2f8bce44fb4566d12457c54d
+  queue-sidecar-image: gcr.io/knative-releases/knative.dev/serving/cmd/queue@sha256:235423c2c0b8bd2ca264afa3acd102a071ad2bff509efe43cb508f759c0c98d8
   _example: |-
     ################################
     #                              #
@@ -4828,28 +5090,18 @@ data:
     # If omitted, no value is specified and the system default is used.
     queue-sidecar-ephemeral-storage-limit: "1024Mi"
 
-    # The freezer service endpoint that queue-proxy calls when its traffic drops to zero or
-    # scales up from zero.
+    # Sets tokens associated with specific audiences for queue proxy - used by QPOptions
     #
-    # Freezer service is available at: https://github.com/knative-sandbox/container-freezer
-    # or users may write their own service.
-    #
-    # The value will need to include both the host and the port that will be accessed.
-    # For the host, $HOST_IP can be passed, and the appropriate host IP value will be swapped
-    # in at runtime, which will enable the freezer daemonset to be reachable via the node IP.
-    #
-    # As an example:
-    #     concurrency-state-endpoint: "http://$HOST_IP:9696"
-    #
-    # If not set, queue proxy takes no action (this is the default behavior).
-    #
-    # When enabled, a serviceAccountToken will be mounted to queue-proxy using
-    # a projected volume. This requires the Service Account Token Volume Projection feature
-    # to be enabled. For details, see this link:
-    # https://kubernetes.io/docs/tasks/configure-pod-container/configure-service-account/#service-account-token-volume-projection
-    #
-    # NOTE THAT THIS IS AN EXPERIMENTAL / ALPHA FEATURE
-    concurrency-state-endpoint: ""
+    # For example, to add the `service-x` audience:
+    #    queue-sidecar-token-audiences: "service-x"
+    # Also supports a list of audiences, for example:
+    #    queue-sidecar-token-audiences: "service-x,service-y"
+    # If omitted, or empty, no tokens are created
+    queue-sidecar-token-audiences: ""
+
+    # Sets rootCA for the queue proxy - used by QPOptions
+    # If omitted, or empty, no rootCA is added to the golang rootCAs
+    queue-sidecar-rootca: ""
 
 ---
 # Copyright 2018 The Knative Authors
@@ -4874,9 +5126,7 @@ metadata:
   labels:
     app.kubernetes.io/name: knative-serving
     app.kubernetes.io/component: controller
-    app.kubernetes.io/version: "1.7.1"
-  annotations:
-    knative.dev/example-checksum: "81552d0b"
+    app.kubernetes.io/version: "1.10.6"
 data:
   _example: |
     ################################
@@ -4895,16 +5145,6 @@ data:
     # to actually change the configuration.
 
     # Default value for domain.
-    # Although it will match all routes, it is the least-specific rule so it
-    # will only be used if no other domain matches.
-    example.com: |
-
-    # These are example settings of domain.
-    # example.org will be used for routes having app=nonprofit.
-    example.org: |
-      selector:
-        app: nonprofit
-
     # Routes having the cluster domain suffix (by default 'svc.cluster.local')
     # will not be exposed through Ingress. You can define your own label
     # selector to assign that domain suffix to your Route here, or you can set
@@ -4943,9 +5183,9 @@ metadata:
   labels:
     app.kubernetes.io/name: knative-serving
     app.kubernetes.io/component: controller
-    app.kubernetes.io/version: "1.7.1"
+    app.kubernetes.io/version: "1.10.6"
   annotations:
-    knative.dev/example-checksum: "4d5feafc"
+    knative.dev/example-checksum: "d3565159"
 data:
   _example: |-
     ################################
@@ -4962,6 +5202,13 @@ data:
     # These sample configuration options may be copied out of
     # this example block and unindented to be in the data block
     # to actually change the configuration.
+
+    # Default SecurityContext settings to secure-by-default values
+    # if unset.
+    #
+    # This value will default to "enabled" in a future release,
+    # probably Knative 1.10
+    secure-pod-defaults: "disabled"
 
     # Indicates whether multi container support is enabled
     #
@@ -5032,6 +5279,7 @@ data:
     # - RunAsNonRoot
     # - SupplementalGroups
     # - RunAsUser
+    # - SeccompProfile
     #
     # This feature flag should be used with caution as the PodSecurityContext
     # properties may have a side-effect on non-user sidecar containers that come
@@ -5083,7 +5331,7 @@ data:
     # Controls whether volume support for EmptyDir is enabled or not.
     # 1. Enabled: enabling EmptyDir volume support
     # 2. Disabled: disabling EmptyDir volume support
-    kubernetes.podspec-volumes-emptydir: "disabled"
+    kubernetes.podspec-volumes-emptydir: "enabled"
 
     # Controls whether init containers support is enabled or not.
     # 1. Enabled: enabling init containers support
@@ -5140,7 +5388,7 @@ metadata:
   labels:
     app.kubernetes.io/name: knative-serving
     app.kubernetes.io/component: controller
-    app.kubernetes.io/version: "1.7.1"
+    app.kubernetes.io/version: "1.10.6"
   annotations:
     knative.dev/example-checksum: "aa3813a8"
 data:
@@ -5240,7 +5488,7 @@ metadata:
   labels:
     app.kubernetes.io/name: knative-serving
     app.kubernetes.io/component: controller
-    app.kubernetes.io/version: "1.7.1"
+    app.kubernetes.io/version: "1.10.6"
   annotations:
     knative.dev/example-checksum: "f4b71f57"
 data:
@@ -5300,7 +5548,7 @@ metadata:
   name: config-logging
   namespace: knative-serving
   labels:
-    app.kubernetes.io/version: "1.7.1"
+    app.kubernetes.io/version: "1.10.6"
     app.kubernetes.io/component: logging
     app.kubernetes.io/name: knative-serving
   annotations:
@@ -5382,7 +5630,7 @@ metadata:
   labels:
     app.kubernetes.io/name: knative-serving
     app.kubernetes.io/component: networking
-    app.kubernetes.io/version: "1.7.1"
+    app.kubernetes.io/version: "1.10.6"
   annotations:
     knative.dev/example-checksum: "73d96d1b"
 data:
@@ -5578,7 +5826,7 @@ metadata:
   labels:
     app.kubernetes.io/name: knative-serving
     app.kubernetes.io/component: observability
-    app.kubernetes.io/version: "1.7.1"
+    app.kubernetes.io/version: "1.10.6"
   annotations:
     knative.dev/example-checksum: "fed4756e"
 data:
@@ -5687,7 +5935,7 @@ metadata:
   labels:
     app.kubernetes.io/name: knative-serving
     app.kubernetes.io/component: tracing
-    app.kubernetes.io/version: "1.7.1"
+    app.kubernetes.io/version: "1.10.6"
   annotations:
     knative.dev/example-checksum: "26614636"
 data:
@@ -5736,7 +5984,7 @@ data:
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-apiVersion: autoscaling/v2beta2
+apiVersion: autoscaling/v2
 kind: HorizontalPodAutoscaler
 metadata:
   name: activator
@@ -5744,7 +5992,7 @@ metadata:
   labels:
     app.kubernetes.io/component: activator
     app.kubernetes.io/name: knative-serving
-    app.kubernetes.io/version: "1.7.1"
+    app.kubernetes.io/version: "1.10.6"
 spec:
   minReplicas: 1
   maxReplicas: 20
@@ -5772,7 +6020,7 @@ metadata:
   labels:
     app.kubernetes.io/component: activator
     app.kubernetes.io/name: knative-serving
-    app.kubernetes.io/version: "1.7.1"
+    app.kubernetes.io/version: "1.10.6"
 spec:
   minAvailable: 50%  # Two replicas, allow one to be unavailable
   selector:
@@ -5801,7 +6049,7 @@ metadata:
   namespace: knative-serving
   labels:
     app.kubernetes.io/component: activator
-    app.kubernetes.io/version: "1.7.1"
+    app.kubernetes.io/version: "1.10.6"
     app.kubernetes.io/name: knative-serving
 spec:
   selector:
@@ -5810,21 +6058,19 @@ spec:
       role: activator
   template:
     metadata:
-      annotations:
-        cluster-autoscaler.kubernetes.io/safe-to-evict: "false"
       labels:
         app: activator
         role: activator
         app.kubernetes.io/component: activator
         app.kubernetes.io/name: knative-serving
-        app.kubernetes.io/version: "1.7.1"
+        app.kubernetes.io/version: "1.10.6"
     spec:
       serviceAccountName: controller
       containers:
         - name: activator
           # This is the Go import path for the binary that is containerized
           # and substituted here.
-          image: gcr.io/knative-releases/knative.dev/serving/cmd/activator@sha256:6fec2cb19a70b7da56d23178d3e6d2478fd053a83efed120851788a6b1704050
+          image: gcr.io/knative-releases/knative.dev/serving/cmd/activator@sha256:cf1514926bce0f3b7e3ebf7dcd6e06afab8860cb4ee7509c8595469df1b3a134
           # The numbers are based on performance test results from
           # https://github.com/knative/serving/issues/1625#issuecomment-511930023
           resources:
@@ -5863,7 +6109,9 @@ spec:
             runAsNonRoot: true
             capabilities:
               drop:
-                - all
+                - ALL
+            seccompProfile:
+              type: RuntimeDefault
           ports:
             - name: metrics
               containerPort: 9090
@@ -5907,7 +6155,7 @@ metadata:
   labels:
     app: activator
     app.kubernetes.io/component: activator
-    app.kubernetes.io/version: "1.7.1"
+    app.kubernetes.io/version: "1.10.6"
     app.kubernetes.io/name: knative-serving
 spec:
   selector:
@@ -5954,7 +6202,7 @@ metadata:
   labels:
     app.kubernetes.io/component: autoscaler
     app.kubernetes.io/name: knative-serving
-    app.kubernetes.io/version: "1.7.1"
+    app.kubernetes.io/version: "1.10.6"
 spec:
   replicas: 1
   selector:
@@ -5966,13 +6214,11 @@ spec:
       maxUnavailable: 0
   template:
     metadata:
-      annotations:
-        cluster-autoscaler.kubernetes.io/safe-to-evict: "false"
       labels:
         app: autoscaler
         app.kubernetes.io/component: autoscaler
         app.kubernetes.io/name: knative-serving
-        app.kubernetes.io/version: "1.7.1"
+        app.kubernetes.io/version: "1.10.6"
     spec:
       # To avoid node becoming SPOF, spread our replicas to different nodes.
       affinity:
@@ -5989,7 +6235,7 @@ spec:
         - name: autoscaler
           # This is the Go import path for the binary that is containerized
           # and substituted here.
-          image: gcr.io/knative-releases/knative.dev/serving/cmd/autoscaler@sha256:d23cc5fceab552f4924bef1b38af850d6ad29046f9e4d6f0e1e562cfec350746
+          image: gcr.io/knative-releases/knative.dev/serving/cmd/autoscaler@sha256:fd4de65e03bc813714fd52cfd505807bd4dacb95c8636733b414d7b5a74028e9
           resources:
             requests:
               cpu: 100m
@@ -6023,7 +6269,9 @@ spec:
             runAsNonRoot: true
             capabilities:
               drop:
-                - all
+                - ALL
+            seccompProfile:
+              type: RuntimeDefault
           ports:
             - name: metrics
               containerPort: 9090
@@ -6052,7 +6300,7 @@ metadata:
     app: autoscaler
     app.kubernetes.io/component: autoscaler
     app.kubernetes.io/name: knative-serving
-    app.kubernetes.io/version: "1.7.1"
+    app.kubernetes.io/version: "1.10.6"
   name: autoscaler
   namespace: knative-serving
 spec:
@@ -6093,20 +6341,18 @@ metadata:
   labels:
     app.kubernetes.io/component: controller
     app.kubernetes.io/name: knative-serving
-    app.kubernetes.io/version: "1.7.1"
+    app.kubernetes.io/version: "1.10.6"
 spec:
   selector:
     matchLabels:
       app: controller
   template:
     metadata:
-      annotations:
-        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
       labels:
         app: controller
         app.kubernetes.io/component: controller
         app.kubernetes.io/name: knative-serving
-        app.kubernetes.io/version: "1.7.1"
+        app.kubernetes.io/version: "1.10.6"
     spec:
       # To avoid node becoming SPOF, spread our replicas to different nodes.
       affinity:
@@ -6123,7 +6369,7 @@ spec:
         - name: controller
           # This is the Go import path for the binary that is containerized
           # and substituted here.
-          image: gcr.io/knative-releases/knative.dev/serving/cmd/controller@sha256:8ce127dd294a646b67200beae1321197b4a5de9d5b42daf9206849dba06d4197
+          image: gcr.io/knative-releases/knative.dev/serving/cmd/controller@sha256:ab2a2f2b7ed9de56f57712a281fc49bf5da944203614cfbf411869e223b8398b
           resources:
             requests:
               cpu: 100m
@@ -6153,12 +6399,30 @@ spec:
             runAsNonRoot: true
             capabilities:
               drop:
-                - all
+                - ALL
+            seccompProfile:
+              type: RuntimeDefault
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: probes
+              scheme: HTTP
+            periodSeconds: 5
+            failureThreshold: 6
+          readinessProbe:
+            httpGet:
+              path: /readiness
+              port: probes
+              scheme: HTTP
+            periodSeconds: 5
+            failureThreshold: 3
           ports:
             - name: metrics
               containerPort: 9090
             - name: profiling
               containerPort: 8008
+            - name: probes
+              containerPort: 8080
 ---
 apiVersion: v1
 kind: Service
@@ -6167,7 +6431,7 @@ metadata:
     app: controller
     app.kubernetes.io/component: controller
     app.kubernetes.io/name: knative-serving
-    app.kubernetes.io/version: "1.7.1"
+    app.kubernetes.io/version: "1.10.6"
   name: controller
   namespace: knative-serving
 spec:
@@ -6205,20 +6469,18 @@ metadata:
   labels:
     app.kubernetes.io/component: domain-mapping
     app.kubernetes.io/name: knative-serving
-    app.kubernetes.io/version: "1.7.1"
+    app.kubernetes.io/version: "1.10.6"
 spec:
   selector:
     matchLabels:
       app: domain-mapping
   template:
     metadata:
-      annotations:
-        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
       labels:
         app: domain-mapping
         app.kubernetes.io/component: domain-mapping
         app.kubernetes.io/name: knative-serving
-        app.kubernetes.io/version: "1.7.1"
+        app.kubernetes.io/version: "1.10.6"
     spec:
       # To avoid node becoming SPOF, spread our replicas to different nodes.
       affinity:
@@ -6235,7 +6497,7 @@ spec:
         - name: domain-mapping
           # This is the Go import path for the binary that is containerized
           # and substituted here.
-          image: gcr.io/knative-releases/knative.dev/serving/cmd/domain-mapping@sha256:c78a29b606fbfd9781e49abb547ac592a2a59fd554e504d5b5b9d25ec3a59ee9
+          image: gcr.io/knative-releases/knative.dev/serving/cmd/domain-mapping@sha256:61bd02ca85161b01ebc7e073b29d0adab98d1bde533e46f3b32a8ba43df55a2e
           resources:
             requests:
               cpu: 30m
@@ -6261,12 +6523,30 @@ spec:
             runAsNonRoot: true
             capabilities:
               drop:
-                - all
+                - ALL
+            seccompProfile:
+              type: RuntimeDefault
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: probes
+              scheme: HTTP
+            periodSeconds: 5
+            failureThreshold: 6
+          readinessProbe:
+            httpGet:
+              path: /readiness
+              port: probes
+              scheme: HTTP
+            periodSeconds: 5
+            failureThreshold: 3
           ports:
             - name: metrics
               containerPort: 9090
             - name: profiling
               containerPort: 8008
+            - name: probes
+              containerPort: 8080
 
 ---
 # Copyright 2020 The Knative Authors
@@ -6291,7 +6571,7 @@ metadata:
   labels:
     app.kubernetes.io/component: domain-mapping
     app.kubernetes.io/name: knative-serving
-    app.kubernetes.io/version: "1.7.1"
+    app.kubernetes.io/version: "1.10.6"
 spec:
   selector:
     matchLabels:
@@ -6299,14 +6579,12 @@ spec:
       role: domainmapping-webhook
   template:
     metadata:
-      annotations:
-        cluster-autoscaler.kubernetes.io/safe-to-evict: "false"
       labels:
         app: domainmapping-webhook
         role: domainmapping-webhook
         app.kubernetes.io/component: domain-mapping
         app.kubernetes.io/name: knative-serving
-        app.kubernetes.io/version: "1.7.1"
+        app.kubernetes.io/version: "1.10.6"
     spec:
       # To avoid node becoming SPOF, spread our replicas to different nodes.
       affinity:
@@ -6323,7 +6601,7 @@ spec:
         - name: domainmapping-webhook
           # This is the Go import path for the binary that is containerized
           # and substituted here.
-          image: gcr.io/knative-releases/knative.dev/serving/cmd/domain-mapping-webhook@sha256:e6ceb71d79fc3b5bab843fd213f5cf752f258aa70fbdb3f3046b9944e6c94200
+          image: gcr.io/knative-releases/knative.dev/serving/cmd/domain-mapping-webhook@sha256:92fdeca65e708e70a981c99dbb63ae8c995917e5047bf76e61815dcc75db15c1
           resources:
             requests:
               cpu: 100m
@@ -6355,7 +6633,9 @@ spec:
             runAsNonRoot: true
             capabilities:
               drop:
-                - all
+                - ALL
+            seccompProfile:
+              type: RuntimeDefault
           ports:
             - name: metrics
               containerPort: 9090
@@ -6392,7 +6672,7 @@ metadata:
     role: domainmapping-webhook
     app.kubernetes.io/component: domain-mapping
     app.kubernetes.io/name: knative-serving
-    app.kubernetes.io/version: "1.7.1"
+    app.kubernetes.io/version: "1.10.6"
   name: domainmapping-webhook
   namespace: knative-serving
 spec:
@@ -6408,6 +6688,7 @@ spec:
       port: 443
       targetPort: 8443
   selector:
+    app: domainmapping-webhook
     role: domainmapping-webhook
 
 ---
@@ -6425,7 +6706,7 @@ spec:
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-apiVersion: autoscaling/v2beta2
+apiVersion: autoscaling/v2
 kind: HorizontalPodAutoscaler
 metadata:
   name: webhook
@@ -6433,7 +6714,7 @@ metadata:
   labels:
     app.kubernetes.io/component: webhook
     app.kubernetes.io/name: knative-serving
-    app.kubernetes.io/version: "1.7.1"
+    app.kubernetes.io/version: "1.10.6"
 spec:
   minReplicas: 1
   maxReplicas: 5
@@ -6459,7 +6740,7 @@ metadata:
   labels:
     app.kubernetes.io/component: webhook
     app.kubernetes.io/name: knative-serving
-    app.kubernetes.io/version: "1.7.1"
+    app.kubernetes.io/version: "1.10.6"
 spec:
   minAvailable: 50%  # Two replicas, allow one to be unavailable
   selector:
@@ -6488,7 +6769,7 @@ metadata:
   namespace: knative-serving
   labels:
     app.kubernetes.io/component: webhook
-    app.kubernetes.io/version: "1.7.1"
+    app.kubernetes.io/version: "1.10.6"
     app.kubernetes.io/name: knative-serving
 spec:
   selector:
@@ -6497,12 +6778,11 @@ spec:
       role: webhook
   template:
     metadata:
-      annotations:
-        cluster-autoscaler.kubernetes.io/safe-to-evict: "false"
       labels:
         app: webhook
         role: webhook
-        app.kubernetes.io/version: "1.7.1"
+        app.kubernetes.io/component: webhook
+        app.kubernetes.io/version: "1.10.6"
         app.kubernetes.io/name: knative-serving
     spec:
       # To avoid node becoming SPOF, spread our replicas to different nodes.
@@ -6520,7 +6800,7 @@ spec:
         - name: webhook
           # This is the Go import path for the binary that is containerized
           # and substituted here.
-          image: gcr.io/knative-releases/knative.dev/serving/cmd/webhook@sha256:2abda5baf78e30888fa0c5ca8442b32d613fe0854c3a473da4511a64922cb30d
+          image: gcr.io/knative-releases/knative.dev/serving/cmd/webhook@sha256:ac19da8b5d0e3418f216ce09ef713c2fa4eee1231a811a849dfd61587f864cdc
           resources:
             requests:
               cpu: 100m
@@ -6554,7 +6834,9 @@ spec:
             runAsNonRoot: true
             capabilities:
               drop:
-                - all
+                - ALL
+            seccompProfile:
+              type: RuntimeDefault
           ports:
             - name: metrics
               containerPort: 9090
@@ -6590,7 +6872,7 @@ metadata:
   labels:
     role: webhook
     app.kubernetes.io/component: webhook
-    app.kubernetes.io/version: "1.7.1"
+    app.kubernetes.io/version: "1.10.6"
     app.kubernetes.io/name: knative-serving
   name: webhook
   namespace: knative-serving
@@ -6607,6 +6889,7 @@ spec:
       port: 443
       targetPort: 8443
   selector:
+    app: webhook
     role: webhook
 
 ---
@@ -6631,7 +6914,7 @@ metadata:
   labels:
     app.kubernetes.io/component: webhook
     app.kubernetes.io/name: knative-serving
-    app.kubernetes.io/version: "1.7.1"
+    app.kubernetes.io/version: "1.10.6"
 webhooks:
   - admissionReviewVersions: ["v1", "v1beta1"]
     clientConfig:
@@ -6673,7 +6956,7 @@ metadata:
   labels:
     app.kubernetes.io/component: webhook
     app.kubernetes.io/name: knative-serving
-    app.kubernetes.io/version: "1.7.1"
+    app.kubernetes.io/version: "1.10.6"
 webhooks:
   - admissionReviewVersions: ["v1", "v1beta1"]
     clientConfig:
@@ -6728,7 +7011,7 @@ metadata:
   labels:
     app.kubernetes.io/component: domain-mapping
     app.kubernetes.io/name: knative-serving
-    app.kubernetes.io/version: "1.7.1"
+    app.kubernetes.io/version: "1.10.6"
 webhooks:
   - admissionReviewVersions: ["v1", "v1beta1"]
     clientConfig:
@@ -6775,7 +7058,7 @@ metadata:
   labels:
     app.kubernetes.io/component: domain-mapping
     app.kubernetes.io/name: knative-serving
-    app.kubernetes.io/version: "1.7.1"
+    app.kubernetes.io/version: "1.10.6"
 # The data is populated at install time.
 
 ---
@@ -6800,7 +7083,7 @@ metadata:
   labels:
     app.kubernetes.io/component: domain-mapping
     app.kubernetes.io/name: knative-serving
-    app.kubernetes.io/version: "1.7.1"
+    app.kubernetes.io/version: "1.10.6"
 webhooks:
   - admissionReviewVersions: ["v1", "v1beta1"]
     clientConfig:
@@ -6847,7 +7130,7 @@ metadata:
   labels:
     app.kubernetes.io/component: webhook
     app.kubernetes.io/name: knative-serving
-    app.kubernetes.io/version: "1.7.1"
+    app.kubernetes.io/version: "1.10.6"
 webhooks:
   - admissionReviewVersions: ["v1", "v1beta1"]
     clientConfig:
@@ -6904,7 +7187,7 @@ metadata:
   labels:
     app.kubernetes.io/component: webhook
     app.kubernetes.io/name: knative-serving
-    app.kubernetes.io/version: "1.7.1"
+    app.kubernetes.io/version: "1.10.6"
 # The data is populated at install time.
 
 ---
