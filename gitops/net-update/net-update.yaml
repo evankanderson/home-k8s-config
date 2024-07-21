@@ -21,7 +21,7 @@ spec:
             command: ["/bin/bash", "-c"]
             args:
             # The actual MIB contains the IP address, so we need to extract it from the MIB _name_ \o/
-            - "snmpwalk -v 2c -c $(COMMUNITY) 192.168.72.1 IF-MIB::ifDescr | grep pppoe1 | cut -d' ' -f1 | cut -d. -f2 > /ipaddr/if-index;  snmpgetnext -v 2c -c $(COMMUNITY) 192.168.0.1 IP-MIB::ipAddressPrefixOrigin.$(cat /ipaddr/if-index).ipv4 | grep -o '\".*\"' | sed 's/\"//g' > /ipaddr/external; echo Used interface cat /ipaddr/if-index; echo , got address ; cat /ipaddr/external; echo"
+            - "snmpwalk -v 2c -c $(COMMUNITY) 192.168.72.1 IF-MIB::ifDescr | grep pppoe0 | cut -d' ' -f1 | cut -d. -f2 > /ipaddr/if-index;  snmpgetnext -v 2c -c $(COMMUNITY) 192.168.0.1 IP-MIB::ipAddressPrefixOrigin.$(cat /ipaddr/if-index).ipv4 | grep -o '\".*\"' | sed 's/\"//g' > /ipaddr/external; echo Used interface cat /ipaddr/if-index; echo , got address ; cat /ipaddr/external; echo"
             env:
             - name: COMMUNITY
               valueFrom:
