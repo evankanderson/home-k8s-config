@@ -19,6 +19,10 @@ spec:
     port: 80
     securePort: 443
     instances: 1
+    resources:
+      requests:
+        cpu: 100m
+        memory: "512Mi"
   healthCheck:
     bucket:
       interval: 60s
