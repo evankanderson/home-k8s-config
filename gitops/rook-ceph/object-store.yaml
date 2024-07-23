@@ -24,5 +24,5 @@ spec:
         cpu: 100m
         memory: "512Mi"
   healthCheck:
-    bucket:
-      interval: 60s
+    readinessProbe:
+      disabled: false

@@ -75,6 +75,9 @@ spec:
   monitoring:
     # requires Prometheus to be pre-installed
     enabled: false
+    # Whether to disable the metrics reported by Ceph. If false, the prometheus mgr module and Ceph exporter are enabled.
+    # If true, the prometheus mgr module and Ceph exporter are both disabled. Default is false.
+    metricsDisabled: false
   network:
     connections:
       # Whether to encrypt the data in transit across the wire to prevent eavesdropping the data on the network.
@@ -89,6 +92,10 @@ spec:
       # Requires Ceph Quincy (v17) or newer. Also see the kernel requirements above for encryption.
       compression:
         enabled: false
+      # Whether to require communication over msgr2. If true, the msgr v1 port (6789) will be disabled
+      # and clients will be required to connect to the Ceph cluster with the v2 port (3300).
+      # Requires a kernel that supports msgr v2 (kernel 5.11 or CentOS 8.4 or newer).
+      requireMsgr2: false
     # enable host networking
     #provider: host
     # enable the Multus network provider
@@ -107,6 +114,12 @@ spec:
     #ipFamily: "IPv6"
     # Ceph daemons to listen on both IPv4 and Ipv6 networks
     #dualStack: false
+    # Enable multiClusterService to export the mon and OSD services to peer cluster.
+    # This is useful to support RBD mirroring between two clusters having overlapping CIDRs.
+    # Ensure that peer clusters are connected using an MCS API compatible application, like Globalnet Submariner.
+    #multiClusterService:
+    #  enabled: false
+
   # enable the crash collector for ceph daemon crash collection
   crashCollector:
     disable: false
@@ -147,63 +160,63 @@ spec:
   # tolerate taints with a key of 'storage-node'.
   placement:
     all:
-#      nodeAffinity:
-#        requiredDuringSchedulingIgnoredDuringExecution:
-#          nodeSelectorTerms:
-#          - matchExpressions:
-#            - key: role
-#              operator: In
-#              values:
-#              - storage-node
-#      podAffinity:
-#      podAntiAffinity:
-#      topologySpreadConstraints:
+  #     nodeAffinity:
+  #       requiredDuringSchedulingIgnoredDuringExecution:
+  #         nodeSelectorTerms:
+  #         - matchExpressions:
+  #           - key: role
+  #             operator: In
+  #             values:
+  #             - storage-node
+  #     podAffinity:
+  #     podAntiAffinity:
+  #     topologySpreadConstraints:
       tolerations:
       - key: node-role.kubernetes.io/master
         operator: Exists
-# The above placement information can also be specified for mon, osd, and mgr components
-#    mon:
-# Monitor deployments may contain an anti-affinity rule for avoiding monitor
-# collocation on the same node. This is a required rule when host network is used
-# or when AllowMultiplePerNode is false. Otherwise this anti-affinity rule is a
-# preferred rule with weight: 50.
-#    osd:
-#    prepareosd:
-#    mgr:
-#    cleanup:
+  # The above placement information can also be specified for mon, osd, and mgr components
+  #   mon:
+  # Monitor deployments may contain an anti-affinity rule for avoiding monitor
+  # collocation on the same node. This is a required rule when host network is used
+  # or when AllowMultiplePerNode is false. Otherwise this anti-affinity rule is a
+  # preferred rule with weight: 50.
+  #   osd:
+  #    prepareosd:
+  #    mgr:
+  #    cleanup:
   annotations:
-#    all:
-#    mon:
-#    osd:
-#    cleanup:
-#    prepareosd:
-# clusterMetadata annotations will be applied to only `rook-ceph-mon-endpoints` configmap and the `rook-ceph-mon` and `rook-ceph-admin-keyring` secrets.
-# And clusterMetadata annotations will not be merged with `all` annotations.
-#    clusterMetadata:
-#       kubed.appscode.com/sync: "true"
-# If no mgr annotations are set, prometheus scrape annotations will be set by default.
-#    mgr:
+  #   all:
+  #   mon:
+  #   osd:
+  #   cleanup:
+  #   prepareosd:
+  # clusterMetadata annotations will be applied to only `rook-ceph-mon-endpoints` configmap and the `rook-ceph-mon` and `rook-ceph-admin-keyring` secrets.
+  # And clusterMetadata annotations will not be merged with `all` annotations.
+  #    clusterMetadata:
+  #       kubed.appscode.com/sync: "true"
+  # If no mgr annotations are set, prometheus scrape annotations will be set by default.
+  #   mgr:
   labels:
-#    all:
-#    mon:
-#    osd:
-#    cleanup:
-#    mgr:
-#    prepareosd:
-# monitoring is a list of key-value pairs. It is injected into all the monitoring resources created by operator.
-# These labels can be passed as LabelSelector to Prometheus
-#    monitoring:
-#    crashcollector:
+  #   all:
+  #   mon:
+  #   osd:
+  #   cleanup:
+  #   mgr:
+  #   prepareosd:
+  # monitoring is a list of key-value pairs. It is injected into all the monitoring resources created by operator.
+  # These labels can be passed as LabelSelector to Prometheus
+  #   monitoring:
+  #   crashcollector:
   resources:
-# The requests and limits set here, allow the mgr pod to use half of one CPU core and 1 gigabyte of memory
-    mgr:
-#      limits:
-#        cpu: "500m"
-#        memory: "1024Mi"
-      requests:
-#        cpu: "500m"
-        memory: "400M"
-# The above example requests/limits can also be added to the other components
+  #The requests and limits set here, allow the mgr pod to use half of one CPU core and 1 gigabyte of memory
+  #   mgr:
+  #     limits:
+  #       cpu: "500m"
+  #       memory: "1024Mi"
+  #     requests:
+  #       cpu: "500m"
+  #       memory: "1024Mi"
+  # The above example requests/limits can also be added to the other components
     mon:
       requests:
         memory: "1000M"
@@ -211,15 +224,16 @@ spec:
       requests:
         cpu: 100m
         memory: "900M"
-# For OSD it also is a possible to specify requests/limits based on device class
-#    osd-hdd:
-#    osd-ssd:
-#    osd-nvme:
-#    prepareosd:
-#    mgr-sidecar:
-#    crashcollector:
-#    logcollector:
-#    cleanup:
+  # For OSD it also is a possible to specify requests/limits based on device class
+  #   osd-hdd:
+  #   osd-ssd:
+  #   osd-nvme:
+  #   prepareosd:
+  #   mgr-sidecar:
+  #   crashcollector:
+  #   logcollector:
+  #   cleanup:
+  #   exporter:
   # The option to automatically remove OSDs that are out and are safe to destroy.
   removeOSDsIfOutAndSafeToRemove: false
   priorityClassNames:
@@ -239,8 +253,8 @@ spec:
       # journalSizeMB: "1024"  # uncomment if the disks are 20 GB or smaller
       # osdsPerDevice: "1" # this value can be overridden at the node or device level
       # encryptedDevice: "true" # the default value for this option is "false"
-# Individual nodes and their config can be specified as well, but 'useAllNodes' above must be set to false. Then, only the named
-# nodes below will be used as storage resources.  Each node's 'name' field should match their 'kubernetes.io/hostname' label.
+    # Individual nodes and their config can be specified as well, but 'useAllNodes' above must be set to false. Then, only the named
+    # nodes below will be used as storage resources.  Each node's 'name' field should match their 'kubernetes.io/hostname' label.
     # nodes:
     #   - name: "172.17.4.201"
     #     devices: # specific devices to use for storage can be specified for each node
@@ -267,11 +281,6 @@ spec:
     # Operator will continue with the next drain if the timeout exceeds. It only works if `managePodBudgets` is `true`.
     # No values or 0 means that the operator will wait until the placement groups are healthy before unblocking the next drain.
     pgHealthCheckTimeout: 0
-    # If true, the operator will create and manage MachineDisruptionBudgets to ensure OSDs are only fenced when the cluster is healthy.
-    # Only available on OpenShift.
-    manageMachineDisruptionBudgets: false
-    # Namespace in which to watch for the MachineDisruptionBudgets.
-    machineDisruptionBudgetNamespace: openshift-machine-api
 
   # healthChecks
   # Valid values for daemons are 'mon', 'osd', 'status'

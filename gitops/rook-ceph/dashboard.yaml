@@ -22,6 +22,7 @@ metadata:
     kubernetes.io/ingress.class: contour-external
     kubernetes.io/tls-acme: "true"
 spec:
+  ingressClassName: "contour-external"
   tls:
   - secretName: dashboard-tls-cert
     hosts:

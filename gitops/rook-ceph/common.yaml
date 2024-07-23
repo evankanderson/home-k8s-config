@@ -260,6 +260,7 @@ rules:
       - create
       - update
       - delete
+      - deletecollection
   # The Rook operator must be able to watch all ceph.rook.io resources to reconcile them.
   - apiGroups: ["ceph.rook.io"]
     resources:
@@ -346,6 +347,14 @@ rules:
       - update
       - delete
       - deletecollection
+  - apiGroups:
+      - apps
+    resources:
+      # This is to add osd deployment owner ref on key rotation
+      # cron jobs.
+      - deployments/finalizers
+    verbs:
+      - update
   - apiGroups:
       - healthchecking.openshift.io
     resources:
@@ -537,6 +546,21 @@ rules:
   - apiGroups: ["admissionregistration.k8s.io"]
     resources: ["validatingwebhookconfigurations"]
     verbs: ["create", "get", "delete", "update"]
+---
+# This is required by operator-sdk to map the cluster/clusterrolebindings with SA
+# otherwise operator-sdk will create a individual file for these.
+kind: ClusterRoleBinding
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: cephfs-csi-nodeplugin-role
+subjects:
+  - kind: ServiceAccount
+    name: rook-csi-cephfs-plugin-sa
+    namespace: rook-ceph # namespace:operator
+roleRef:
+  kind: ClusterRole
+  name: cephfs-csi-nodeplugin
+  apiGroup: rbac.authorization.k8s.io
 ---
 kind: ClusterRoleBinding
 apiVersion: rbac.authorization.k8s.io/v1
@@ -786,10 +810,10 @@ metadata:
   namespace: rook-ceph # namespace:cluster
 rules:
   # this is needed for rook's "key-management" CLI to fetch the vault token from the secret when
-  # validating the connection details
+  # validating the connection details and for key rotation operations.
   - apiGroups: [""]
     resources: ["secrets"]
-    verbs: ["get"]
+    verbs: ["get", "update"]
   - apiGroups: [""]
     resources: ["configmaps"]
     verbs: ["get", "list", "watch", "create", "update", "delete"]
@@ -872,6 +896,7 @@ rules:
       - create
       - update
       - delete
+      - deletecollection
   - apiGroups:
       - batch
     resources:
@@ -887,6 +912,13 @@ rules:
       - get
       - create
       - delete
+  - apiGroups:
+      - multicluster.x-k8s.io
+    resources:
+      - serviceexports
+    verbs:
+      - get
+      - create
 ---
 kind: RoleBinding
 apiVersion: rbac.authorization.k8s.io/v1
