@@ -107,12 +107,12 @@ data:
   # The default version of CSI supported by Rook will be started. To change the version
   # of the CSI driver to something other than what is officially supported, change
   # these images to the desired release of the CSI driver.
-  # ROOK_CSI_CEPH_IMAGE: "quay.io/cephcsi/cephcsi:v3.8.0"
-  # ROOK_CSI_REGISTRAR_IMAGE: "registry.k8s.io/sig-storage/csi-node-driver-registrar:v2.7.0"
-  # ROOK_CSI_RESIZER_IMAGE: "registry.k8s.io/sig-storage/csi-resizer:v1.7.0"
-  # ROOK_CSI_PROVISIONER_IMAGE: "registry.k8s.io/sig-storage/csi-provisioner:v3.4.0"
-  # ROOK_CSI_SNAPSHOTTER_IMAGE: "registry.k8s.io/sig-storage/csi-snapshotter:v6.2.1"
-  # ROOK_CSI_ATTACHER_IMAGE: "registry.k8s.io/sig-storage/csi-attacher:v4.1.0"
+  # ROOK_CSI_CEPH_IMAGE: "quay.io/cephcsi/cephcsi:v3.9.0"
+  # ROOK_CSI_REGISTRAR_IMAGE: "registry.k8s.io/sig-storage/csi-node-driver-registrar:v2.8.0"
+  # ROOK_CSI_RESIZER_IMAGE: "registry.k8s.io/sig-storage/csi-resizer:v1.8.0"
+  # ROOK_CSI_PROVISIONER_IMAGE: "registry.k8s.io/sig-storage/csi-provisioner:v3.5.0"
+  # ROOK_CSI_SNAPSHOTTER_IMAGE: "registry.k8s.io/sig-storage/csi-snapshotter:v6.2.2"
+  # ROOK_CSI_ATTACHER_IMAGE: "registry.k8s.io/sig-storage/csi-attacher:v4.3.0"
 
   # To indicate the image pull policy to be applied to all the containers in the csi driver pods.
   # ROOK_CSI_IMAGE_PULL_POLICY: "IfNotPresent"
@@ -126,6 +126,9 @@ data:
   # CSI CephFS plugin daemonset update strategy, supported values are OnDelete and RollingUpdate.
   # Default value is RollingUpdate.
   # CSI_CEPHFS_PLUGIN_UPDATE_STRATEGY: "OnDelete"
+  # A maxUnavailable parameter of CSI cephFS plugin daemonset update strategy.
+  # Default value is 1.
+  # CSI_CEPHFS_PLUGIN_UPDATE_STRATEGY_MAX_UNAVAILABLE: "1"
   # CSI RBD plugin daemonset update strategy, supported values are OnDelete and RollingUpdate.
   # Default value is RollingUpdate.
   # CSI_RBD_PLUGIN_UPDATE_STRATEGY: "OnDelete"
@@ -497,7 +500,9 @@ data:
   ROOK_CEPH_COMMANDS_TIMEOUT_SECONDS: "15"
   # Enable the csi addons sidecar.
   CSI_ENABLE_CSIADDONS: "false"
-  # ROOK_CSIADDONS_IMAGE: "quay.io/csiaddons/k8s-sidecar:v0.5.0"
+  # Enable watch for faster recovery from rbd rwo node loss
+  ROOK_WATCH_FOR_NODE_FAILURE: "true"
+  # ROOK_CSIADDONS_IMAGE: "quay.io/csiaddons/k8s-sidecar:v0.7.0"
   # The CSI GRPC timeout value (in seconds). It should be >= 120. If this variable is not set or is an invalid value, it's default to 150.
   CSI_GRPC_TIMEOUT_SECONDS: "150"
 
@@ -531,6 +536,39 @@ data:
   CSI_CEPHFS_ATTACH_REQUIRED: "true"
   CSI_RBD_ATTACH_REQUIRED: "true"
   CSI_NFS_ATTACH_REQUIRED: "true"
+  # Rook Discover toleration. Will tolerate all taints with all keys.
+  # (Optional) Rook Discover tolerations list. Put here list of taints you want to tolerate in YAML format.
+  # DISCOVER_TOLERATIONS: |
+  #   - effect: NoSchedule
+  #     key: node-role.kubernetes.io/control-plane
+  #     operator: Exists
+  #   - effect: NoExecute
+  #     key: node-role.kubernetes.io/etcd
+  #     operator: Exists
+  # (Optional) Rook Discover priority class name to set on the pod(s)
+  # DISCOVER_PRIORITY_CLASS_NAME: "<PriorityClassName>"
+  # (Optional) Discover Agent NodeAffinity.
+  # DISCOVER_AGENT_NODE_AFFINITY: |
+  #   requiredDuringSchedulingIgnoredDuringExecution:
+  #     nodeSelectorTerms:
+  #       - matchExpressions:
+  #         - key: myKey
+  #           operator: DoesNotExist
+  # (Optional) Discover Agent Pod Labels.
+  # DISCOVER_AGENT_POD_LABELS: "key1=value1,key2=value2"
+  # Disable automatic orchestration when new devices are discovered
+  ROOK_DISABLE_DEVICE_HOTPLUG: "false"
+  # The duration between discovering devices in the rook-discover daemonset.
+  ROOK_DISCOVER_DEVICES_INTERVAL: "60m"
+  # DISCOVER_DAEMON_RESOURCES: |
+  #   - name: DISCOVER_DAEMON_RESOURCES
+  #     resources:
+  #       limits:
+  #         cpu: 500m
+  #         memory: 512Mi
+  #       requests:
+  #         cpu: 100m
+  #         memory: 128Mi
 ---
 # OLM: BEGIN OPERATOR DEPLOYMENT
 apiVersion: apps/v1
@@ -560,12 +598,14 @@ spec:
       serviceAccountName: rook-ceph-system
       containers:
         - name: rook-ceph-operator
-          image: rook/ceph:v1.11.11
+          image: rook/ceph:v1.12.11
           args: ["ceph", "operator"]
           securityContext:
             runAsNonRoot: true
             runAsUser: 2016
             runAsGroup: 2016
+            capabilities:
+              drop: ["ALL"]
           volumeMounts:
             - mountPath: /var/lib/rook
               name: rook-config
@@ -582,46 +622,12 @@ spec:
             # If this is not set to true, the operator will watch for cluster CRDs in all namespaces.
             - name: ROOK_CURRENT_NAMESPACE_ONLY
               value: "false"
-            # Rook Discover toleration. Will tolerate all taints with all keys.
-            # Choose between NoSchedule, PreferNoSchedule and NoExecute:
-            # - name: DISCOVER_TOLERATION
-            #   value: "NoSchedule"
-            # (Optional) Rook Discover toleration key. Set this to the key of the taint you want to tolerate
-            # - name: DISCOVER_TOLERATION_KEY
-            #   value: "<KeyOfTheTaintToTolerate>"
-            # (Optional) Rook Discover tolerations list. Put here list of taints you want to tolerate in YAML format.
-            # - name: DISCOVER_TOLERATIONS
-            #   value: |
-            #     - effect: NoSchedule
-            #       key: node-role.kubernetes.io/control-plane
-            #       operator: Exists
-            #     - effect: NoExecute
-            #       key: node-role.kubernetes.io/etcd
-            #       operator: Exists
-            # (Optional) Rook Discover priority class name to set on the pod(s)
-            # - name: DISCOVER_PRIORITY_CLASS_NAME
-            #   value: "<PriorityClassName>"
-            # (Optional) Discover Agent NodeAffinity.
-            # - name: DISCOVER_AGENT_NODE_AFFINITY
-            #   value: "role=storage-node; storage=rook, ceph"
-            # (Optional) Discover Agent Pod Labels.
-            # - name: DISCOVER_AGENT_POD_LABELS
-            #   value: "key1=value1,key2=value2"
-
-            # The duration between discovering devices in the rook-discover daemonset.
-            - name: ROOK_DISCOVER_DEVICES_INTERVAL
-              value: "60m"
 
             # Whether to start pods as privileged that mount a host path, which includes the Ceph mon and osd pods.
             # Set this to true if SELinux is enabled (e.g. OpenShift) to workaround the anyuid issues.
             # For more details see https://github.com/rook/rook/issues/1314#issuecomment-355799641
             - name: ROOK_HOSTPATH_REQUIRES_PRIVILEGED
               value: "false"
-
-            # Disable automatic orchestration when new devices are discovered
-            - name: ROOK_DISABLE_DEVICE_HOTPLUG
-              value: "false"
-
             # Provide customised regex as the values using comma. For eg. regex for rbd based volume, value will be like "(?i)rbd[0-9]+".
             # In case of more than one regex, use comma to separate between them.
             # Default regex will be "(?i)dm-[0-9]+,(?i)rbd[0-9]+,(?i)nbd[0-9]+"
@@ -629,16 +635,6 @@ spec:
             # If value is empty, the default regex will be used.
             - name: DISCOVER_DAEMON_UDEV_BLACKLIST
               value: "(?i)dm-[0-9]+,(?i)rbd[0-9]+,(?i)nbd[0-9]+"
-
-            # - name: DISCOVER_DAEMON_RESOURCES
-            #   value: |
-            #     resources:
-            #       limits:
-            #         cpu: 500m
-            #         memory: 512Mi
-            #       requests:
-            #         cpu: 100m
-            #         memory: 128Mi
 
             # Time to wait until the node controller will move Rook pods to other
             # nodes after detecting an unreachable node.
