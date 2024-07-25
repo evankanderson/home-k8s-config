@@ -49,7 +49,7 @@ spec:
               memory: 2Gi
             requests:
               cpu: 200m
-              memory: 600Mi
+              memory: 1200Mi
         ports:
         - containerPort: 9200
           name: rest
@@ -73,7 +73,7 @@ spec:
           - name: discovery.type
             value: single-node
           - name: ES_JAVA_OPTS
-            value: "-Xms256m -Xmx256m"
+            value: "-Xms1G -Xmx1G"
           - name: MAX_MAP_COUNT
             value: "65529"
 # None of these are needed with the above securityContext, and running these as privileged pods seems kinda icky.
