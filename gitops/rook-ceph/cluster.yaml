@@ -19,9 +19,9 @@ spec:
     # v17 is Quincy, v18 is Reef.
     # RECOMMENDATION: In production, use a specific version tag instead of the general v17 flag, which pulls the latest release and could result in different
     # versions running within the cluster. See tags available at https://hub.docker.com/r/ceph/ceph/tags/.
-    # If you want to be more precise, you can always use a timestamp tag such as quay.io/ceph/ceph:v18.2.2-20240311
+    # If you want to be more precise, you can always use a timestamp tag such as quay.io/ceph/ceph:v18.2.4-20240724
     # This tag might not contain a new Ceph version, just security fixes from the underlying operating system, which will reduce vulnerabilities
-    image: quay.io/ceph/ceph:v18.2.2
+    image: quay.io/ceph/ceph:v18.2.4
     # Whether to allow unsupported versions of Ceph. Currently `quincy` and `reef` are supported.
     # Future versions such as `squid` (v19) would require this to be set to `true`.
     # Do not set to true in production.
@@ -43,6 +43,10 @@ spec:
   # continue with the upgrade of an OSD even if its not ok to stop after the timeout. This timeout won't be applied if `skipUpgradeChecks` is `true`.
   # The default wait timeout is 10 minutes.
   waitTimeoutForHealthyOSDInMinutes: 10
+  # Whether or not requires PGs are clean before an OSD upgrade. If set to `true` OSD upgrade process won't start until PGs are healthy.
+  # This configuration will be ignored if `skipUpgradeChecks` is `true`.
+  # Default is false.
+  upgradeOSDRequiresHealthyPGs: false
   mon:
     # Set the number of mons to be started. Generally recommended to be 3.
     # For highest availability, an odd number of mons should be specified.
@@ -193,9 +197,14 @@ spec:
   annotations:
   #   all:
   #   mon:
+  #   mgr:
   #   osd:
+  #   exporter:
+  #   crashcollector:
   #   cleanup:
   #   prepareosd:
+  # cmdreporter is for jobs to detect ceph and csi versions, and check network status
+  #   cmdreporter:
   # clusterMetadata annotations will be applied to only `rook-ceph-mon-endpoints` configmap and the `rook-ceph-mon` and `rook-ceph-admin-keyring` secrets.
   # And clusterMetadata annotations will not be merged with `all` annotations.
   #    clusterMetadata:
@@ -277,6 +286,12 @@ spec:
     onlyApplyOSDPlacement: false
     # Time for which an OSD pod will sleep before restarting, if it stopped due to flapping
     # flappingRestartIntervalHours: 24
+    # The ratio at which Ceph should block IO if the OSDs are too full. The default is 0.95.
+    # fullRatio: 0.95
+    # The ratio at which Ceph should stop backfilling data if the OSDs are too full. The default is 0.90.
+    # backfillFullRatio: 0.90
+    # The ratio at which Ceph should raise a health warning if the OSDs are almost full. The default is 0.85.
+    # nearFullRatio: 0.85
   # The section for configuring management of daemon disruptions during upgrade or fencing.
   disruptionManagement:
     # If true, the operator will create and manage PodDisruptionBudgets for OSD, Mon, RGW, and MDS daemons. OSD PDBs are managed dynamically
@@ -301,7 +316,7 @@ spec:
       enabled: true
 
     # cephfs driver specific settings.
-    cephfs: {}
+    cephfs:
       # Set CephFS Kernel mount options to use https://docs.ceph.com/en/latest/man/8/mount.ceph/#options.
       # kernelMountOptions: ""
       # Set CephFS Fuse mount options to use https://docs.ceph.com/en/quincy/man/8/ceph-fuse/#options.

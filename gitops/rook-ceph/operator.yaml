@@ -25,6 +25,9 @@ data:
   # The logging level for the operator: ERROR | WARNING | INFO | DEBUG
   ROOK_LOG_LEVEL: "INFO"
 
+  # The address for the operator's controller-runtime metrics. 0 is disabled. :8080 serves metrics on port 8080.
+  ROOK_OPERATOR_METRICS_BIND_ADDRESS: "0"
+
   # Allow using loop devices for osds in test clusters.
   ROOK_CEPH_ALLOW_LOOP_DEVICES: "false"
 
@@ -35,6 +38,8 @@ data:
   ROOK_CSI_ENABLE_RBD: "true"
   # Enable the CSI NFS driver. To start another version of the CSI driver, see image properties below.
   ROOK_CSI_ENABLE_NFS: "false"
+  # Disable the CSI driver.
+  ROOK_CSI_DISABLE_DRIVER: "false"
 
   # Set to true to enable Ceph CSI pvc encryption support.
   CSI_ENABLE_ENCRYPTION: "false"
@@ -43,6 +48,11 @@ data:
   # in some network configurations where the SDN does not provide access to an external cluster or
   # there is significant drop in read/write performance.
   # CSI_ENABLE_HOST_NETWORK: "true"
+
+  # Deprecation note: Rook uses "holder" pods to allow CSI to connect to the multus public network
+  # without needing hosts to the network. Holder pods are being removed. See issue for details:
+  # https://github.com/rook/rook/issues/13055. New Rook deployments should set this to "true".
+  CSI_DISABLE_HOLDER_PODS: "true"
 
   # Set to true to enable adding volume metadata on the CephFS subvolume and RBD images.
   # Not all users might be interested in getting volume/snapshot details as metadata on CephFS subvolume and RBD images.
@@ -85,6 +95,9 @@ data:
   # set to false to disable deployment of snapshotter container in RBD provisioner pod.
   CSI_ENABLE_RBD_SNAPSHOTTER: "true"
 
+  # set to false to disable volume group snapshot feature. This feature is
+  # enabled by default as long as the necessary CRDs are available in the cluster.
+  CSI_ENABLE_VOLUME_GROUP_SNAPSHOT: "true"
   # Enable cephfs kernel driver instead of ceph-fuse.
   # If you disable the kernel client, your application may be disrupted during upgrade.
   # See the upgrade guide: https://rook.io/docs/rook/latest/ceph-upgrade.html
@@ -112,12 +125,12 @@ data:
   # The default version of CSI supported by Rook will be started. To change the version
   # of the CSI driver to something other than what is officially supported, change
   # these images to the desired release of the CSI driver.
-  # ROOK_CSI_CEPH_IMAGE: "quay.io/cephcsi/cephcsi:v3.10.2"
-  # ROOK_CSI_REGISTRAR_IMAGE: "registry.k8s.io/sig-storage/csi-node-driver-registrar:v2.10.0"
-  # ROOK_CSI_RESIZER_IMAGE: "registry.k8s.io/sig-storage/csi-resizer:v1.10.0"
-  # ROOK_CSI_PROVISIONER_IMAGE: "registry.k8s.io/sig-storage/csi-provisioner:v4.0.0"
-  # ROOK_CSI_SNAPSHOTTER_IMAGE: "registry.k8s.io/sig-storage/csi-snapshotter:v7.0.1"
-  # ROOK_CSI_ATTACHER_IMAGE: "registry.k8s.io/sig-storage/csi-attacher:v4.5.0"
+  # ROOK_CSI_CEPH_IMAGE: "quay.io/cephcsi/cephcsi:v3.11.0"
+  # ROOK_CSI_REGISTRAR_IMAGE: "registry.k8s.io/sig-storage/csi-node-driver-registrar:v2.10.1"
+  # ROOK_CSI_RESIZER_IMAGE: "registry.k8s.io/sig-storage/csi-resizer:v1.10.1"
+  # ROOK_CSI_PROVISIONER_IMAGE: "registry.k8s.io/sig-storage/csi-provisioner:v4.0.1"
+  # ROOK_CSI_SNAPSHOTTER_IMAGE: "registry.k8s.io/sig-storage/csi-snapshotter:v7.0.2"
+  # ROOK_CSI_ATTACHER_IMAGE: "registry.k8s.io/sig-storage/csi-attacher:v4.5.1"
 
   # To indicate the image pull policy to be applied to all the containers in the csi driver pods.
   # ROOK_CSI_IMAGE_PULL_POLICY: "IfNotPresent"
@@ -478,8 +491,11 @@ data:
   # (Optional) Retry Period in seconds the LeaderElector clients should wait between tries of actions. Defaults to 26 seconds.
   # CSI_LEADER_ELECTION_RETRY_PERIOD: "26s"
 
-  # Whether the OBC provisioner should watch on the operator namespace or not, if not the namespace of the cluster will be used
+  # Whether the OBC provisioner should watch on the ceph cluster namespace or not, if not default provisioner value is set
   ROOK_OBC_WATCH_OPERATOR_NAMESPACE: "true"
+
+  # Custom prefix value for the OBC provisioner instead of ceph cluster namespace, do not set on existing cluster
+  # ROOK_OBC_PROVISIONER_NAME_PREFIX: "custom-prefix"
 
   # Whether to start the discovery daemon to watch for raw storage devices on nodes in the cluster.
   # This daemon does not need to run if you are only going to create your OSDs based on StorageClassDeviceSets with PVCs.
@@ -501,16 +517,6 @@ data:
   # NOTE: the value here serves as an example and needs to be
   # updated with node labels that define domains of interest
   # CSI_TOPOLOGY_DOMAIN_LABELS: "kubernetes.io/hostname,topology.kubernetes.io/zone,topology.rook.io/rack"
-
-  # Enable read affinity for RBD volumes. Recommended to
-  # set to true if running kernel 5.8 or newer.
-  CSI_ENABLE_READ_AFFINITY: "true"
-  # CRUSH location labels define which node labels to use
-  # as CRUSH location. This should correspond to the values set in
-  # the CRUSH map.
-  # Defaults to all the labels mentioned in
-  # https://rook.io/docs/rook/latest/CRDs/Cluster/ceph-cluster-crd/#osd-topology
-  # CSI_CRUSH_LOCATION_LABELS: "kubernetes.io/hostname,topology.kubernetes.io/zone,topology.rook.io/rack"
 
   # Whether to skip any attach operation altogether for CephCSI PVCs.
   # See more details [here](https://kubernetes-csi.github.io/docs/skip-attach.html#skip-attach-with-csi-driver-object).
@@ -554,6 +560,12 @@ data:
   #       requests:
   #         cpu: 100m
   #         memory: 128Mi
+
+  # (Optional) Burst to use while communicating with the kubernetes apiserver.
+  # CSI_KUBE_API_BURST: "10"
+
+  # (Optional) QPS to use while communicating with the kubernetes apiserver.
+  # CSI_KUBE_API_QPS: "5.0"
 ---
 # OLM: BEGIN OPERATOR DEPLOYMENT
 apiVersion: apps/v1
@@ -588,7 +600,7 @@ spec:
       serviceAccountName: rook-ceph-system
       containers:
         - name: rook-ceph-operator
-          image: rook/ceph:v1.13.10
+          image: rook/ceph:v1.14.10
           args: ["ceph", "operator"]
           securityContext:
             runAsNonRoot: true
@@ -632,7 +644,7 @@ spec:
             #  --> node-monitor-grace-period: 40 seconds (k8s kube-controller-manager flag)
             #  --> ROOK_UNREACHABLE_NODE_TOLERATION_SECONDS: 5 seconds
             - name: ROOK_UNREACHABLE_NODE_TOLERATION_SECONDS
-              value: "5"
+              value: "60"
 
             # The name of the node to pass with the downward API
             - name: NODE_NAME
